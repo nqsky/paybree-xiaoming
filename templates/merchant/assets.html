@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>资产管理 - Paybree</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 侧边栏 -->
+            <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/merchant/account">
+                                <i class="fas fa-user"></i> 账户信息
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/merchant/assets">
+                                <i class="fas fa-wallet"></i> 资产管理
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/merchant/messages">
+                                <i class="fas fa-envelope"></i> 消息中心
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 主内容区 -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">资产管理</h1>
+                </div>
+
+                <!-- 资产概览卡片 -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">USDT余额</h5>
+                                <h2 class="card-text">100,000.00</h2>
+                                <div class="d-flex justify-content-between mt-3">
+                                    <button class="btn btn-outline-primary btn-sm">充值</button>
+                                    <button class="btn btn-outline-primary btn-sm">提现</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">今日交易量</h5>
+                                <h2 class="card-text">50,000.00</h2>
+                                <p class="text-muted">较昨日 +10%</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">待处理订单</h5>
+                                <h2 class="card-text">12</h2>
+                                <a href="#" class="btn btn-outline-primary btn-sm mt-3">查看详情</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 交易记录表格 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">交易记录</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>时间</th>
+                                        <th>交易类型</th>
+                                        <th>金额</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>2024-03-20 15:30</td>
+                                        <td>充值</td>
+                                        <td>+10,000.00</td>
+                                        <td><span class="badge bg-success">已完成</span></td>
+                                        <td><a href="#" class="btn btn-sm btn-outline-primary">详情</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2024-03-20 14:20</td>
+                                        <td>交易</td>
+                                        <td>-5,000.00</td>
+                                        <td><span class="badge bg-success">已完成</span></td>
+                                        <td><a href="#" class="btn btn-sm btn-outline-primary">详情</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/your-code.js"></script>
+</body>
+</html> 

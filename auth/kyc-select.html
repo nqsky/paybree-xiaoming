@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">选择身份 - Paybree</span>
+        <span class="en">Select Role - Paybree</span>
+    </title>
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Color System */
+            --color-primary: #16C784;
+            --color-primary-hover: #20E19F;
+            --color-primary-light: #EDFAF6;
+            --color-white: #FFFFFF;
+            --color-gray-50: #F5F5F5;
+            --color-gray-400: #A0A0A0;
+            --color-gray-600: #666666;
+            --color-gray-900: #333333;
+            --color-border: #E5E5E5;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--color-gray-900);
+            line-height: 1.5;
+            background-color: var(--color-gray-50);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        /* Logo */
+        .logo {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 24px;
+            color: var(--color-primary);
+        }
+
+        /* Auth Form Styles */
+        .auth-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: center;
+            color: var(--color-gray-900);
+        }
+
+        .auth-subtitle {
+            font-size: 16px;
+            color: var(--color-gray-600);
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--color-white);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .role-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .role-option {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .role-option input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .role-card {
+            border: 2px solid var(--color-border);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .role-option input:checked + .role-card {
+            border-color: var(--color-primary);
+            background-color: var(--color-primary-light);
+        }
+
+        .role-icon {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
+            color: var(--color-primary);
+        }
+
+        .role-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--color-gray-900);
+        }
+
+        .role-description {
+            font-size: 14px;
+            color: var(--color-gray-600);
+            margin-bottom: 16px;
+        }
+
+        .role-features {
+            text-align: left;
+            font-size: 14px;
+            color: var(--color-gray-600);
+            margin-top: 16px;
+        }
+
+        .role-features li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .feature-icon {
+            width: 16px;
+            height: 16px;
+            color: var(--color-primary);
+        }
+
+        .submit-button {
+            width: 100%;
+            height: 48px;
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .submit-button:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(22, 199, 132, 0.2);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* 语言切换样式 */
+        .language-switcher {
+            position: fixed;
+            right: 24px;
+            top: 24px;
+            display: flex;
+            gap: 12px;
+        }
+        .language-switcher button {
+            background: none;
+            border: none;
+            color: var(--color-gray-600);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .language-switcher button:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .language-switcher button.active {
+            background: rgba(0, 0, 0, 0.1);
+            color: var(--color-primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Logo -->
+    <svg class="logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+
+    <h1 class="auth-title">
+        <span class="zh">选择您的身份</span>
+        <span class="en">Select Your Role</span>
+    </h1>
+    <p class="auth-subtitle">
+        <span class="zh">请选择您想要在 Paybree 上使用的身份类型</span>
+        <span class="en">Please select the role you want to use on Paybree</span>
+    </p>
+
+    <div class="auth-container">
+        <form id="roleForm">
+            <div class="role-options">
+                <!-- 普通用户选项 -->
+                <label class="role-option">
+                    <input type="radio" name="role" value="user" checked>
+                    <div class="role-card">
+                        <svg class="role-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <h3 class="role-title">
+                            <span class="zh">普通用户</span>
+                            <span class="en">Regular User</span>
+                        </h3>
+                        <p class="role-description">
+                            <span class="zh">想要在平台上进行交易的个人用户</span>
+                            <span class="en">Individual users who want to trade on the platform</span>
+                        </p>
+                        <ul class="role-features">
+                            <li>
+                                <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 6L9 17l-5-5"/>
+                                </svg>
+                                <span class="zh">快速完成 KYC 认证</span>
+                                <span class="en">Quick KYC verification</span>
+                            </li>
+                            <li>
+                                <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 6L9 17l-5-5"/>
+                                </svg>
+                                <span class="zh">无需缴纳保证金</span>
+                                <span class="en">No deposit required</span>
+                            </li>
+                            <li>
+                                <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 6L9 17l-5-5"/>
+                                </svg>
+                                <span class="zh">可以与承兑商进行交易</span>
+                                <span class="en">Can trade with merchants</span>
+                            </li>
+                        </ul>
+                    </div>
+                </label>
+
+                <!-- 承兑商选项 -->
+                <label class="role-option">
+                    <input type="radio" name="role" value="merchant">
+                    <div class="role-card">
+                        <svg class="role-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                        </svg>
+                        <h3 class="role-title">
+                            <span class="zh">承兑商</span>
+                            <span class="en">Merchant</span>
+                        </h3>
+                        <p class="role-description">
+                            <span class="zh">想要在平台上提供承兑服务的商家</span>
+                            <span class="en">Businesses that want to provide trading services on the platform</span>
+                        </p>
+                        <ul class="role-features">
+                            <li>
+                                <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 6L9 17l-5-5"/>
+                                </svg>
+                                <span class="zh">需要完整的商家认证</span>
+                                <span class="en">Complete merchant verification required</span>
+                            </li>
+                            <li>
+                                <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 6L9 17l-5-5"/>
+                                </svg>
+                                <span class="zh">需要缴纳保证金</span>
+                                <span class="en">Deposit required</span>
+                            </li>
+                            <li>
+                                <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 6L9 17l-5-5"/>
+                                </svg>
+                                <span class="zh">可以发布报价并接单</span>
+                                <span class="en">Can post quotes and accept orders</span>
+                            </li>
+                        </ul>
+                    </div>
+                </label>
+            </div>
+
+            <button type="submit" class="submit-button" id="submitButton">
+                <span class="zh">继续</span>
+                <span class="en">Continue</span>
+            </button>
+        </form>
+    </div>
+
+    <!-- 语言切换按钮 -->
+    <div class="language-switcher">
+        <button class="lang-btn" data-lang="zh-CN">中文</button>
+        <button class="lang-btn" data-lang="en-US">English</button>
+    </div>
+
+    <script>
+        // 语言切换功能
+        function changeLanguage(lang) {
+            document.querySelectorAll('.zh').forEach(el => {
+                el.style.display = (lang === 'zh-CN') ? '' : 'none';
+            });
+            document.querySelectorAll('.en').forEach(el => {
+                el.style.display = (lang === 'en-US') ? '' : 'none';
+            });
+            
+            // 更新按钮状态
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+        }
+
+        // 监听语言按钮点击
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const lang = this.dataset.lang;
+                changeLanguage(lang);
+                localStorage.setItem('preferred_language', lang);
+            });
+        });
+
+        // 初始化语言
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('preferred_language') || 'en-US';
+            changeLanguage(lang);
+        });
+
+        const form = document.getElementById('roleForm');
+        const submitButton = document.getElementById('submitButton');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const role = form.querySelector('input[name="role"]:checked').value;
+            
+            // 根据选择的角色跳转到相应的 KYC 页面
+            if (role === 'user') {
+                window.location.href = 'kyc-user.html';
+            } else {
+                window.location.href = 'kyc-merchant.html';
+            }
+        });
+    </script>
+</body>
+</html> 

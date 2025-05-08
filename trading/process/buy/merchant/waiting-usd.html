@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">等待买家汇款 - 卖方</span>
+        <span class="en">Waiting for Buyer Remittance - Merchant</span>
+    </title>
+    <link rel="stylesheet" href="../../../../css/common.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <style>
+        .zh, .en { display: none; }
+        html[lang="zh-CN"] .zh { display: inline; }
+        html[lang="en-US"] .en { display: inline; }
+        html[lang="zh-CN"] .zh-block { display: block; }
+        html[lang="en-US"] .en-block { display: block; }
+        .language-switch { position: relative; margin-left: 16px; }
+        .language-select { appearance: none; background: transparent; border: none; color: var(--color-gray-600); font-size: 14px; padding-right: 20px; cursor: pointer; }
+        .language-select:focus { outline: none; }
+        .language-switch::after { content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 4px solid var(--color-gray-600); }
+        .language-select option { background: var(--color-white); color: var(--color-gray-900); }
+        .buy-progress { padding: 32px 0; margin-bottom: 40px; background: var(--color-white); }
+        .progress-steps { display: flex; justify-content: space-between; position: relative; max-width: 800px; margin: 0 auto; padding: 0 24px; }
+        .progress-steps::before { content: ''; position: absolute; top: 16px; left: 24px; right: 24px; height: 1px; background: var(--color-border); z-index: 1; }
+        .step { position: relative; z-index: 2; text-align: center; flex: 1; }
+        .step-circle { width: 32px; height: 32px; border-radius: 50%; background: var(--color-white); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; transition: all 0.3s ease; }
+        .step-number { font-size: 14px; font-weight: 500; color: var(--color-gray-600); }
+        .step-label { font-size: 16px; font-weight: 500; color: var(--color-gray-600); }
+        .step.active .step-circle { background: var(--color-primary); border-color: var(--color-primary); }
+        .step.active .step-number { color: var(--color-white); }
+        .step.active .step-label { color: var(--color-primary); font-weight: 600; }
+        .waiting-content { background: #fff; border-radius: 16px; padding: 32px; margin-top: 24px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); max-width: 600px; margin-left: auto; margin-right: auto; }
+        .waiting-title { font-size: 24px; font-weight: 600; color: var(--color-gray-900); margin-bottom: 16px; }
+        .waiting-tip { font-size: 16px; color: var(--color-primary); margin-bottom: 24px; display: flex; align-items: center; gap: 8px; }
+        .order-info { margin-bottom: 32px; }
+        .info-item { margin-bottom: 16px; }
+        .info-label { font-size: 14px; color: var(--color-gray-600); margin-bottom: 4px; }
+        .info-value { font-size: 18px; font-weight: 600; color: var(--color-gray-900); }
+        .chat-btn { display: inline-flex; align-items: center; gap: 4px; color: var(--color-primary); font-size: 16px; cursor: pointer; border: none; background: none; }
+        .chat-btn i { font-size: 18px; }
+        /* 按钮样式补充 */
+        .margin-btn {
+          display: inline-block;
+          padding: 10px 28px;
+          border-radius: 6px;
+          font-size: 16px;
+          font-weight: 500;
+          border: none;
+          cursor: pointer;
+          transition: all 0.2s;
+          margin: 0 4px;
+        }
+        .margin-btn-primary {
+          background: #16C784;
+          color: #fff;
+        }
+        .margin-btn-primary:hover {
+          background: #20E19F;
+        }
+        .margin-btn-default {
+          background: #fff;
+          color: #16C784;
+          border: 1px solid #16C784;
+        }
+        .margin-btn-default:hover {
+          background: #F6FFED;
+        }
+        .margin-btn-danger {
+          background: #FF4D4F;
+          color: #fff;
+          border: none;
+        }
+        .margin-btn-danger:hover {
+          background: #FF7875;
+        }
+        .modal-overlay {
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.35);
+          display: none;
+          justify-content: center;
+          align-items: center;
+          z-index: 2000;
+        }
+        .modal-overlay.active {
+          display: flex;
+        }
+        .modal {
+          background: #fff;
+          border-radius: 12px;
+          padding: 32px 24px 24px 24px;
+          min-width: 320px;
+          max-width: 400px;
+          box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+          font-size: 16px;
+        }
+        .modal-header {
+          margin-bottom: 16px;
+        }
+        .modal-body {
+          margin-bottom: 24px;
+        }
+        .modal-footer {
+          display: flex;
+          justify-content: flex-end;
+          gap: 20px;
+        }
+        #cancelReason {
+          font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container">
+            <a href="/index.html" class="logo">Paybree</a>
+            <nav class="nav">
+                <a href="/trading/quotes.html" class="nav-link">
+                    <span class="zh">交易大厅</span>
+                    <span class="en">Trading Hall</span>
+                </a>
+                <a href="/trading/process/buy/client/margin.html" class="nav-link">
+                    <span class="zh">买入（用户）</span>
+                    <span class="en">Buy (User)</span>
+                </a>
+                <a href="/trading/process/buy/merchant/margin.html" class="nav-link">
+                    <span class="zh">买入（承兑商）</span>
+                    <span class="en">Buy (Merchant)</span>
+                </a>
+                <div class="language-switch">
+                    <select class="language-select">
+                        <option value="en-US">English</option>
+                        <option value="zh-CN">简体中文</option>
+                    </select>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <div class="page-container">
+        <!-- 面包屑导航 -->
+        <nav class="breadcrumb">
+            <a href="/">
+                <span class="zh">首页</span>
+                <span class="en">Home</span>
+            </a>
+            <span class="separator">/</span>
+            <a href="/merchant/index.html">
+                <span class="zh">商家中心</span>
+                <span class="en">Merchant Center</span>
+            </a>
+            <span class="separator">/</span>
+            <a href="/merchant/orders.html">
+                <span class="zh">买入</span>
+                <span class="en">Buy</span>
+            </a>
+            <span class="separator">/</span>
+            <span class="current">
+                <span class="zh">等待买家汇款</span>
+                <span class="en">Waiting for Buyer Remittance</span>
+            </span>
+        </nav>
+        <!-- 进度条组件 -->
+        <div class="buy-progress">
+            <div class="progress-steps">
+                <div class="step">
+                    <div class="step-circle"><span class="step-number">1</span></div>
+                    <div class="step-label">
+                        <span class="zh">保证金协商</span>
+                        <span class="en">Margin Negotiation</span>
+                    </div>
+                </div>
+                <div class="step active">
+                    <div class="step-circle"><span class="step-number">2</span></div>
+                    <div class="step-label">
+                        <span class="zh">等待买家汇款</span>
+                        <span class="en">Waiting for Payment</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle"><span class="step-number">3</span></div>
+                    <div class="step-label">
+                        <span class="zh">确认放币</span>
+                        <span class="en">Confirm Release</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle"><span class="step-number">4</span></div>
+                    <div class="step-label">
+                        <span class="zh">完成交易</span>
+                        <span class="en">Complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 主体内容 -->
+        <div class="waiting-content">
+            <!-- 顶部按钮区 -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 12px;">
+                <button class="margin-btn margin-btn-default" style="min-width: 120px;" onclick="openChat()">
+                    <i class="fas fa-comments"></i>
+                    <span class="zh">联系买家</span>
+                    <span class="en">Contact Buyer</span>
+                </button>
+                <button class="margin-btn margin-btn-default" style="min-width: 120px;" onclick="openCancelModal()">
+                    <span class="zh">取消交易</span>
+                    <span class="en">Cancel Order</span>
+                </button>
+            </div>
+            <div class="waiting-title">
+                <span class="zh">等待买家汇款</span>
+                <span class="en">Waiting for Buyer Remittance</span>
+            </div>
+            <div class="waiting-tip">
+                <i class="fas fa-hourglass-half"></i>
+                <span class="zh">请等待买家完成美元汇款，您可在上方与买家沟通</span>
+                <span class="en">Please wait for the buyer to complete the USD remittance. You can communicate with the buyer above.</span>
+            </div>
+            <div class="order-info">
+                <div class="info-item">
+                    <div class="info-label">
+                        <span class="zh">订单号</span>
+                        <span class="en">Order No.</span>
+                    </div>
+                    <div class="info-value">202406010001</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">
+                        <span class="zh">买家</span>
+                        <span class="en">Buyer</span>
+                    </div>
+                    <div class="info-value">用户名称</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">
+                        <span class="zh">交易金额</span>
+                        <span class="en">Amount</span>
+                    </div>
+                    <div class="info-value">6,783.22 USDT</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">
+                        <span class="zh">保证金模式</span>
+                        <span class="en">Margin Mode</span>
+                    </div>
+                    <div class="info-value">
+                        <span class="zh">100% 托管</span>
+                        <span class="en">100% Escrow</span>
+                    </div>
+                </div>
+            </div>
+            <!-- 买家已汇款状态区块（高保真原型演示用） -->
+            <div style="margin-top: 48px; padding: 24px; background: #F6FFED; border: 1px solid #B7EB8F; border-radius: 12px;">
+                <div style="font-size: 18px; font-weight: 600; color: #52C41A; margin-bottom: 12px;">
+                    <span class="zh">买家已汇款并上传凭证</span>
+                    <span class="en">Buyer has remitted and uploaded proof</span>
+                </div>
+                <div style="font-size: 15px; color: #333; margin-bottom: 16px;">
+                    <span class="zh">请核对汇款信息和凭证，确认收到款项后再放币。</span>
+                    <span class="en">Please check the remittance info and proof. Release the coins only after confirming receipt.</span>
+                </div>
+                <div class="info-card" style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                    <div class="info-item">
+                        <span class="info-label"><span class="zh">汇款金额</span><span class="en">Remittance Amount</span></span>
+                        <span class="info-value">¥48,500.00</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><span class="zh">汇款方式</span><span class="en">Remittance Method</span></span>
+                        <span class="info-value">Bank Transfer</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><span class="zh">汇款时间</span><span class="en">Remittance Time</span></span>
+                        <span class="info-value">2024-06-01 15:30</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><span class="zh">汇款单号</span><span class="en">Remittance No.</span></span>
+                        <span class="info-value">RM202406010001</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><span class="zh">备注</span><span class="en">Remark</span></span>
+                        <span class="info-value">订单付款</span>
+                    </div>
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <div class="info-label">
+                        <span class="zh">汇款凭证</span>
+                        <span class="en">Remittance Proof</span>
+                    </div>
+                    <img src="/static/demo-proof.jpg" alt="proof" style="width: 180px; border-radius: 6px; border: 1px solid #eee; margin-top: 8px;">
+                    <div style="font-size: 13px; color: #888; margin-top: 4px;">
+                        <span class="zh">上传时间：2024-06-01 15:30</span>
+                        <span class="en">Uploaded: 2024-06-01 15:30</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 16px; margin-top: 16px;">
+                    <a class="margin-btn margin-btn-primary" style="min-width: 140px; text-align: center;" href="/trading/process/buy/merchant/release.html">
+                        <span class="zh">确认到账</span>
+                        <span class="en">Confirm Receipt</span>
+                    </a>
+                    <button class="margin-btn margin-btn-default" style="min-width: 140px;" onclick="openChat()">
+                        <i class="fas fa-comments"></i>
+                        <span class="zh">联系买家</span>
+                        <span class="en">Contact Buyer</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- 取消交易弹窗 -->
+        <div id="cancelModal" class="modal-overlay">
+            <div class="modal">
+                <div class="modal-header">
+                    <div style="font-size: 20px; font-weight: 600; margin-bottom: 16px; color: #FF4D4F; display: flex; align-items: center;">
+                        <i class="fas fa-times-circle" style="margin-right: 8px;"></i>
+                        <span class="zh">确认取消交易</span>
+                        <span class="en">Confirm Cancel Order</span>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div style="margin-bottom: 24px; line-height: 1.6;">
+                        <span class="zh">您确定要取消本次交易吗？此操作不可撤销。</span>
+                        <span class="en">Are you sure you want to cancel this order? This action cannot be undone.</span>
+                    </div>
+                    <div style="margin-bottom: 16px;">
+                        <label for="cancelReason" style="font-size: 15px; color: #333;">
+                            <span class="zh">取消理由（选填）</span>
+                            <span class="en">Cancel Reason (Optional)</span>
+                        </label>
+                        <textarea id="cancelReason" style="width: 100%; min-height: 60px; border-radius: 6px; border: 1px solid #eee; margin-top: 8px; font-size: 15px; padding: 8px; resize: vertical;" placeholder="请输入取消理由（可不填）"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px;">
+                    <button class="margin-btn margin-btn-default" onclick="closeCancelModal()">
+                        <span class="zh">返回</span>
+                        <span class="en">Back</span>
+                    </button>
+                    <button class="margin-btn margin-btn-danger" onclick="doCancelOrder()">
+                        <span class="zh">确认取消</span>
+                        <span class="en">Confirm Cancel</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 语言切换功能
+        function changeLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.querySelectorAll('.zh').forEach(el => {
+                el.style.display = (lang === 'zh-CN') ? 'inline' : 'none';
+            });
+            document.querySelectorAll('.en').forEach(el => {
+                el.style.display = (lang === 'en-US') ? 'inline' : 'none';
+            });
+            document.querySelector('.language-select').value = lang;
+            localStorage.setItem('preferred_language', lang);
+        }
+        document.querySelector('.language-select').addEventListener('change', function() {
+            const lang = this.value;
+            changeLanguage(lang);
+            window.parent.postMessage({ type: 'languageChange', language: lang }, '*');
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('preferred_language') || 'en-US';
+            changeLanguage(lang);
+        });
+        // 聊天窗口
+        function openChat() {
+            const chatFrame = document.createElement('iframe');
+            chatFrame.src = '/components/chat/index.html';
+            chatFrame.style.cssText = 'position: fixed; bottom: 20px; right: 20px; width: 380px; height: 600px; border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); z-index: 1000;';
+            document.body.appendChild(chatFrame);
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+            closeBtn.style.cssText = 'position: fixed; bottom: 620px; right: 20px; width: 32px; height: 32px; border-radius: 50%; background: white; border: none; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer; z-index: 1001; display: flex; align-items: center; justify-content: center;';
+            closeBtn.onclick = function() { chatFrame.remove(); closeBtn.remove(); };
+            document.body.appendChild(closeBtn);
+        }
+        // 取消交易弹窗逻辑
+        function openCancelModal() {
+            document.getElementById('cancelModal').classList.add('active');
+        }
+        function closeCancelModal() {
+            document.getElementById('cancelModal').classList.remove('active');
+        }
+        function doCancelOrder() {
+            // 获取取消理由
+            var reason = encodeURIComponent(document.getElementById('cancelReason').value.trim());
+            var url = '/merchant/orders.html?cancelled=1';
+            if (reason) {
+                url += '&reason=' + reason;
+            }
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>买入进度条组件</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        
+        :root {
+            --color-primary: #16C784;
+            --color-primary-light: #20E19F;
+            --color-text: #333333;
+            --color-text-light: #666666;
+            --color-border: #E5E5E5;
+            --color-background: #FFFFFF;
+            --color-background-light: #F5F5F5;
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .buy-progress {
+            padding: 40px 0;
+            margin-bottom: 48px;
+            background: var(--color-background);
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--color-border);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+            padding: 0 8px;
+        }
+
+        .step-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--color-background);
+            border: 2px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .step-number {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-text-light);
+            transition: all 0.3s ease;
+        }
+
+        .step-label {
+            font-size: 14px;
+            color: var(--color-text-light);
+            white-space: nowrap;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 4px;
+        }
+
+        .step-description {
+            font-size: 12px;
+            color: var(--color-text-light);
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all 0.3s ease;
+            line-height: 1.4;
+        }
+
+        /* 当前步骤样式 */
+        .step.active .step-circle {
+            border-color: var(--color-primary);
+            background: var(--color-primary);
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(22, 199, 132, 0.2);
+        }
+
+        .step.active .step-number {
+            color: var(--color-background);
+        }
+
+        .step.active .step-label {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .step.active .step-description {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 已完成步骤样式 */
+        .step.completed .step-circle {
+            border-color: var(--color-primary);
+            background: var(--color-primary);
+            box-shadow: 0 2px 8px rgba(22, 199, 132, 0.15);
+        }
+
+        .step.completed .step-number {
+            color: var(--color-background);
+        }
+
+        .step.completed .step-label {
+            color: var(--color-primary);
+        }
+
+        /* 步骤之间的连接线 */
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 22px;
+            right: -50%;
+            width: 100%;
+            height: 2px;
+            background: var(--color-border);
+            z-index: 1;
+        }
+
+        .step.completed:not(:last-child)::after {
+            background: var(--color-primary);
+            box-shadow: 0 1px 4px rgba(22, 199, 132, 0.1);
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .buy-progress {
+                padding: 32px 0;
+                margin-bottom: 32px;
+            }
+
+            .progress-steps {
+                padding: 0 16px;
+            }
+            
+            .step-label {
+                font-size: 13px;
+            }
+            
+            .step-circle {
+                width: 36px;
+                height: 36px;
+            }
+            
+            .step-number {
+                font-size: 14px;
+            }
+
+            .step-description {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="buy-progress">
+        <div class="progress-steps">
+            <!-- 保证金协商 -->
+            <div class="step" data-step="1">
+                <div class="step-circle">
+                    <span class="step-number">1</span>
+                </div>
+                <div class="step-label">保证金协商</div>
+                <div class="step-description">与商家协商保证金比例</div>
+            </div>
+            
+            <!-- 创建订单 -->
+            <div class="step" data-step="2">
+                <div class="step-circle">
+                    <span class="step-number">2</span>
+                </div>
+                <div class="step-label">创建订单</div>
+                <div class="step-description">确认交易信息并创建订单</div>
+            </div>
+            
+            <!-- 支付确认 -->
+            <div class="step" data-step="3">
+                <div class="step-circle">
+                    <span class="step-number">3</span>
+                </div>
+                <div class="step-label">支付确认</div>
+                <div class="step-description">完成支付并上传凭证</div>
+            </div>
+            
+            <!-- 等待放币 -->
+            <div class="step" data-step="4">
+                <div class="step-circle">
+                    <span class="step-number">4</span>
+                </div>
+                <div class="step-label">等待放币</div>
+                <div class="step-description">等待商家释放USDT</div>
+            </div>
+            
+            <!-- 交易完成 -->
+            <div class="step" data-step="5">
+                <div class="step-circle">
+                    <span class="step-number">5</span>
+                </div>
+                <div class="step-label">交易完成</div>
+                <div class="step-description">交易完成并评价</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 设置当前步骤
+        function setCurrentStep(step) {
+            const steps = document.querySelectorAll('.step');
+            steps.forEach((s, index) => {
+                if (index + 1 < step) {
+                    s.classList.add('completed');
+                    s.classList.remove('active');
+                } else if (index + 1 === step) {
+                    s.classList.add('active');
+                    s.classList.remove('completed');
+                } else {
+                    s.classList.remove('active', 'completed');
+                }
+            });
+        }
+
+        // 初始化进度条
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentStep = document.body.dataset.currentStep;
+            if (currentStep) {
+                setCurrentStep(parseInt(currentStep));
+            }
+        });
+    </script>
+</body>
+</html> 

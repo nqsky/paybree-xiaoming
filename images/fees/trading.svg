@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景圆圈 -->
+    <circle cx="32" cy="32" r="32" fill="#EDFAF6"/>
+    
+    <!-- 百分比符号 -->
+    <circle cx="24" cy="24" r="4" fill="#16C784"/>
+    <circle cx="40" cy="40" r="4" fill="#16C784"/>
+    <line x1="20" y1="44" x2="44" y2="20" stroke="#16C784" stroke-width="3" stroke-linecap="round"/>
+</svg> 

@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">释放加密货币 - Paybree</span>
+        <span class="en">Release Cryptocurrency - Paybree</span>
+    </title>
+    <link rel="stylesheet" href="../../../css/common.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <style>
+        /* Language Display */
+        .zh, .en {
+            display: none;
+        }
+
+        html[lang="zh-CN"] .zh {
+            display: inline;
+        }
+
+        html[lang="en-US"] .en {
+            display: inline;
+        }
+
+        :root {
+            --color-primary: #16C784;
+            --color-primary-hover: #20E19F;
+            --color-white: #FFFFFF;
+            --color-gray-50: #F5F5F5;
+            --color-gray-100: #EBEBEB;
+            --color-gray-200: #E0E0E0;
+            --color-gray-600: #666666;
+            --color-gray-900: #333333;
+            --color-border: #E5E5E5;
+            --color-error: #FF4D4F;
+            --color-warning: #FFA940;
+
+            /* 添加字体变量 */
+            --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            --font-family-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            --font-size-base: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-xxl: 20px;
+            --line-height-base: 1.5;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height-base);
+            color: var(--color-gray-900);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-family-base);
+            margin: 0;
+            font-weight: var(--font-weight-semibold);
+        }
+
+        /* 修改标题样式 */
+        .info-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: 24px;
+            color: var(--color-gray-900);
+        }
+
+        /* 修改标签样式 */
+        .info-label {
+            width: 140px;
+            color: var(--color-gray-600);
+            font-size: var(--font-size-base);
+            font-family: var(--font-family-base);
+        }
+
+        /* 修改数值样式 */
+        .info-value {
+            flex: 1;
+            color: var(--color-gray-900);
+            font-weight: var(--font-weight-medium);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* 数字使用等宽字体 */
+        .info-value .number {
+            font-family: var(--font-family-mono);
+            letter-spacing: 0.5px;
+        }
+
+        /* 修改按钮文字 */
+        .action-btn {
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-medium);
+        }
+
+        /* 页面内容样式 */
+        .release-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 32px;
+            background: var(--color-white);
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 交易信息卡片 */
+        .transaction-info {
+            margin-bottom: 32px;
+        }
+
+        .info-card {
+            background: var(--color-gray-50);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .copy-btn {
+            padding: 8px 16px;
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .copy-btn:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 操作按钮 */
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 120px;
+        }
+
+        .action-btn-primary {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+        }
+
+        .action-btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .action-btn-default {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+            border: 1px solid var(--color-border);
+        }
+
+        .action-btn-default:hover {
+            background: var(--color-gray-50);
+        }
+
+        /* 添加导航样式 */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+        }
+
+        .header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        .nav {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--color-gray-600);
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--color-primary);
+        }
+
+        .nav-link.active {
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+
+        /* 页面容器 */
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 104px 24px 24px;
+        }
+
+        /* 面包屑导航 */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            font-size: 14px;
+            color: var(--color-gray-600);
+        }
+
+        .breadcrumb a {
+            color: var(--color-gray-600);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--color-primary);
+        }
+
+        .breadcrumb .separator {
+            margin: 0 8px;
+            color: var(--color-gray-600);
+        }
+
+        .breadcrumb .current {
+            color: var(--color-gray-900);
+            font-weight: 500;
+        }
+
+        /* 进度条样式 */
+        .sell-progress {
+            padding: 32px 0;
+            margin-bottom: 40px;
+            background: var(--color-white);
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 24px;
+            right: 24px;
+            height: 1px;
+            background: var(--color-border);
+            z-index: 1;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-white);
+            border: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            transition: all 0.3s ease;
+        }
+
+        .step.completed .step-circle {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .step.completed .step-number {
+            color: var(--color-white);
+        }
+
+        .step.active .step-circle {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .step.active .step-number {
+            color: var(--color-white);
+        }
+
+        .step.active .step-label {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .step-number {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-gray-600);
+        }
+
+        /* 语言选择器样式 */
+        .language-switch {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1000;
+        }
+
+        .language-select {
+            padding: 8px 32px 8px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            background-color: white;
+            font-size: 14px;
+            color: var(--color-gray-900);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 16px;
+        }
+
+        .language-select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px rgba(22, 199, 132, 0.1);
+        }
+
+        .language-select option {
+            padding: 8px;
+        }
+
+        /* 弹窗样式 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--color-gray-600);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-message {
+            margin: 0;
+            color: var(--color-gray-900);
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 1px solid var(--color-border);
+            color: var(--color-gray-900);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-gray-50);
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            border: none;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        /* 安全提示样式 */
+        .security-alert {
+            background-color: rgba(255, 173, 64, 0.1);
+            border-left: 4px solid var(--color-warning);
+            padding: 16px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+        }
+
+        .security-alert-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            color: #D48806;
+        }
+
+        .security-alert-title i {
+            font-size: 16px;
+        }
+
+        .security-alert-text {
+            color: var(--color-gray-600);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* 高亮样式 */
+        .info-item.highlight {
+            background: rgba(22, 199, 132, 0.05);
+            margin: -8px -12px 20px;
+            padding: 20px 12px;
+            border-radius: 8px;
+        }
+
+        .info-value .amount {
+            font-family: var(--font-family-mono);
+            font-size: var(--font-size-xxl);
+            color: var(--color-primary);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .info-value .rate {
+            font-size: var(--font-size-base);
+            color: var(--color-gray-600);
+            margin-left: 12px;
+        }
+
+        /* 聊天按钮 */
+        .chat-button {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 900;
+        }
+
+        .chat-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            background: var(--color-primary-hover);
+        }
+
+        /* 付款凭证样式 */
+        .payment-proofs {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .payment-proof-item {
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--color-border);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .payment-proof-item:hover {
+            transform: scale(1.03);
+        }
+
+        .payment-proof-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* 图片预览样式 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1100;
+        }
+
+        .enlarged-image-container {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        #enlargedImage {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .close-preview {
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* 安全确认复选框 */
+        .security-checkbox {
+            margin-top: 16px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .security-checkbox input {
+            margin-top: 4px;
+            margin-right: 8px;
+        }
+
+        .security-checkbox label {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-gray-900);
+        }
+    </style>
+</head>
+<body>
+    <!-- 语言选择器 -->
+    <div class="language-switch">
+        <select class="language-select" onchange="changeLanguage(this.value)">
+            <option value="en-US">English</option>
+            <option value="zh-CN">简体中文</option>
+        </select>
+    </div>
+
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container">
+            <a href="/index.html" class="logo">Paybree</a>
+            <nav class="nav">
+                <a href="/trading/process/buy/client/margin.html" class="nav-link">
+                    <span class="zh">买入（用户）</span>
+                    <span class="en">Buy (User)</span>
+                </a>
+                <a href="/trading/process/sell/client/margin.html" class="nav-link active">
+                    <span class="zh">卖出（用户）</span>
+                    <span class="en">Sell (User)</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-container">
+        <!-- 面包屑导航 -->
+        <nav class="breadcrumb">
+            <a href="/">
+                <span class="zh">首页</span>
+                <span class="en">Home</span>
+            </a>
+            <span class="separator">/</span>
+            <a href="/trading/quotes.html">
+                <span class="zh">交易大厅</span>
+                <span class="en">Trading Hall</span>
+            </a>
+            <span class="separator">/</span>
+            <span class="current">
+                <span class="zh">释放加密货币</span>
+                <span class="en">Release Cryptocurrency</span>
+            </span>
+        </nav>
+
+        <!-- 进度条 -->
+        <div class="sell-progress">
+            <div class="progress-steps">
+                <div class="step completed">
+                    <div class="step-circle">
+                        <span class="step-number">1</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">保证金确认</span>
+                        <span class="en">Margin Confirmation</span>
+                    </div>
+                </div>
+                <div class="step completed">
+                    <div class="step-circle">
+                        <span class="step-number">2</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">等待买家付款</span>
+                        <span class="en">Wait for Payment</span>
+                    </div>
+                </div>
+                <div class="step active">
+                    <div class="step-circle">
+                        <span class="step-number">3</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">释放加密货币</span>
+                        <span class="en">Release Cryptocurrency</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">4</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">完成交易</span>
+                        <span class="en">Complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="release-content">
+            <!-- 释放信息卡片 -->
+            <div class="security-alert">
+                <div class="security-alert-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span class="zh">安全提示</span>
+                    <span class="en">Security Alert</span>
+                </div>
+                <div class="security-alert-text">
+                    <span class="zh">请确认您已收到买家的付款并核实银行账户，释放后交易不可撤销。如果您对付款有任何疑问，请先联系买家或平台客服。</span>
+                    <span class="en">Please confirm that you have received the buyer's payment and verified your bank account. The transaction cannot be reversed after release. If you have any concerns about the payment, please contact the buyer or platform customer service first.</span>
+                </div>
+            </div>
+
+            <!-- 交易信息 -->
+            <div class="transaction-info">
+                <h2 class="info-title">
+                    <span class="zh">交易信息</span>
+                    <span class="en">Transaction Information</span>
+                </h2>
+                <div class="info-card">
+                    <div class="info-item highlight">
+                        <span class="info-label">
+                            <span class="zh">释放金额</span>
+                            <span class="en">Release Amount</span>
+                        </span>
+                        <div class="info-value">
+                            <span class="amount">6,783.22 USDT</span>
+                            <span class="rate">
+                                <span class="zh">(汇率：1 USDT = ¥ 7.15)</span>
+                                <span class="en">(Rate: 1 USDT = ¥ 7.15)</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">
+                            <span class="zh">已收款金额</span>
+                            <span class="en">Received Amount</span>
+                        </span>
+                        <span class="info-value">¥ 48,500.00</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">
+                            <span class="zh">交易编号</span>
+                            <span class="en">Order ID</span>
+                        </span>
+                        <div class="info-value">
+                            <span class="number">OTC239487126</span>
+                            <button class="copy-btn" onclick="copyText('OTC239487126')">
+                                <span class="zh">复制</span>
+                                <span class="en">Copy</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">
+                            <span class="zh">买家用户名</span>
+                            <span class="en">Buyer Username</span>
+                        </span>
+                        <span class="info-value">trader_johndoe</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">
+                            <span class="zh">支付方式</span>
+                            <span class="en">Payment Method</span>
+                        </span>
+                        <span class="info-value">
+                            <span class="zh">银行转账</span>
+                            <span class="en">Bank Transfer</span>
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">
+                            <span class="zh">付款时间</span>
+                            <span class="en">Payment Time</span>
+                        </span>
+                        <span class="info-value">2023-04-28 14:30:22</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 付款凭证 -->
+            <div class="transaction-info">
+                <h2 class="info-title">
+                    <span class="zh">付款凭证</span>
+                    <span class="en">Payment Proof</span>
+                </h2>
+                <div class="info-card">
+                    <div class="payment-proofs">
+                        <div class="payment-proof-item" onclick="enlargeImage(this)">
+                            <img src="https://via.placeholder.com/400x250?text=Payment+Receipt" alt="付款凭证" />
+                        </div>
+                        <div class="payment-proof-item" onclick="enlargeImage(this)">
+                            <img src="https://via.placeholder.com/400x250?text=Bank+Screenshot" alt="银行截图" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 释放确认 -->
+            <div class="transaction-info">
+                <h2 class="info-title">
+                    <span class="zh">释放确认</span>
+                    <span class="en">Release Confirmation</span>
+                </h2>
+                <div class="info-card">
+                    <div class="info-item">
+                        <span class="info-label">
+                            <span class="zh">接收地址</span>
+                            <span class="en">Receiving Address</span>
+                        </span>
+                        <div class="info-value">
+                            <span class="address">0x7F9a473e01a0C325b84399Eec681FF9a18594c54</span>
+                            <button class="copy-btn" onclick="copyText('0x7F9a473e01a0C325b84399Eec681FF9a18594c54')">
+                                <span class="zh">复制</span>
+                                <span class="en">Copy</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">
+                            <span class="zh">网络</span>
+                            <span class="en">Network</span>
+                        </span>
+                        <span class="info-value">Ethereum (ERC-20)</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">
+                            <span class="zh">预估Gas费</span>
+                            <span class="en">Estimated Gas Fee</span>
+                        </span>
+                        <span class="info-value">0.0012 ETH</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 风险提示 -->
+            <div class="security-alert" style="background-color: rgba(255, 77, 79, 0.05); border-left-color: var(--color-error);">
+                <div class="security-alert-title" style="color: var(--color-error);">
+                    <i class="fas fa-shield-alt"></i>
+                    <span class="zh">风险提示</span>
+                    <span class="en">Risk Warning</span>
+                </div>
+                <div class="security-alert-text">
+                    <span class="zh">请注意确认您的银行账户是否已实际收到资金，谨防虚假付款凭证。确认释放后，加密货币将不可撤回地转入买家的钱包地址。</span>
+                    <span class="en">Please make sure to confirm that funds have actually been received in your bank account. Beware of fake payment proofs. Once confirmed, the cryptocurrency will be irreversibly transferred to the buyer's wallet address.</span>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="action-buttons">
+                <button class="action-btn action-btn-default" onclick="startChat()">
+                    <span class="zh">联系买家</span>
+                    <span class="en">Contact Buyer</span>
+                </button>
+                <button class="action-btn action-btn-primary" onclick="confirmRelease()">
+                    <span class="zh">确认释放</span>
+                    <span class="en">Confirm Release</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 确认释放弹窗 -->
+    <div class="modal" id="releaseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <span class="zh">确认释放加密货币</span>
+                    <span class="en">Confirm Cryptocurrency Release</span>
+                </h3>
+                <button class="modal-close" onclick="closeReleaseModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message">
+                    <span class="zh">您确定已收到买家的付款并希望释放 6,783.22 USDT 吗？此操作不可撤销。</span>
+                    <span class="en">Are you sure you have received the buyer's payment and want to release 6,783.22 USDT? This action cannot be undone.</span>
+                </p>
+                <div class="security-checkbox">
+                    <input type="checkbox" id="confirmCheck" />
+                    <label for="confirmCheck">
+                        <span class="zh">我确认已收到银行转账，并同意释放加密货币</span>
+                        <span class="en">I confirm that I have received the bank transfer and agree to release the cryptocurrency</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeReleaseModal()">
+                    <span class="zh">取消</span>
+                    <span class="en">Cancel</span>
+                </button>
+                <button class="btn btn-primary" id="releaseBtn" disabled onclick="executeRelease()">
+                    <span class="zh">确认释放</span>
+                    <span class="en">Confirm Release</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 图片预览容器 -->
+    <div class="overlay" id="imageOverlay" onclick="closeImagePreview()">
+        <div class="enlarged-image-container">
+            <img id="enlargedImage" src="" alt="大图预览" />
+            <button class="close-preview" onclick="closeImagePreview()">×</button>
+        </div>
+    </div>
+
+    <!-- 聊天按钮 -->
+    <div class="chat-button" onclick="startChat()">
+        <i class="fas fa-comments"></i>
+    </div>
+
+    <script>
+        // 语言切换功能
+        function changeLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.querySelectorAll('.zh').forEach(el => {
+                el.style.display = (lang === 'zh-CN') ? 'inline' : 'none';
+            });
+            document.querySelectorAll('.en').forEach(el => {
+                el.style.display = (lang === 'en-US') ? 'inline' : 'none';
+            });
+            document.querySelector('.language-select').value = lang;
+            localStorage.setItem('preferred_language', lang);
+        }
+
+        // 初始化语言
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('preferred_language') || 'en-US';
+            changeLanguage(lang);
+
+            // 为确认框添加事件监听
+            document.getElementById('confirmCheck').addEventListener('change', function(e) {
+                document.getElementById('releaseBtn').disabled = !e.target.checked;
+            });
+        });
+
+        // 复制文本
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const message = {
+                    'zh-CN': '复制成功',
+                    'en-US': 'Copied successfully'
+                };
+                alert(message[document.documentElement.lang]);
+            });
+        }
+
+        // 开始聊天
+        function startChat() {
+            const message = {
+                'zh-CN': '正在打开聊天窗口...',
+                'en-US': 'Opening chat window...'
+            };
+            alert(message[document.documentElement.lang]);
+        }
+
+        // 显示释放确认模态框
+        function confirmRelease() {
+            document.getElementById('releaseModal').style.display = 'flex';
+        }
+
+        // 关闭释放确认模态框
+        function closeReleaseModal() {
+            document.getElementById('releaseModal').style.display = 'none';
+            document.getElementById('confirmCheck').checked = false;
+            document.getElementById('releaseBtn').disabled = true;
+        }
+
+        // 执行释放操作
+        function executeRelease() {
+            closeReleaseModal();
+            
+            const loadingMessage = {
+                'zh-CN': '正在处理您的释放请求，请稍候...',
+                'en-US': 'Processing your release request, please wait...'
+            };
+            alert(loadingMessage[document.documentElement.lang]);
+            
+            // 模拟处理时间
+            setTimeout(function() {
+                const successMessage = {
+                    'zh-CN': '加密货币释放成功！交易已完成',
+                    'en-US': 'Cryptocurrency released successfully! Transaction completed'
+                };
+                alert(successMessage[document.documentElement.lang]);
+                
+                // 跳转到完成页面
+                window.location.href = 'complete.html';
+            }, 2000);
+        }
+
+        // 放大图片预览
+        function enlargeImage(element) {
+            const img = element.querySelector('img');
+            document.getElementById('enlargedImage').src = img.src;
+            document.getElementById('imageOverlay').style.display = 'flex';
+        }
+
+        // 关闭图片预览
+        function closeImagePreview() {
+            document.getElementById('imageOverlay').style.display = 'none';
+        }
+
+        // 监听来自父页面的消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'languageChange') {
+                changeLanguage(event.data.language);
+            }
+        });
+
+        // 监听语言选择器的变化
+        document.querySelector('.language-select').addEventListener('change', function() {
+            const lang = this.value;
+            changeLanguage(lang);
+            // 通知父页面语言变化
+            window.parent.postMessage({
+                type: 'languageChange',
+                language: lang
+            }, '*');
+        });
+    </script>
+</body>
+</html> 

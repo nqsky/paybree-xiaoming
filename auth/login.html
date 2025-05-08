@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">登录 - Paybree</span>
+        <span class="en">Login - Paybree</span>
+    </title>
+    <style>
+        /* Language Display */
+        .zh, .en {
+            display: none;
+        }
+
+        [lang="zh-CN"] .zh {
+            display: inline;
+        }
+
+        [lang="en-US"] .en {
+            display: inline;
+        }
+
+        /* Language Switcher */
+        .language-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .language-btn {
+            padding: 4px 12px;
+            border: 1px solid #E5E5E5;
+            border-radius: 4px;
+            background: #FFFFFF;
+            color: #666666;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .language-btn:hover {
+            border-color: #16C784;
+            color: #16C784;
+        }
+
+        .language-btn.active {
+            background: #16C784;
+            border-color: #16C784;
+            color: #FFFFFF;
+        }
+
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Color System */
+            --color-primary: #16C784;
+            --color-primary-hover: #20E19F;
+            --color-primary-light: #EDFAF6;
+            --color-white: #FFFFFF;
+            --color-gray-50: #F5F5F5;
+            --color-gray-400: #A0A0A0;
+            --color-gray-600: #666666;
+            --color-gray-900: #333333;
+            --color-border: #E5E5E5;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--color-gray-900);
+            line-height: 1.5;
+            background-color: var(--color-gray-50);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        /* Logo */
+        .logo {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 24px;
+            color: var(--color-primary);
+        }
+
+        /* Auth Form Styles */
+        .auth-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 48px;
+            text-align: center;
+            color: var(--color-gray-900);
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--color-white);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-gray-900);
+        }
+
+        .form-input {
+            height: 48px;
+            padding: 0 16px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 16px;
+            background: var(--color-white);
+            color: var(--color-gray-900);
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px var(--color-primary-light);
+        }
+
+        .form-input::placeholder {
+            color: var(--color-gray-400);
+        }
+
+        .submit-button {
+            height: 48px;
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .submit-button:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(22, 199, 132, 0.2);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: var(--color-gray-400);
+            font-size: 14px;
+            margin: 24px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .divider::before {
+            margin-right: 16px;
+        }
+
+        .divider::after {
+            margin-left: 16px;
+        }
+
+        .social-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .social-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            height: 48px;
+            background: var(--color-white);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            color: var(--color-gray-900);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .social-button:hover {
+            background: var(--color-gray-50);
+        }
+
+        .social-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .back-button {
+            position: fixed;
+            left: 24px;
+            top: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-gray-600);
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.2s ease;
+        }
+
+        .back-button:hover {
+            color: var(--color-gray-900);
+        }
+
+        .back-icon {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="language-switcher">
+        <button class="language-btn" data-lang="zh-CN">中文</button>
+        <button class="language-btn active" data-lang="en-US">EN</button>
+    </div>
+    <!-- Logo -->
+    <svg class="logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+
+    <h1>
+        <span class="zh">登录</span>
+        <span class="en">Login</span>
+    </h1>
+
+    <div class="auth-container">
+        <form class="auth-form" id="loginForm">
+            <div class="form-group">
+                <label for="email">
+                    <span class="zh">邮箱</span>
+                    <span class="en">Email</span>
+                </label>
+                <input type="email" class="form-input" id="emailInput" placeholder="请输入邮箱地址" required>
+            </div>
+            <button type="submit" class="submit-button" id="submitButton">
+                <span class="zh">发送验证码</span>
+                <span class="en">Send Code</span>
+            </button>
+
+            <div class="divider">
+                <span class="zh">或</span>
+                <span class="en">OR</span>
+            </div>
+
+            <div class="social-buttons">
+                <button type="button" class="social-button">
+                    <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12.545,12.151L12.545,12.151c0,1.054,0.855,1.909,1.909,1.909h3.536c-0.607,1.972-2.101,3.467-4.26,3.467c-2.624,0-4.747-2.124-4.747-4.747s2.124-4.747,4.747-4.747c1.123,0,2.152,0.391,2.963,1.043l1.436-1.436C16.727,6.54,15.131,5.997,13.454,5.997c-3.978,0-7.2,3.222-7.2,7.2s3.222,7.2,7.2,7.2c6.021,0,7.2-5.385,7.2-7.2c0-0.411-0.036-0.807-0.102-1.192h-7.007V12.151z"/>
+                    </svg>
+                    <span class="zh">使用 Google 账号登录</span>
+                    <span class="en">Sign in with Google</span>
+                </button>
+                <button type="button" class="social-button">
+                    <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                    <span class="zh">使用 X 账号登录</span>
+                    <span class="en">Sign in with X</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const emailInput = document.getElementById('emailInput');
+        const submitButton = document.getElementById('submitButton');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = emailInput.value;
+            if (!email) {
+                alert('请输入邮箱地址');
+                return;
+            }
+
+            // 发送验证码
+            submitButton.disabled = true;
+            submitButton.textContent = '发送验证码中...';
+
+            // TODO: 发送验证码请求
+            // 成功后跳转到验证码输入页面
+            setTimeout(() => {
+                window.location.href = `verify.html?email=${encodeURIComponent(email)}`;
+            }, 1000);
+        });
+
+        // Language Switching
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get language buttons
+            const languageButtons = document.querySelectorAll('.language-btn');
+            
+            // Set initial language from localStorage or default to English
+            const currentLang = localStorage.getItem('preferred_language') || 'en-US';
+            document.documentElement.lang = currentLang;
+            
+            // Update button states
+            updateLanguageButtons(currentLang);
+
+            // Add click handlers to language buttons
+            languageButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const lang = this.dataset.lang;
+                    document.documentElement.lang = lang;
+                    localStorage.setItem('preferred_language', lang);
+                    updateLanguageButtons(lang);
+                });
+            });
+        });
+
+        function updateLanguageButtons(currentLang) {
+            document.querySelectorAll('.language-btn').forEach(button => {
+                if (button.dataset.lang === currentLang) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+    </script>
+</body>
+</html> 

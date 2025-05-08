@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景圆形 -->
+    <circle cx="60" cy="60" r="54" fill="#EDFAF6"/>
+    
+    <!-- 锁形状 -->
+    <rect x="40" y="50" width="40" height="30" rx="4" fill="#16C784"/>
+    <path d="M50 50V40C50 35 55 30 60 30C65 30 70 35 70 40V50" stroke="#16C784" stroke-width="4"/>
+    
+    <!-- 钥匙孔 -->
+    <circle cx="60" cy="65" r="4" fill="white"/>
+</svg> 

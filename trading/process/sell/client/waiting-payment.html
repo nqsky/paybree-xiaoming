@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">等待买家付款 - Paybree</span>
+        <span class="en">Waiting for Buyer Payment - Paybree</span>
+    </title>
+    <link rel="stylesheet" href="../../../css/common.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <style>
+        /* Language Display */
+        .zh, .en {
+            display: none;
+        }
+
+        html[lang="zh-CN"] .zh {
+            display: inline;
+        }
+
+        html[lang="en-US"] .en {
+            display: inline;
+        }
+
+        /* 语言选择器样式 */
+        .language-switch {
+            position: relative;
+            margin-left: 16px;
+        }
+
+        .language-select {
+            appearance: none;
+            background: transparent;
+            border: none;
+            color: var(--color-gray-600);
+            font-size: 14px;
+            padding-right: 20px;
+            cursor: pointer;
+        }
+
+        .language-select:focus {
+            outline: none;
+        }
+
+        .language-switch::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid var(--color-gray-600);
+        }
+
+        .language-select option {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+        }
+
+        /* 基础样式变量 */
+        :root {
+            --color-primary: #16C784;
+            --color-primary-hover: #20E19F;
+            --color-white: #FFFFFF;
+            --color-gray-50: #F5F5F5;
+            --color-gray-100: #EBEBEB;
+            --color-gray-200: #E0E0E0;
+            --color-gray-600: #666666;
+            --color-gray-900: #333333;
+            --color-border: #E5E5E5;
+            --color-error: #FF4D4F;
+            --color-warning: #FFA940;
+            
+            --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            --font-family-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            --font-size-base: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-xxl: 20px;
+            --line-height-base: 1.5;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height-base);
+            color: var(--color-gray-900);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 导航样式 */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+        }
+
+        .header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        .nav {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--color-gray-600);
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--color-primary);
+        }
+
+        .nav-link.active {
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+
+        /* 页面容器 */
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 104px 24px 24px;
+        }
+
+        /* 面包屑导航 */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            font-size: 14px;
+            color: var(--color-gray-600);
+        }
+
+        .breadcrumb a {
+            color: var(--color-gray-600);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--color-primary);
+        }
+
+        .breadcrumb .separator {
+            margin: 0 8px;
+            color: var(--color-gray-600);
+        }
+
+        .breadcrumb .current {
+            color: var(--color-gray-900);
+            font-weight: 500;
+        }
+
+        /* 进度条样式 */
+        .sell-progress {
+            padding: 32px 0;
+            margin-bottom: 40px;
+            background: var(--color-white);
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 24px;
+            right: 24px;
+            height: 1px;
+            background: var(--color-border);
+            z-index: 1;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-white);
+            border: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            transition: all 0.3s ease;
+        }
+
+        .step.completed .step-circle {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .step.completed .step-number {
+            color: var(--color-white);
+        }
+
+        .step.active .step-circle {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .step.active .step-number {
+            color: var(--color-white);
+        }
+
+        .step.active .step-label {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .step-number {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-gray-600);
+        }
+
+        .step-label {
+            font-size: var(--font-size-base);
+            color: var(--color-gray-600);
+        }
+
+        /* 页面主体样式 */
+        .waiting-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 32px;
+            background: var(--color-white);
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 状态卡片样式 */
+        .status-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        .status-card {
+            text-align: center;
+            padding: 32px;
+            background: var(--color-white);
+            border-radius: 12px;
+            border: 1px solid var(--color-border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .status-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 24px;
+        }
+
+        .status-card.waiting .status-icon {
+            background: rgba(22, 199, 132, 0.1);
+            color: var(--color-primary);
+        }
+
+        .status-card.success .status-icon {
+            background: rgba(22, 199, 132, 0.1);
+            color: var(--color-primary);
+        }
+
+        .status-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-gray-900);
+            margin-bottom: 8px;
+        }
+
+        .status-desc {
+            color: var(--color-gray-600);
+            margin-bottom: 24px;
+        }
+
+        /* 交易信息样式 */
+        .transaction-info {
+            margin-top: 16px;
+        }
+
+        .info-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: 16px;
+            color: var(--color-gray-900);
+        }
+
+        .info-card {
+            background: var(--color-gray-50);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .info-label {
+            width: 140px;
+            color: var(--color-gray-600);
+        }
+
+        .info-value {
+            flex: 1;
+            color: var(--color-gray-900);
+            font-weight: var(--font-weight-medium);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-value .address {
+            font-family: var(--font-family-mono);
+            letter-spacing: 0.5px;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            padding: 6px 12px;
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .copy-btn:hover {
+            background: var(--color-primary-hover);
+        }
+
+        /* 操作按钮 */
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 120px;
+        }
+
+        .action-btn-default {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+            border: 1px solid var(--color-border);
+        }
+
+        .action-btn-default:hover {
+            background: var(--color-gray-50);
+        }
+
+        .action-btn-primary {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+        }
+
+        .action-btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .action-btn-warning {
+            background: var(--color-warning);
+            color: var(--color-white);
+            border: none;
+        }
+
+        .action-btn-warning:hover {
+            background: #FFB957;
+        }
+
+        .action-btn-error {
+            background: var(--color-error);
+            color: var(--color-white);
+            border: none;
+        }
+
+        .action-btn-error:hover {
+            background: #FF7875;
+        }
+
+        /* 弹窗样式 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--color-gray-600);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-message {
+            margin: 0;
+            color: var(--color-gray-900);
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 1px solid var(--color-border);
+            color: var(--color-gray-900);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-gray-50);
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            border: none;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        /* 聊天按钮 */
+        .chat-button {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            color: var(--color-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(22, 199, 132, 0.3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 999;
+        }
+
+        .chat-button:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(22, 199, 132, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container">
+            <a href="/index.html" class="logo">Paybree</a>
+            <nav class="nav">
+                <div class="language-switch">
+                    <select class="language-select">
+                        <option value="zh-CN">简体中文</option>
+                        <option value="en-US">English</option>
+                    </select>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-container">
+        <!-- 面包屑导航 -->
+        <nav class="breadcrumb">
+            <a href="/">
+                <span class="zh">首页</span>
+                <span class="en">Home</span>
+            </a>
+            <span class="separator">/</span>
+            <a href="/trading/quotes.html">
+                <span class="zh">交易大厅</span>
+                <span class="en">Trading Hall</span>
+            </a>
+            <span class="separator">/</span>
+            <span class="current">
+                <span class="zh">等待买家付款</span>
+                <span class="en">Waiting for Buyer Payment</span>
+            </span>
+        </nav>
+
+        <!-- 进度条 -->
+        <div class="sell-progress">
+            <div class="progress-steps">
+                <div class="step completed">
+                    <div class="step-circle">
+                        <span class="step-number">1</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">保证金协商</span>
+                        <span class="en">Margin Negotiation</span>
+                    </div>
+                </div>
+                <div class="step completed">
+                    <div class="step-circle">
+                        <span class="step-number">2</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">创建订单</span>
+                        <span class="en">Create Order</span>
+                    </div>
+                </div>
+                <div class="step completed">
+                    <div class="step-circle">
+                        <span class="step-number">3</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">锁定USDT</span>
+                        <span class="en">Lock USDT</span>
+                    </div>
+                </div>
+                <div class="step active">
+                    <div class="step-circle">
+                        <span class="step-number">4</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">等待付款</span>
+                        <span class="en">Waiting for Payment</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">5</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">交易完成</span>
+                        <span class="en">Complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="waiting-content">
+            <!-- 状态卡片 -->
+            <div class="status-cards">
+                <!-- 等待付款状态 -->
+                <div class="status-card waiting" id="waiting-payment-card">
+                    <div class="status-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h2 class="status-title">
+                        <span class="zh">等待买家付款</span>
+                        <span class="en">Waiting for Buyer's Payment</span>
+                    </h2>
+                    <p class="status-desc">
+                        <span class="zh">您的USDT已锁定在智能合约中，买家将通过您指定的方式支付</span>
+                        <span class="en">Your USDT has been locked in the smart contract, the buyer will pay via your specified method</span>
+                    </p>
+                    <div class="transaction-info">
+                        <div class="info-card">
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">交易金额</span>
+                                    <span class="en">Transaction Amount</span>
+                                </span>
+                                <span class="info-value">6,783.22 USDT</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">锁定状态</span>
+                                    <span class="en">Lock Status</span>
+                                </span>
+                                <span class="info-value">
+                                    <span class="zh">已锁定</span>
+                                    <span class="en">Locked</span>
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">锁定哈希</span>
+                                    <span class="en">Lock Hash</span>
+                                </span>
+                                <div class="info-value">
+                                    <span class="address">0x1234567890abcdef1234567890abcdef12345678</span>
+                                    <button class="copy-btn" onclick="copyText('0x1234567890abcdef1234567890abcdef12345678')">
+                                        <span class="zh">复制</span>
+                                        <span class="en">Copy</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">付款方式</span>
+                                    <span class="en">Payment Method</span>
+                                </span>
+                                <span class="info-value">
+                                    <span class="zh">银行转账</span>
+                                    <span class="en">Bank Transfer</span>
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">收款信息</span>
+                                    <span class="en">Payment Details</span>
+                                </span>
+                                <span class="info-value">
+                                    中国农业银行 | 张三 | 6217 **** **** 1234
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">付款期限</span>
+                                    <span class="en">Payment Deadline</span>
+                                </span>
+                                <span class="info-value">
+                                    2024-04-28 15:30:00 (<span id="countdown">剩余 1小时45分钟</span>)
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn action-btn-default" onclick="startChat()">
+                            <span class="zh">联系买家</span>
+                            <span class="en">Contact Buyer</span>
+                        </button>
+                        <button class="action-btn action-btn-warning" onclick="showDisputeModal()">
+                            <span class="zh">发起申诉</span>
+                            <span class="en">File Dispute</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 买家已标记付款状态 -->
+                <div class="status-card waiting" id="buyer-marked-paid-card" style="display: none;">
+                    <div class="status-icon" style="background: rgba(255, 169, 64, 0.1); color: var(--color-warning);">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h2 class="status-title">
+                        <span class="zh">买家已标记付款</span>
+                        <span class="en">Buyer Marked as Paid</span>
+                    </h2>
+                    <p class="status-desc">
+                        <span class="zh">买家已标记完成付款，请确认您的账户是否已收到资金</span>
+                        <span class="en">The buyer has marked payment as complete, please confirm if funds have been received in your account</span>
+                    </p>
+                    <div class="transaction-info">
+                        <div class="info-card">
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">交易金额</span>
+                                    <span class="en">Transaction Amount</span>
+                                </span>
+                                <span class="info-value">6,783.22 USDT</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">锁定状态</span>
+                                    <span class="en">Lock Status</span>
+                                </span>
+                                <span class="info-value">
+                                    <span class="zh">已锁定</span>
+                                    <span class="en">Locked</span>
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">付款方式</span>
+                                    <span class="en">Payment Method</span>
+                                </span>
+                                <span class="info-value">
+                                    <span class="zh">银行转账</span>
+                                    <span class="en">Bank Transfer</span>
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">买家标记时间</span>
+                                    <span class="en">Marked Time</span>
+                                </span>
+                                <span class="info-value">
+                                    2024-04-28 14:45:30
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">买家留言</span>
+                                    <span class="en">Buyer Message</span>
+                                </span>
+                                <span class="info-value">
+                                    <span class="zh">已完成转账，请查收</span>
+                                    <span class="en">Payment completed, please check your account</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn action-btn-default" onclick="startChat()">
+                            <span class="zh">联系买家</span>
+                            <span class="en">Contact Buyer</span>
+                        </button>
+                        <button class="action-btn action-btn-warning" onclick="showDisputeModal()">
+                            <span class="zh">发起申诉</span>
+                            <span class="en">File Dispute</span>
+                        </button>
+                        <button class="action-btn action-btn-primary" onclick="confirmPaymentReceived()">
+                            <span class="zh">确认已收款</span>
+                            <span class="en">Confirm Payment Received</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 申诉中状态 -->
+                <div class="status-card waiting" id="dispute-card" style="display: none;">
+                    <div class="status-icon" style="background: rgba(255, 77, 79, 0.1); color: var(--color-error);">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h2 class="status-title">
+                        <span class="zh">交易申诉处理中</span>
+                        <span class="en">Dispute in Progress</span>
+                    </h2>
+                    <p class="status-desc">
+                        <span class="zh">您的申诉已提交，平台客服正在处理中，请保持通讯畅通</span>
+                        <span class="en">Your dispute has been submitted and is being processed by customer service. Please stay reachable</span>
+                    </p>
+                    <div class="transaction-info">
+                        <div class="info-card">
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">交易金额</span>
+                                    <span class="en">Transaction Amount</span>
+                                </span>
+                                <span class="info-value">6,783.22 USDT</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">锁定状态</span>
+                                    <span class="en">Lock Status</span>
+                                </span>
+                                <span class="info-value">
+                                    <span class="zh">已锁定(冻结)</span>
+                                    <span class="en">Locked (Frozen)</span>
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">申诉时间</span>
+                                    <span class="en">Dispute Time</span>
+                                </span>
+                                <span class="info-value">
+                                    2024-04-28 15:15:00
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">申诉原因</span>
+                                    <span class="en">Dispute Reason</span>
+                                </span>
+                                <span class="info-value">
+                                    <span class="zh">未收到买家付款</span>
+                                    <span class="en">Payment not received from buyer</span>
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">预计处理时间</span>
+                                    <span class="en">Est. Processing Time</span>
+                                </span>
+                                <span class="info-value">
+                                    <span class="zh">24小时内</span>
+                                    <span class="en">Within 24 hours</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn action-btn-default" onclick="startChat()">
+                            <span class="zh">联系客服</span>
+                            <span class="en">Contact Support</span>
+                        </button>
+                        <button class="action-btn action-btn-warning" onclick="cancelDispute()">
+                            <span class="zh">撤销申诉</span>
+                            <span class="en">Cancel Dispute</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 付款超时状态 -->
+                <div class="status-card waiting" id="timeout-card" style="display: none;">
+                    <div class="status-icon" style="background: rgba(255, 77, 79, 0.1); color: var(--color-error);">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <h2 class="status-title">
+                        <span class="zh">付款已超时</span>
+                        <span class="en">Payment Timeout</span>
+                    </h2>
+                    <p class="status-desc">
+                        <span class="zh">买家未在规定时间内完成付款，您可以取消交易或延长支付时间</span>
+                        <span class="en">The buyer did not complete payment within the specified time. You can cancel the transaction or extend the payment time</span>
+                    </p>
+                    <div class="transaction-info">
+                        <div class="info-card">
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">交易金额</span>
+                                    <span class="en">Transaction Amount</span>
+                                </span>
+                                <span class="info-value">6,783.22 USDT</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">锁定状态</span>
+                                    <span class="en">Lock Status</span>
+                                </span>
+                                <span class="info-value">
+                                    <span class="zh">已锁定</span>
+                                    <span class="en">Locked</span>
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">付款期限</span>
+                                    <span class="en">Payment Deadline</span>
+                                </span>
+                                <span class="info-value" style="color: var(--color-error);">
+                                    <span class="zh">已超时</span>
+                                    <span class="en">Expired</span>
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">超时时间</span>
+                                    <span class="en">Timeout Time</span>
+                                </span>
+                                <span class="info-value">
+                                    2024-04-28 15:30:00
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn action-btn-default" onclick="startChat()">
+                            <span class="zh">联系买家</span>
+                            <span class="en">Contact Buyer</span>
+                        </button>
+                        <button class="action-btn action-btn-primary" onclick="extendPaymentTime()">
+                            <span class="zh">延长付款时间</span>
+                            <span class="en">Extend Payment Time</span>
+                        </button>
+                        <button class="action-btn action-btn-error" onclick="showCancelModal()">
+                            <span class="zh">取消交易</span>
+                            <span class="en">Cancel Transaction</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 已确认收款状态 -->
+                <div class="status-card success" id="payment-confirmed-card" style="display: none;">
+                    <div class="status-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h2 class="status-title">
+                        <span class="zh">已确认收款</span>
+                        <span class="en">Payment Confirmed</span>
+                    </h2>
+                    <p class="status-desc">
+                        <span class="zh">您已确认收到买家的付款，USDT将自动释放给买家</span>
+                        <span class="en">You have confirmed receipt of the buyer's payment. USDT will be automatically released to the buyer</span>
+                    </p>
+                    <div class="transaction-info">
+                        <div class="info-card">
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">交易金额</span>
+                                    <span class="en">Transaction Amount</span>
+                                </span>
+                                <span class="info-value">6,783.22 USDT</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">锁定状态</span>
+                                    <span class="en">Lock Status</span>
+                                </span>
+                                <span class="info-value">
+                                    <span class="zh">已释放</span>
+                                    <span class="en">Released</span>
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">确认时间</span>
+                                    <span class="en">Confirmation Time</span>
+                                </span>
+                                <span class="info-value">
+                                    2024-04-28 15:00:00
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">释放哈希</span>
+                                    <span class="en">Release Hash</span>
+                                </span>
+                                <div class="info-value">
+                                    <span class="address">0xabcdef1234567890abcdef1234567890abcdef12</span>
+                                    <button class="copy-btn" onclick="copyText('0xabcdef1234567890abcdef1234567890abcdef12')">
+                                        <span class="zh">复制</span>
+                                        <span class="en">Copy</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn action-btn-primary" onclick="goToComplete()">
+                            <span class="zh">完成交易</span>
+                            <span class="en">Complete Transaction</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 申诉确认弹窗 -->
+    <div class="modal" id="disputeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <span class="zh">确认发起申诉</span>
+                    <span class="en">Confirm Dispute Filing</span>
+                </h3>
+                <button class="modal-close" onclick="closeDisputeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message">
+                    <span class="zh">您确定要发起申诉吗？这将提醒平台客服介入处理。请先尝试与买家沟通解决问题。</span>
+                    <span class="en">Are you sure you want to file a dispute? This will alert platform customer service to intervene. Please try to communicate with the buyer first.</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDisputeModal()">
+                    <span class="zh">取消</span>
+                    <span class="en">Cancel</span>
+                </button>
+                <button class="btn btn-primary" onclick="confirmDispute()">
+                    <span class="zh">确认申诉</span>
+                    <span class="en">Confirm</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 取消确认弹窗 -->
+    <div class="modal" id="cancelModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <span class="zh">确认取消交易</span>
+                    <span class="en">Confirm Cancellation</span>
+                </h3>
+                <button class="modal-close" onclick="closeCancelModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message">
+                    <span class="zh">确定要取消交易吗？取消后将无法恢复，您的USDT将退回您的钱包。</span>
+                    <span class="en">Are you sure you want to cancel this transaction? This action cannot be undone and your USDT will be returned to your wallet.</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeCancelModal()">
+                    <span class="zh">返回</span>
+                    <span class="en">Back</span>
+                </button>
+                <button class="btn btn-primary" onclick="confirmCancel()">
+                    <span class="zh">确认取消</span>
+                    <span class="en">Confirm</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 聊天按钮 -->
+    <div class="chat-button" onclick="startChat()">
+        <i class="fas fa-comments"></i>
+    </div>
+
+    <script>
+        // 显示申诉确认模态框
+        function showDisputeModal() {
+            document.getElementById('disputeModal').style.display = 'flex';
+        }
+
+        // 关闭申诉确认模态框
+        function closeDisputeModal() {
+            document.getElementById('disputeModal').style.display = 'none';
+        }
+
+        // 确认申诉
+        function confirmDispute() {
+            // TODO: 调用API发起申诉
+            closeDisputeModal();
+            alert(document.documentElement.lang === 'zh-CN' ? 
+                '您的申诉已提交，客服将在24小时内联系您' : 
+                'Your dispute has been submitted. Customer service will contact you within 24 hours');
+            
+            // 切换到申诉状态
+            showDisputeState();
+        }
+
+        // 撤销申诉
+        function cancelDispute() {
+            if (confirm(document.documentElement.lang === 'zh-CN' ? 
+                '确定要撤销申诉吗？' : 
+                'Are you sure you want to cancel the dispute?')) {
+                // TODO: 调用API撤销申诉
+                alert(document.documentElement.lang === 'zh-CN' ? 
+                    '申诉已撤销' : 
+                    'Dispute has been cancelled');
+                
+                // 恢复到等待付款状态
+                showWaitingForPaymentState();
+            }
+        }
+
+        // 显示取消确认模态框
+        function showCancelModal() {
+            document.getElementById('cancelModal').style.display = 'flex';
+        }
+
+        // 关闭取消确认模态框
+        function closeCancelModal() {
+            document.getElementById('cancelModal').style.display = 'none';
+        }
+
+        // 确认取消交易
+        function confirmCancel() {
+            // TODO: 调用API取消交易
+            closeCancelModal();
+            window.location.href = '/trading/quotes.html';
+        }
+
+        // 复制文本
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const message = {
+                    'zh-CN': '复制成功',
+                    'en-US': 'Copied successfully'
+                };
+                alert(message[document.documentElement.lang]);
+            });
+        }
+
+        // 开始聊天
+        function startChat() {
+            const message = {
+                'zh-CN': '正在打开聊天窗口...',
+                'en-US': 'Opening chat window...'
+            };
+            alert(message[document.documentElement.lang]);
+            // TODO: 实现聊天窗口逻辑
+        }
+
+        // 标记付款已完成
+        function confirmPaymentReceived() {
+            if (confirm(document.documentElement.lang === 'zh-CN' ? 
+                '确认已收到买家付款？请确保资金已到账。' : 
+                'Confirm you have received payment from the buyer? Please make sure the funds have arrived.')) {
+                // TODO: 调用API确认已收到付款
+                showPaymentConfirmedState();
+            }
+        }
+
+        // 延长付款时间
+        function extendPaymentTime() {
+            if (confirm(document.documentElement.lang === 'zh-CN' ? 
+                '确定要延长付款时间吗？将额外延长2小时。' : 
+                'Are you sure you want to extend the payment time? It will be extended by 2 hours.')) {
+                // TODO: 调用API延长付款时间
+                alert(document.documentElement.lang === 'zh-CN' ? 
+                    '付款时间已延长2小时' : 
+                    'Payment time has been extended by 2 hours');
+                
+                // 恢复到等待付款状态
+                showWaitingForPaymentState();
+            }
+        }
+
+        // 完成交易
+        function goToComplete() {
+            window.location.href = 'complete.html';
+        }
+
+        // 语言切换功能
+        function changeLanguage(lang) {
+            document.documentElement.lang = lang;
+            localStorage.setItem('preferred_language', lang);
+        }
+
+        // 监听语言选择器的变化
+        document.querySelector('.language-select').addEventListener('change', function() {
+            const lang = this.value;
+            changeLanguage(lang);
+        });
+
+        // 显示等待付款状态
+        function showWaitingForPaymentState() {
+            hideAllStatusCards();
+            document.getElementById('waiting-payment-card').style.display = 'block';
+        }
+
+        // 显示买家已标记付款状态
+        function showBuyerMarkedPaidState() {
+            hideAllStatusCards();
+            document.getElementById('buyer-marked-paid-card').style.display = 'block';
+        }
+
+        // 显示申诉中状态
+        function showDisputeState() {
+            hideAllStatusCards();
+            document.getElementById('dispute-card').style.display = 'block';
+        }
+
+        // 显示付款超时状态
+        function showTimeoutState() {
+            hideAllStatusCards();
+            document.getElementById('timeout-card').style.display = 'block';
+        }
+
+        // 显示已确认收款状态
+        function showPaymentConfirmedState() {
+            hideAllStatusCards();
+            document.getElementById('payment-confirmed-card').style.display = 'block';
+        }
+
+        // 隐藏所有状态卡片
+        function hideAllStatusCards() {
+            const cards = [
+                'waiting-payment-card',
+                'buyer-marked-paid-card',
+                'dispute-card',
+                'timeout-card',
+                'payment-confirmed-card'
+            ];
+            
+            cards.forEach(card => {
+                document.getElementById(card).style.display = 'none';
+            });
+        }
+
+        // 更新倒计时
+        function updateCountdown() {
+            // 模拟倒计时逻辑
+            const deadlineTime = new Date('2024-04-28T15:30:00').getTime();
+            
+            const timer = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = deadlineTime - now;
+                
+                if (distance <= 0) {
+                    clearInterval(timer);
+                    showTimeoutState();
+                    return;
+                }
+                
+                const hours = Math.floor(distance / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                
+                const countdownText = {
+                    'zh-CN': `剩余 ${hours}小时${minutes}分钟`,
+                    'en-US': `${hours}h ${minutes}m remaining`
+                };
+                
+                document.getElementById('countdown').textContent = countdownText[document.documentElement.lang];
+            }, 60000); // 每分钟更新一次
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('preferred_language') || 'en-US';
+            document.documentElement.lang = lang;
+            document.querySelector('.language-select').value = lang;
+            
+            // 根据URL参数或API响应决定显示哪个状态
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            
+            // 根据状态参数显示不同的卡片
+            switch(status) {
+                case 'buyer_marked_paid':
+                    showBuyerMarkedPaidState();
+                    break;
+                case 'dispute':
+                    showDisputeState();
+                    break;
+                case 'timeout':
+                    showTimeoutState();
+                    break;
+                case 'payment_confirmed':
+                    showPaymentConfirmedState();
+                    break;
+                default:
+                    showWaitingForPaymentState();
+                    // 启动倒计时
+                    updateCountdown();
+            }
+            
+            // 模拟：5秒后买家标记为已付款（仅用于演示）
+            // setTimeout(showBuyerMarkedPaidState, 5000);
+        });
+    </script>
+</body>
+</html> 

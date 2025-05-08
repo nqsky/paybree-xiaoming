@@ -1,0 +1,137 @@
+/* 公司介绍页面样式 */
+
+/* 面包屑导航 */
+.breadcrumb {
+    padding: var(--spacing-md) 0;
+    background-color: var(--background-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.breadcrumb a {
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.breadcrumb span {
+    color: var(--text-primary);
+}
+
+/* 主体内容 */
+.main-content {
+    padding: var(--spacing-lg) 0;
+}
+
+/* 章节标题 */
+.section-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+}
+
+/* 公司简介 */
+.company-intro {
+    margin-bottom: var(--spacing-lg);
+}
+
+.company-intro p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+}
+
+.company-intro ul {
+    list-style: none;
+    padding: 0;
+    margin: var(--spacing-md) 0;
+}
+
+.company-intro li {
+    position: relative;
+    padding-left: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-secondary);
+}
+
+.company-intro li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+}
+
+/* 资质认证 */
+.certifications {
+    background-color: var(--background-light);
+    padding: var(--spacing-lg) 0;
+    border-radius: var(--border-radius);
+}
+
+.cert-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+.cert-item {
+    text-align: center;
+    padding: var(--spacing-lg);
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    transition: transform 0.3s ease;
+}
+
+.cert-item:hover {
+    transform: translateY(-5px);
+}
+
+.cert-item img {
+    width: 64px;
+    height: 64px;
+    margin-bottom: var(--spacing-md);
+}
+
+.cert-item h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.cert-item p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .cert-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+
+    .section-title {
+        font-size: 24px;
+    }
+
+    .cert-item {
+        padding: var(--spacing-md);
+    }
+}
+
+/* 多语言切换 */
+.content .en {
+    display: none;
+}
+
+.content[data-lang="en"] .zh {
+    display: none;
+}
+
+.content[data-lang="en"] .en {
+    display: block;
+} 

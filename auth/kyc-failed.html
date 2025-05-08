@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">认证失败 - Paybree</span>
+        <span class="en">Verification Failed - Paybree</span>
+    </title>
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Color System */
+            --color-primary: #16C784;
+            --color-primary-hover: #20E19F;
+            --color-primary-light: #EDFAF6;
+            --color-white: #FFFFFF;
+            --color-gray-50: #F5F5F5;
+            --color-gray-400: #A0A0A0;
+            --color-gray-600: #666666;
+            --color-gray-900: #333333;
+            --color-border: #E5E5E5;
+            --color-error: #FF4D4F;
+            --color-error-light: #FFF1F0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--color-gray-900);
+            line-height: 1.5;
+            background-color: var(--color-gray-50);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        /* Logo */
+        .logo {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 24px;
+            color: var(--color-primary);
+        }
+
+        /* Error Card */
+        .error-card {
+            width: 100%;
+            max-width: 480px;
+            background: var(--color-white);
+            border-radius: 16px;
+            padding: 48px 32px;
+            text-align: center;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .error-icon {
+            width: 64px;
+            height: 64px;
+            color: var(--color-error);
+            margin-bottom: 24px;
+        }
+
+        .error-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--color-gray-900);
+        }
+
+        .error-message {
+            font-size: 16px;
+            color: var(--color-gray-600);
+            margin-bottom: 24px;
+        }
+
+        .error-details {
+            background: var(--color-error-light);
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            text-align: left;
+        }
+
+        .error-details-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-error);
+            margin-bottom: 8px;
+        }
+
+        .error-details-list {
+            list-style: none;
+            font-size: 14px;
+            color: var(--color-gray-600);
+        }
+
+        .error-details-list li {
+            margin-bottom: 4px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .error-details-list li::before {
+            content: "•";
+            color: var(--color-error);
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .action-button {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .primary-button {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+        }
+
+        .primary-button:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(22, 199, 132, 0.2);
+        }
+
+        .secondary-button {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+            border: 1px solid var(--color-border);
+        }
+
+        .secondary-button:hover {
+            background: var(--color-gray-50);
+            transform: translateY(-2px);
+        }
+
+        /* 语言切换样式 */
+        .language-switcher {
+            position: fixed;
+            right: 24px;
+            top: 24px;
+            display: flex;
+            gap: 12px;
+        }
+        .language-switcher button {
+            background: none;
+            border: none;
+            color: var(--color-gray-600);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .language-switcher button:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .language-switcher button.active {
+            background: rgba(0, 0, 0, 0.1);
+            color: var(--color-primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Logo -->
+    <svg class="logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+
+    <!-- Error Card -->
+    <div class="error-card">
+        <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="15" y1="9" x2="9" y2="15"/>
+            <line x1="9" y1="9" x2="15" y2="15"/>
+        </svg>
+        
+        <h1 class="error-title">
+            <span class="zh">认证失败</span>
+            <span class="en">Verification Failed</span>
+        </h1>
+        
+        <p class="error-message">
+            <span class="zh">很抱歉，您的身份认证未能通过。请查看以下原因并重新提交。</span>
+            <span class="en">We're sorry, your identity verification was not successful. Please review the reasons below and resubmit.</span>
+        </p>
+        
+        <div class="error-details">
+            <h2 class="error-details-title">
+                <span class="zh">失败原因</span>
+                <span class="en">Reasons for Failure</span>
+            </h2>
+            <ul class="error-details-list">
+                <li>
+                    <span class="zh">身份证照片不清晰</span>
+                    <span class="en">ID photo is unclear</span>
+                </li>
+                <li>
+                    <span class="zh">信息填写不完整</span>
+                    <span class="en">Incomplete information</span>
+                </li>
+                <li>
+                    <span class="zh">证件已过期</span>
+                    <span class="en">Document has expired</span>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="/auth/kyc-user.html" class="action-button primary-button">
+                <span class="zh">重新认证</span>
+                <span class="en">Try Again</span>
+            </a>
+            <a href="/help/contact.html" class="action-button secondary-button">
+                <span class="zh">联系客服</span>
+                <span class="en">Contact Support</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 语言切换按钮 -->
+    <div class="language-switcher">
+        <button class="lang-btn" data-lang="zh-CN">中文</button>
+        <button class="lang-btn" data-lang="en-US">English</button>
+    </div>
+
+    <script>
+        // 语言切换功能
+        function changeLanguage(lang) {
+            document.querySelectorAll('.zh').forEach(el => {
+                el.style.display = (lang === 'zh-CN') ? '' : 'none';
+            });
+            document.querySelectorAll('.en').forEach(el => {
+                el.style.display = (lang === 'en-US') ? '' : 'none';
+            });
+            
+            // 更新按钮状态
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+        }
+
+        // 监听语言按钮点击
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const lang = this.dataset.lang;
+                changeLanguage(lang);
+                localStorage.setItem('preferred_language', lang);
+            });
+        });
+
+        // 初始化语言
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('preferred_language') || 'en-US';
+            changeLanguage(lang);
+        });
+    </script>
+</body>
+</html> 

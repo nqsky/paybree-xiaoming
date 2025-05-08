@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景圆圈 -->
+    <circle cx="32" cy="32" r="32" fill="#EDFAF6"/>
+    
+    <!-- 完成标志 - 带勾号的圆圈 -->
+    <circle cx="32" cy="32" r="16" stroke="#16C784" stroke-width="3"/>
+    <path d="M24 32L30 38L40 28" stroke="#16C784" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg> 

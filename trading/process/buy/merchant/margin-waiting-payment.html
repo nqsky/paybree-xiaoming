@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">等待买家付款 - 卖方</span>
+        <span class="en">Waiting for Payment - Seller</span>
+    </title>
+    <link rel="stylesheet" href="../../../../css/common.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <style>
+        /* 语言切换样式 */
+        .zh, .en {
+            display: none;
+        }
+
+        html[lang="zh-CN"] .zh {
+            display: inline;
+        }
+
+        html[lang="en-US"] .en {
+            display: inline;
+        }
+
+        html[lang="zh-CN"] .zh-block {
+            display: block;
+        }
+
+        html[lang="en-US"] .en-block {
+            display: block;
+        }
+
+        /* 语言选择器样式 */
+        .language-switch {
+            position: relative;
+            margin-left: 16px;
+        }
+
+        .language-select {
+            appearance: none;
+            background: transparent;
+            border: none;
+            color: var(--color-gray-600);
+            font-size: 14px;
+            padding-right: 20px;
+            cursor: pointer;
+        }
+
+        .language-select:focus {
+            outline: none;
+        }
+
+        .language-switch::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid var(--color-gray-600);
+        }
+
+        .language-select option {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+        }
+        .buy-progress {
+            padding: 32px 0;
+            margin-bottom: 40px;
+            background: var(--color-white);
+        }
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 24px;
+            right: 24px;
+            height: 1px;
+            background: var(--color-border);
+            z-index: 1;
+        }
+        .step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-white);
+            border: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            transition: all 0.3s ease;
+        }
+        .step-number {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-gray-600);
+        }
+        .step-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-gray-600);
+        }
+        .step.active .step-circle {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+        .step.active .step-number {
+            color: var(--color-white);
+        }
+        .step.active .step-label {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+        .step.completed .step-circle {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+        .step.completed .step-number {
+            color: var(--color-white);
+        }
+        .margin-content {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .margin-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .margin-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+            margin-bottom: 8px;
+        }
+        .margin-subtitle {
+            font-size: 14px;
+            color: var(--color-gray-600);
+        }
+        .status-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+        .status-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 32px;
+            border: 1px solid var(--color-border);
+            text-align: center;
+        }
+        .status-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 32px;
+        }
+        .status-icon.waiting {
+            background: rgba(22, 199, 132, 0.1);
+            color: var(--color-primary);
+        }
+        .status-icon.paid {
+            background: rgba(22, 199, 132, 0.1);
+            color: var(--color-primary);
+        }
+        .status-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+            margin-bottom: 16px;
+        }
+        .status-desc {
+            color: var(--color-gray-600);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+        .transaction-info {
+            background: var(--color-gray-50);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: left;
+        }
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .info-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        .info-label {
+            color: var(--color-gray-600);
+        }
+        .info-value {
+            font-weight: 500;
+            color: var(--color-gray-900);
+        }
+        .info-value.primary {
+            color: var(--color-primary);
+        }
+        .payment-proof {
+            margin-top: 24px;
+            text-align: left;
+        }
+        .proof-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-gray-900);
+            margin-bottom: 16px;
+        }
+        .proof-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .proof-image-wrapper {
+            position: relative;
+            aspect-ratio: 4/3;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .proof-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.2s;
+        }
+        .proof-image-wrapper:hover .proof-image {
+            transform: scale(1.05);
+        }
+        .proof-image-wrapper:hover .proof-image-overlay {
+            opacity: 1;
+        }
+        .proof-image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .proof-image-overlay i {
+            color: #fff;
+            font-size: 24px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+        .action-btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 120px;
+        }
+        .action-btn-primary {
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+        }
+        .action-btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+        .action-btn-default {
+            background: #fff;
+            color: var(--color-gray-900);
+            border: 1px solid var(--color-border);
+        }
+        .action-btn-default:hover {
+            background: var(--color-gray-50);
+        }
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: #fff;
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 480px;
+            width: 90%;
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--color-gray-600);
+            cursor: pointer;
+            padding: 4px;
+        }
+        .modal-close:hover {
+            color: var(--color-gray-900);
+        }
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .modal-desc {
+            color: var(--color-gray-600);
+            margin-bottom: 24px;
+            text-align: center;
+            line-height: 1.6;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+        /* 图片预览弹窗 */
+        .preview-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .preview-modal.active {
+            display: flex;
+        }
+        .preview-image {
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 8px;
+        }
+        .preview-close {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #fff;
+            cursor: pointer;
+            padding: 8px;
+        }
+        .preview-close:hover {
+            color: var(--color-gray-200);
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container">
+            <a href="/index.html" class="logo">Paybree</a>
+            <nav class="nav">
+                <a href="/trading/quotes.html" class="nav-link">
+                    <span class="zh">交易大厅</span>
+                    <span class="en">Trading Hall</span>
+                </a>
+                <a href="/trading/process/buy/client/margin.html" class="nav-link">
+                    <span class="zh">买入（用户）</span>
+                    <span class="en">Buy (User)</span>
+                </a>
+                <a href="/trading/process/buy/merchant/margin.html" class="nav-link">
+                    <span class="zh">买入（承兑商）</span>
+                    <span class="en">Buy (Merchant)</span>
+                </a>
+                <div class="language-switch">
+                    <select class="language-select">
+                        <option value="en-US">English</option>
+                        <option value="zh-CN">简体中文</option>
+                    </select>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <div class="page-container">
+        <!-- 面包屑导航 -->
+        <nav class="breadcrumb">
+            <a href="/">
+                <span class="zh">首页</span>
+                <span class="en">Home</span>
+            </a>
+            <span class="separator">/</span>
+            <a href="/merchant/index.html">
+                <span class="zh">商家中心</span>
+                <span class="en">Merchant Center</span>
+            </a>
+            <span class="separator">/</span>
+            <span class="current">
+                <span class="zh">等待买家付款</span>
+                <span class="en">Waiting for Payment</span>
+            </span>
+        </nav>
+        <!-- 进度条组件 -->
+        <div class="buy-progress">
+            <div class="progress-steps">
+                <div class="step completed">
+                    <div class="step-circle">
+                        <span class="step-number">1</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">保证金协商</span>
+                        <span class="en">Margin Negotiation</span>
+                    </div>
+                </div>
+                <div class="step active">
+                    <div class="step-circle">
+                        <span class="step-number">2</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">等待付款</span>
+                        <span class="en">Waiting for Payment</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">3</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">释放保证金</span>
+                        <span class="en">Release Margin</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">4</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">交易完成</span>
+                        <span class="en">Transaction Complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 主体内容 -->
+        <div class="margin-content">
+            <div class="margin-header">
+                <h1 class="margin-title">
+                    <span class="zh">等待买家付款</span>
+                    <span class="en">Waiting for Payment</span>
+                </h1>
+                <p class="margin-subtitle">
+                    <span class="zh">买家正在付款中，请耐心等待</span>
+                    <span class="en">Buyer is making payment, please wait patiently</span>
+                </p>
+            </div>
+            <div class="status-cards">
+                <!-- 等待付款状态 -->
+                <div class="status-card">
+                    <div class="status-icon waiting">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h2 class="status-title">
+                        <span class="zh">等待买家付款</span>
+                        <span class="en">Waiting for Payment</span>
+                    </h2>
+                    <p class="status-desc">
+                        <span class="zh">买家已收到付款信息，正在进行付款操作</span>
+                        <span class="en">Buyer has received payment information and is processing the payment</span>
+                    </p>
+                    <div class="transaction-info">
+                        <div class="info-item">
+                            <span class="info-label">
+                                <span class="zh">交易金额</span>
+                                <span class="en">Transaction Amount</span>
+                            </span>
+                            <span class="info-value">50,000 USDT</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <span class="zh">保证金金额</span>
+                                <span class="en">Margin Amount</span>
+                            </span>
+                            <span class="info-value primary">5,000 USDT</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <span class="zh">买家昵称</span>
+                                <span class="en">Buyer Nickname</span>
+                            </span>
+                            <span class="info-value">Alice</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <span class="zh">买家钱包地址</span>
+                                <span class="en">Buyer Wallet Address</span>
+                            </span>
+                            <span class="info-value">
+                                0x742d35Cc6634C0532925a3b844Bc454e4438f44e
+                                <button class="copy-btn" onclick="copyAddress()">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="checkPayment()">
+                        <span class="zh">检查付款状态</span>
+                        <span class="en">Check Payment Status</span>
+                    </button>
+                    <button class="btn btn-default" onclick="contactBuyer()">
+                        <span class="zh">联系买家</span>
+                        <span class="en">Contact Buyer</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeConfirmModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="modal-title">确认收款</h3>
+            <p class="modal-desc">
+                请确认您已收到买家支付的 USD 5,000 ，确认后将进入放币流程。<br>
+                此操作不可撤销，请务必确认已收到款项。
+            </p>
+            <div class="modal-buttons">
+                <button class="action-btn action-btn-default" onclick="closeConfirmModal()">取消</button>
+                <button class="action-btn action-btn-primary" onclick="proceedToRelease()">确认已收款</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="preview-modal" id="previewModal">
+        <button class="preview-close" onclick="closePreviewModal()">
+            <i class="fas fa-times"></i>
+        </button>
+        <img id="previewImage" src="" alt="付款凭证预览" class="preview-image">
+    </div>
+
+    <script>
+        function startChat() {
+            // TODO: 实现聊天功能
+            console.log('Start chat');
+        }
+
+        function confirmPayment() {
+            document.getElementById('confirmModal').classList.add('active');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('active');
+        }
+
+        function proceedToRelease() {
+            // TODO: 调用API确认收款
+            window.location.href = 'margin-release.html';
+        }
+
+        function previewImage(src) {
+            document.getElementById('previewImage').src = src;
+            document.getElementById('previewModal').classList.add('active');
+        }
+
+        function closePreviewModal() {
+            document.getElementById('previewModal').classList.remove('active');
+        }
+
+        // 点击预览弹窗背景关闭
+        document.getElementById('previewModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePreviewModal();
+            }
+        });
+
+        // 点击确认弹窗背景关闭
+        document.getElementById('confirmModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeConfirmModal();
+            }
+        });
+
+        // ESC键关闭弹窗
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePreviewModal();
+                closeConfirmModal();
+            }
+        });
+
+        // 语言切换功能
+        function changeLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.querySelectorAll('.zh').forEach(el => {
+                el.style.display = (lang === 'zh-CN') ? 'inline' : 'none';
+            });
+            document.querySelectorAll('.en').forEach(el => {
+                el.style.display = (lang === 'en-US') ? 'inline' : 'none';
+            });
+            document.querySelector('.language-select').value = lang;
+            localStorage.setItem('preferred_language', lang);
+        }
+
+        // 监听来自父页面的消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'languageChange') {
+                changeLanguage(event.data.language);
+            }
+        });
+
+        // 监听语言选择器的变化
+        document.querySelector('.language-select').addEventListener('change', function() {
+            const lang = this.value;
+            changeLanguage(lang);
+            // 通知父页面语言变化
+            window.parent.postMessage({
+                type: 'languageChange',
+                language: lang
+            }, '*');
+        });
+
+        // 初始化语言
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('preferred_language') || 'en-US';
+            changeLanguage(lang);
+        });
+
+        function copyAddress() {
+            const address = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
+            navigator.clipboard.writeText(address).then(() => {
+                alert('地址已复制');
+            });
+        }
+
+        function checkPayment() {
+            window.location.href = 'margin-release.html';
+        }
+
+        function contactBuyer() {
+            // 实现联系买家的功能
+            alert('正在连接聊天...');
+        }
+    </script>
+</body>
+</html> 

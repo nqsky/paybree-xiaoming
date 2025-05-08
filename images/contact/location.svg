@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景圆形 -->
+    <circle cx="24" cy="24" r="20" fill="#EDFAF6"/>
+    
+    <!-- 位置图标 -->
+    <path d="M24 16C20.7 16 18 18.7 18 22C18 26 24 32 24 32C24 32 30 26 30 22C30 18.7 27.3 16 24 16Z" fill="#16C784"/>
+    <circle cx="24" cy="22" r="2" fill="white"/>
+</svg> 

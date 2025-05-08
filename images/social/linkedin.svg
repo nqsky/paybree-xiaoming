@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景圆形 -->
+    <circle cx="24" cy="24" r="20" fill="#EDFAF6"/>
+    
+    <!-- LinkedIn图标 -->
+    <rect x="16" y="16" width="16" height="16" rx="2" fill="#16C784"/>
+    <path d="M20 22V28" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <path d="M24 22V28" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <path d="M28 22V28" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="20" cy="20" r="1" fill="white"/>
+</svg> 

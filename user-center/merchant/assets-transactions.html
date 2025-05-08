@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <span class="zh">交易记录 - Paybree</span>
+    <span class="en">Transaction History - Paybree</span>
+  </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --color-white: #fff;
+      --color-gray-50: #f9fafb;
+      --color-gray-100: #f3f4f6;
+      --color-gray-200: #e5e7eb;
+      --color-gray-300: #d1d5db;
+      --color-gray-500: #6b7280;
+      --color-gray-600: #4b5563;
+      --color-gray-700: #374151;
+      --color-gray-900: #111827;
+      --color-primary: #16C36A;
+      --color-primary-dark: #12a85a;
+      --color-primary-light: rgba(22, 195, 106, 0.1);
+      --color-danger: #ef4444;
+      --color-danger-light: rgba(239, 68, 68, 0.1);
+      --color-info: #3b82f6;
+      --color-info-light: rgba(59, 130, 246, 0.1);
+      --color-warning: #f59e0b;
+      --color-warning-light: rgba(245, 158, 11, 0.1);
+      --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      background: var(--color-gray-50);
+    }
+    .zh, .en {
+      display: none;
+    }
+    html[lang="zh-CN"] .zh {
+      display: inline;
+    }
+    html[lang="en-US"] .en {
+      display: inline;
+    }
+    iframe {
+      border: none;
+      width: 100%;
+    }
+    .header-iframe {
+      height: 80px;
+    }
+    .footer-iframe {
+      height: 100px;
+    }
+    .user-center {
+      display: flex;
+      min-height: calc(100vh - 180px);
+      padding: 24px 0;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 24px;
+      width: 100%;
+    }
+    .sidebar {
+      width: 240px;
+      background: var(--color-white);
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+      padding: 16px 0;
+    }
+    .sidebar .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: var(--color-gray-600);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 16px;
+      border-radius: 4px;
+    }
+    .sidebar .nav-item:hover {
+      background: var(--color-gray-50);
+      color: var(--color-primary);
+    }
+    .sidebar .nav-item.active {
+      background: var(--color-primary);
+      color: #fff;
+    }
+    .sidebar .nav-item i {
+      width: 20px;
+      text-align: center;
+    }
+    .content {
+      flex: 1;
+      background: var(--color-white);
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+      padding: 24px;
+      overflow: hidden;
+    }
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .page-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--color-gray-900);
+      margin: 0;
+    }
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      color: var(--color-gray-500);
+      font-size: 15px;
+    }
+    .breadcrumb a {
+      color: var(--color-gray-600);
+      text-decoration: none;
+    }
+    .breadcrumb a:hover {
+      color: var(--color-primary);
+    }
+    .breadcrumb i {
+      font-size: 12px;
+    }
+    .transactions-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+      align-items: center;
+    }
+    
+    .filter-item {
+      flex: none;
+    }
+    
+    .filter-label {
+      font-size: 14px;
+      color: var(--color-gray-600);
+      margin-bottom: 4px;
+    }
+    
+    .filter-select {
+      padding: 8px 12px;
+      border: 1px solid var(--color-gray-300);
+      border-radius: 6px;
+      background-color: var(--color-white);
+      font-size: 14px;
+      min-width: 120px;
+    }
+    
+    .filter-input {
+      padding: 8px 12px;
+      border: 1px solid var(--color-gray-300);
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    
+    .transactions-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .transactions-table th {
+      text-align: left;
+      padding: 12px 16px;
+      font-weight: 500;
+      color: var(--color-gray-600);
+      background: var(--color-gray-50);
+      border-bottom: 1px solid var(--color-gray-200);
+    }
+    
+    .transactions-table td {
+      padding: 16px;
+      border-bottom: 1px solid var(--color-gray-200);
+      color: var(--color-gray-700);
+    }
+    
+    .transactions-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .transactions-table tr:hover {
+      background: var(--color-gray-50);
+    }
+    
+    .transaction-id {
+      font-family: monospace;
+      font-size: 14px;
+      color: var(--color-gray-600);
+    }
+    
+    .transaction-date {
+      white-space: nowrap;
+    }
+    
+    .transaction-type {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .transaction-type.deposit {
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+    }
+    
+    .transaction-type.withdraw {
+      background: var(--color-danger-light);
+      color: var(--color-danger);
+    }
+    
+    .transaction-type.transfer {
+      background: var(--color-info-light);
+      color: var(--color-info);
+    }
+    
+    .transaction-type.fee {
+      background: rgba(124, 58, 237, 0.1);
+      color: #7C3AED;
+    }
+    
+    .transaction-type.margin {
+      background: rgba(245, 158, 11, 0.1);
+      color: #F59E0B;
+    }
+    
+    .transaction-amount {
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    
+    .transaction-amount.positive {
+      color: var(--color-primary);
+    }
+    
+    .transaction-amount.negative {
+      color: var(--color-danger);
+    }
+    
+    .transaction-status {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .transaction-status.completed {
+      background: rgba(16, 185, 129, 0.1);
+      color: #10B981;
+    }
+    
+    .transaction-status.pending {
+      background: rgba(245, 158, 11, 0.1);
+      color: #F59E0B;
+    }
+    
+    .transaction-status.failed {
+      background: rgba(239, 68, 68, 0.1);
+      color: #EF4444;
+    }
+    
+    .transaction-action {
+      color: var(--color-primary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .transaction-action:hover {
+      text-decoration: underline;
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 32px;
+      gap: 8px;
+    }
+    
+    .page-item {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      padding: 0 8px;
+      border-radius: 6px;
+      font-size: 14px;
+      color: var(--color-gray-700);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .page-item:hover {
+      background: var(--color-gray-100);
+    }
+    
+    .page-item.active {
+      background: var(--color-primary);
+      color: var(--color-white);
+      font-weight: 500;
+    }
+    
+    .page-item.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 48px 0;
+      color: var(--color-gray-500);
+    }
+    
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+    
+    .empty-state-text {
+      font-size: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    
+    .btn-outline {
+      background: transparent;
+      color: var(--color-gray-700);
+      border: 1px solid var(--color-gray-300);
+    }
+    
+    .btn-outline:hover {
+      background: var(--color-gray-50);
+      border-color: var(--color-gray-400);
+    }
+  </style>
+</head>
+<body>
+  <iframe src="../../components/header/header.html" class="header-iframe"></iframe>
+
+  <div class="user-center">
+    <div class="container">
+      <aside class="sidebar">
+        <a href="account.html" class="nav-item">
+          <i class="fas fa-user"></i>
+          <span class="zh">账号管理</span>
+          <span class="en">Account</span>
+        </a>
+        <a href="assets.html" class="nav-item active">
+          <i class="fas fa-wallet"></i>
+          <span class="zh">资产管理</span>
+          <span class="en">Assets</span>
+        </a>
+        <a href="kyc-info.html" class="nav-item">
+          <i class="fas fa-id-card"></i>
+          <span class="zh">认证信息</span>
+          <span class="en">Verification</span>
+        </a>
+        <a href="quote-management.html" class="nav-item">
+          <i class="fas fa-chart-line"></i>
+          <span class="zh">报价管理</span>
+          <span class="en">Quotes</span>
+        </a>
+        <a href="messages.html" class="nav-item">
+          <i class="fas fa-envelope"></i>
+          <span class="zh">消息通知</span>
+          <span class="en">Messages</span>
+        </a>
+      </aside>
+
+      <div class="content">
+        <div class="breadcrumb">
+          <a href="/"><span class="zh">首页</span><span class="en">Home</span></a>
+          <i class="fas fa-chevron-right"></i>
+          <a href="account.html"><span class="zh">商家中心</span><span class="en">Merchant Center</span></a>
+          <i class="fas fa-chevron-right"></i>
+          <a href="assets.html"><span class="zh">资产管理</span><span class="en">Assets</span></a>
+          <i class="fas fa-chevron-right"></i>
+          <span><span class="zh">交易记录</span><span class="en">Transaction History</span></span>
+        </div>
+
+        <div class="content-header">
+          <h1 class="page-title">
+            <span class="zh">交易记录</span>
+            <span class="en">Transaction History</span>
+          </h1>
+          <a href="assets.html" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i>
+            <span class="zh" style="margin-left:8px">返回资产页面</span>
+            <span class="en" style="margin-left:8px">Back to Assets</span>
+          </a>
+        </div>
+
+        <div class="transactions-filter">
+          <div class="filter-item">
+            <label class="filter-label">
+              <span class="zh">类型</span>
+              <span class="en">Type</span>
+            </label>
+            <select class="filter-select" id="type-filter">
+              <option value="all">
+                <span class="zh">全部</span>
+                <span class="en">All</span>
+              </option>
+              <option value="deposit">
+                <span class="zh">充值</span>
+                <span class="en">Deposit</span>
+              </option>
+              <option value="withdraw">
+                <span class="zh">提现</span>
+                <span class="en">Withdraw</span>
+              </option>
+              <option value="transfer">
+                <span class="zh">转账</span>
+                <span class="en">Transfer</span>
+              </option>
+              <option value="trade">
+                <span class="zh">交易</span>
+                <span class="en">Trade</span>
+              </option>
+              <option value="fee">
+                <span class="zh">手续费</span>
+                <span class="en">Fee</span>
+              </option>
+              <option value="margin">
+                <span class="zh">保证金</span>
+                <span class="en">Margin</span>
+              </option>
+            </select>
+          </div>
+          
+          <div class="filter-item">
+            <label class="filter-label">
+              <span class="zh">币种</span>
+              <span class="en">Currency</span>
+            </label>
+            <select class="filter-select" id="currency-filter">
+              <option value="all">
+                <span class="zh">全部</span>
+                <span class="en">All</span>
+              </option>
+              <option value="usdt">USDT</option>
+              <option value="usdc">USDC</option>
+            </select>
+          </div>
+          
+          <div class="filter-item">
+            <label class="filter-label">
+              <span class="zh">状态</span>
+              <span class="en">Status</span>
+            </label>
+            <select class="filter-select" id="status-filter">
+              <option value="all">
+                <span class="zh">全部</span>
+                <span class="en">All</span>
+              </option>
+              <option value="completed">
+                <span class="zh">已完成</span>
+                <span class="en">Completed</span>
+              </option>
+              <option value="pending">
+                <span class="zh">处理中</span>
+                <span class="en">Pending</span>
+              </option>
+              <option value="failed">
+                <span class="zh">失败</span>
+                <span class="en">Failed</span>
+              </option>
+            </select>
+          </div>
+          
+          <div class="filter-item">
+            <label class="filter-label">
+              <span class="zh">网络</span>
+              <span class="en">Network</span>
+            </label>
+            <select class="filter-select" id="network-filter">
+              <option value="all">
+                <span class="zh">全部</span>
+                <span class="en">All</span>
+              </option>
+              <option value="btc">BTC</option>
+              <option value="eth">ETH</option>
+              <option value="tron">TRON</option>
+            </select>
+          </div>
+          
+          <div class="filter-item">
+            <label class="filter-label">
+              <span class="zh">交易类别</span>
+              <span class="en">Category</span>
+            </label>
+            <select class="filter-select" id="category-filter">
+              <option value="all">
+                <span class="zh">全部</span>
+                <span class="en">All</span>
+              </option>
+              <option value="otc">
+                <span class="zh">场外交易</span>
+                <span class="en">OTC</span>
+              </option>
+              <option value="margin">
+                <span class="zh">保证金操作</span>
+                <span class="en">Margin Operations</span>
+              </option>
+              <option value="settlement">
+                <span class="zh">商家结算</span>
+                <span class="en">Merchant Settlement</span>
+              </option>
+            </select>
+          </div>
+          
+          <div class="filter-item" style="margin-left: auto">
+            <button class="btn btn-outline" id="reset-filters">
+              <span class="zh">重置</span>
+              <span class="en">Reset</span>
+            </button>
+          </div>
+        </div>
+
+        <table class="transactions-table">
+          <thead>
+            <tr>
+              <th>
+                <span class="zh">时间</span>
+                <span class="en">Time</span>
+              </th>
+              <th>
+                <span class="zh">类型</span>
+                <span class="en">Type</span>
+              </th>
+              <th>
+                <span class="zh">金额</span>
+                <span class="en">Amount</span>
+              </th>
+              <th>
+                <span class="zh">网络</span>
+                <span class="en">Network</span>
+              </th>
+              <th>
+                <span class="zh">状态</span>
+                <span class="en">Status</span>
+              </th>
+              <th>
+                <span class="zh">手续费</span>
+                <span class="en">Fee</span>
+              </th>
+              <th>
+                <span class="zh">操作</span>
+                <span class="en">Action</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="transaction-date">2023-10-15 14:23:45</td>
+              <td>
+                <span class="transaction-type deposit">
+                  <span class="zh">充值</span>
+                  <span class="en">Deposit</span>
+                </span>
+              </td>
+              <td class="transaction-amount positive">+10,000.00 USDT</td>
+              <td>TRON</td>
+              <td>
+                <span class="transaction-status completed">
+                  <span class="zh">已完成</span>
+                  <span class="en">Completed</span>
+                </span>
+              </td>
+              <td>0.00 USDT</td>
+              <td>
+                <a href="assets-transaction-details.html?id=tx123456" class="transaction-action">
+                  <span class="zh">详情</span>
+                  <span class="en">Details</span>
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td class="transaction-date">2023-10-14 11:20:15</td>
+              <td>
+                <span class="transaction-type margin">
+                  <span class="zh">保证金锁定</span>
+                  <span class="en">Margin Lock</span>
+                </span>
+              </td>
+              <td class="transaction-amount negative">-5,000.00 USDT</td>
+              <td>-</td>
+              <td>
+                <span class="transaction-status completed">
+                  <span class="zh">已完成</span>
+                  <span class="en">Completed</span>
+                </span>
+              </td>
+              <td>0.00 USDT</td>
+              <td>
+                <a href="assets-transaction-details.html?id=tx123457" class="transaction-action">
+                  <span class="zh">详情</span>
+                  <span class="en">Details</span>
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td class="transaction-date">2023-10-13 09:15:32</td>
+              <td>
+                <span class="transaction-type withdraw">
+                  <span class="zh">提现</span>
+                  <span class="en">Withdraw</span>
+                </span>
+              </td>
+              <td class="transaction-amount negative">-2,000.00 USDT</td>
+              <td>ETH</td>
+              <td>
+                <span class="transaction-status completed">
+                  <span class="zh">已完成</span>
+                  <span class="en">Completed</span>
+                </span>
+              </td>
+              <td>5.00 USDT</td>
+              <td>
+                <a href="assets-transaction-details.html?id=tx123458" class="transaction-action">
+                  <span class="zh">详情</span>
+                  <span class="en">Details</span>
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td class="transaction-date">2023-10-12 16:42:18</td>
+              <td>
+                <span class="transaction-type fee">
+                  <span class="zh">交易手续费</span>
+                  <span class="en">Trading Fee</span>
+                </span>
+              </td>
+              <td class="transaction-amount negative">-35.00 USDT</td>
+              <td>-</td>
+              <td>
+                <span class="transaction-status completed">
+                  <span class="zh">已完成</span>
+                  <span class="en">Completed</span>
+                </span>
+              </td>
+              <td>0.00 USDT</td>
+              <td>
+                <a href="assets-transaction-details.html?id=tx123459" class="transaction-action">
+                  <span class="zh">详情</span>
+                  <span class="en">Details</span>
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td class="transaction-date">2023-10-10 08:30:15</td>
+              <td>
+                <span class="transaction-type margin">
+                  <span class="zh">保证金解锁</span>
+                  <span class="en">Margin Release</span>
+                </span>
+              </td>
+              <td class="transaction-amount positive">+3,000.00 USDT</td>
+              <td>-</td>
+              <td>
+                <span class="transaction-status completed">
+                  <span class="zh">已完成</span>
+                  <span class="en">Completed</span>
+                </span>
+              </td>
+              <td>0.00 USDT</td>
+              <td>
+                <a href="assets-transaction-details.html?id=tx123460" class="transaction-action">
+                  <span class="zh">详情</span>
+                  <span class="en">Details</span>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="pagination">
+          <div class="page-item disabled">
+            <i class="fas fa-chevron-left"></i>
+          </div>
+          <div class="page-item active">1</div>
+          <div class="page-item">2</div>
+          <div class="page-item">3</div>
+          <div class="page-item">
+            <i class="fas fa-chevron-right"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <iframe src="../../components/footer/footer.html" class="footer-iframe"></iframe>
+
+  <script>
+    // 监听语言切换消息
+    window.addEventListener('message', function(event) {
+      if (event.data.type === 'languageChange') {
+        document.documentElement.lang = event.data.language;
+        localStorage.setItem('preferred_language', event.data.language);
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedLang = localStorage.getItem('preferred_language') || 'en-US';
+      document.documentElement.lang = savedLang;
+
+      // 重置过滤器
+      document.getElementById('reset-filters').addEventListener('click', function() {
+        document.querySelectorAll('.filter-select').forEach(select => {
+          select.value = 'all';
+        });
+        // 这里应该触发数据重新加载
+      });
+    });
+  </script>
+</body>
+</html> 

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">费用说明 - Paybree</span>
+        <span class="en">Fee Schedule - Paybree</span>
+    </title>
+    <link rel="stylesheet" href="/css/global.css">
+    <style>
+        :root {
+            --primary-color: #16C784;
+            --secondary-color: #20E19F;
+            --background-color: #FFFFFF;
+            --background-light: #F5F5F5;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #E5E5E5;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 32px;
+            --border-radius: 16px;
+        }
+
+        /* Language Display */
+        .zh, .en {
+            display: none;
+        }
+
+        [lang="zh-CN"] .zh {
+            display: inline;
+        }
+
+        [lang="en-US"] .en {
+            display: inline;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.5;
+            background-color: var(--background-light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        /* 面包屑导航 */
+        .breadcrumb {
+            padding: var(--spacing-md) 0;
+            background-color: var(--background-color);
+            margin-top: 80px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .breadcrumb a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .breadcrumb span {
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        /* 主体内容 */
+        .main-content {
+            padding: var(--spacing-lg) 0;
+        }
+
+        /* 章节标题 */
+        .section-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        /* 费用卡片 */
+        .fees-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .fee-card {
+            background-color: var(--background-color);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .fee-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .fee-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .fee-card h3 img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .fee-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--spacing-md);
+        }
+
+        .fee-table th,
+        .fee-table td {
+            padding: var(--spacing-sm);
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .fee-table th {
+            font-weight: 600;
+            color: var(--text-primary);
+            background-color: var(--background-light);
+        }
+
+        .fee-table td {
+            color: var(--text-secondary);
+        }
+
+        .fee-note {
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-md);
+            background-color: var(--background-light);
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .fees-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+                padding: 0 var(--spacing-sm);
+            }
+
+            .section-title {
+                font-size: 24px;
+                padding: 0 var(--spacing-sm);
+            }
+
+            .fee-card {
+                padding: var(--spacing-md);
+            }
+
+            .fee-table th,
+            .fee-table td {
+                padding: var(--spacing-xs);
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <iframe src="../components/header/guest.html" frameborder="0" style="width: 100%; height: 80px; position: fixed; top: 0; left: 0; z-index: 1000;"></iframe>
+
+    <!-- 面包屑导航 -->
+    <nav class="breadcrumb">
+        <div class="container">
+            <a href="/">
+                <span class="zh">首页</span>
+                <span class="en">Home</span>
+            </a>
+            <span> / </span>
+            <span>
+                <span class="zh">费用说明</span>
+                <span class="en">Fee Schedule</span>
+            </span>
+        </div>
+    </nav>
+
+    <!-- 主体内容 -->
+    <main class="main-content">
+        <div class="container">
+            <div class="fees-header">
+                <h1 class="fees-title">
+                    <span class="zh">费率说明</span>
+                    <span class="en">Fee Schedule</span>
+                </h1>
+                <p class="fees-subtitle">
+                    <span class="zh">了解我们的交易费率结构</span>
+                    <span class="en">Learn about our trading fee structure</span>
+                </p>
+            </div>
+            <div class="fees-content">
+                <div class="fee-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>
+                                    <span class="zh">交易金额</span>
+                                    <span class="en">Transaction Amount</span>
+                                </th>
+                                <th>
+                                    <span class="zh">费率</span>
+                                    <span class="en">Fee Rate</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <span class="zh">0-1000 USDT</span>
+                                    <span class="en">0-1000 USDT</span>
+                                </td>
+                                <td>0.5%</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="zh">1000-10000 USDT</span>
+                                    <span class="en">1000-10000 USDT</span>
+                                </td>
+                                <td>0.3%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fee-notes">
+                    <h3>
+                        <span class="zh">注意事项</span>
+                        <span class="en">Notes</span>
+                    </h3>
+                    <ul>
+                        <li>
+                            <span class="zh">费率会根据市场情况调整</span>
+                            <span class="en">Fees may be adjusted based on market conditions</span>
+                        </li>
+                        <li>
+                            <span class="zh">大额交易可申请优惠费率</span>
+                            <span class="en">Discount rates available for large transactions</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航栏 -->
+    <iframe src="../components/footer/index.html" frameborder="0" style="width: 100%; height: 400px;"></iframe>
+
+    <script>
+        // Language Switching
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial language from localStorage or default to English
+            const currentLang = localStorage.getItem('preferred_language') || 'en-US';
+            document.documentElement.lang = currentLang;
+            
+            // Listen for language change messages from parent
+            window.addEventListener('message', function(event) {
+                if (event.data.type === 'LANGUAGE_CHANGE') {
+                    const lang = event.data.language;
+                    document.documentElement.lang = lang;
+                    localStorage.setItem('preferred_language', lang);
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

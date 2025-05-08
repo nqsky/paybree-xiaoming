@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">商务合作 - Paybree</span>
+        <span class="en">Business Cooperation - Paybree</span>
+    </title>
+    <link rel="stylesheet" href="/css/global.css">
+    <style>
+        :root {
+            --primary-color: #16C784;
+            --secondary-color: #20E19F;
+            --background-color: #FFFFFF;
+            --background-light: #F5F5F5;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #E5E5E5;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 32px;
+            --border-radius: 16px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.5;
+            background-color: var(--background-light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        /* 面包屑导航 */
+        .breadcrumb {
+            padding: var(--spacing-md) 0;
+            background-color: var(--background-color);
+            margin-top: 80px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .breadcrumb a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .breadcrumb span {
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        /* 主体内容 */
+        .main-content {
+            padding: var(--spacing-lg) 0;
+        }
+
+        .business-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--background-color);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 标题样式 */
+        .section-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .business-content h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: var(--spacing-lg) 0 var(--spacing-md);
+            display: flex;
+            align-items: center;
+        }
+
+        .business-content h2::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background-color: var(--primary-color);
+            margin-right: var(--spacing-sm);
+            border-radius: 2px;
+        }
+
+        /* 合作方式卡片 */
+        .cooperation-types {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+        }
+
+        .cooperation-card {
+            background-color: var(--background-light);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            transition: transform 0.3s ease;
+        }
+
+        .cooperation-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .cooperation-card h3 {
+            font-size: 18px;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .cooperation-card p {
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* 合作优势列表 */
+        .advantages-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-lg);
+            margin: var(--spacing-lg) 0;
+        }
+
+        .advantage-item {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+
+        .advantage-icon {
+            width: 48px;
+            height: 48px;
+            background-color: var(--background-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+        }
+
+        .advantage-content h3 {
+            font-size: 16px;
+            color: var(--text-primary);
+            margin: 0 0 var(--spacing-xs);
+        }
+
+        .advantage-content p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* 联系方式 */
+        .contact-info {
+            background-color: var(--background-light);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+
+        .contact-info p {
+            margin: var(--spacing-sm) 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .contact-info svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary-color);
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 var(--spacing-sm);
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .cooperation-types,
+            .advantages-list {
+                grid-template-columns: 1fr;
+            }
+
+            .business-content {
+                padding: var(--spacing-md);
+            }
+        }
+
+        /* 语言切换样式 */
+        .zh, .en {
+            display: none;
+        }
+        html[lang="zh-CN"] .zh {
+            display: inline;
+        }
+        html[lang="en-US"] .en {
+            display: inline;
+        }
+        html[lang="zh-CN"] .zh-block {
+            display: block;
+        }
+        html[lang="en-US"] .en-block {
+            display: block;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 语言切换
+            function changeLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.querySelectorAll('.zh').forEach(el => {
+                    el.style.display = (lang === 'zh-CN') ? 'inline' : 'none';
+                });
+                document.querySelectorAll('.en').forEach(el => {
+                    el.style.display = (lang === 'en-US') ? 'inline' : 'none';
+                });
+                localStorage.setItem('preferred_language', lang);
+                // 通知父页面（如果有）
+                if (window.parent !== window) {
+                    window.parent.postMessage({ type: 'languageChange', language: lang }, '*');
+                }
+            }
+
+            // 初始化语言
+            const lang = localStorage.getItem('preferred_language') || 'en-US';
+            changeLanguage(lang);
+        });
+    </script>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <iframe src="../components/header/guest.html" frameborder="0" style="width: 100%; height: 80px; position: fixed; top: 0; left: 0; z-index: 1000;"></iframe>
+
+    <!-- 面包屑导航 -->
+    <nav class="breadcrumb">
+        <div class="container">
+            <a href="/">
+                <span class="zh">首页</span>
+                <span class="en">Home</span>
+            </a> > <span>
+                <span class="zh">商务合作</span>
+                <span class="en">Business Cooperation</span>
+            </span>
+        </div>
+    </nav>
+
+    <!-- 页面主体内容 -->
+    <main class="main-content">
+        <div class="container">
+            <div class="business-content">
+                <h1 class="section-title">
+                    <span class="zh">商务合作</span>
+                    <span class="en">Business Cooperation</span>
+                </h1>
+
+                <h2>
+                    <span class="zh">合作方式</span>
+                    <span class="en">Cooperation Types</span>
+                </h2>
+                <div class="cooperation-types">
+                    <div class="cooperation-card">
+                        <h3>
+                            <span class="zh">商家入驻</span>
+                            <span class="en">Merchant Onboarding</span>
+                        </h3>
+                        <p>
+                            <span class="zh">成为我们的认证商家，享受平台流量支持和专业服务，打造您的数字货币交易品牌。我们提供完整的商家解决方案，帮助您快速开展业务。</span>
+                            <span class="en">Become our certified merchant and enjoy platform traffic support and professional services to build your digital currency trading brand. We provide complete merchant solutions to help you quickly start your business.</span>
+                        </p>
+                    </div>
+                    <div class="cooperation-card">
+                        <h3>
+                            <span class="zh">支付通道</span>
+                            <span class="en">Payment Channels</span>
+                        </h3>
+                        <p>
+                            <span class="zh">如果您是支付服务提供商，欢迎与我们合作，共同为用户提供更多元化的支付选择。我们支持各类合规的支付方式接入。</span>
+                            <span class="en">If you are a payment service provider, we welcome cooperation to provide users with more diversified payment options. We support various compliant payment methods.</span>
+                        </p>
+                    </div>
+                    <div class="cooperation-card">
+                        <h3>
+                            <span class="zh">流量合作</span>
+                            <span class="en">Traffic Partnership</span>
+                        </h3>
+                        <p>
+                            <span class="zh">面向各类媒体、社区、KOL开放合作，共同推广数字货币交易服务，实现流量价值最大化。我们提供具有竞争力的佣金方案。</span>
+                            <span class="en">Open to cooperation with various media, communities, and KOLs to promote digital currency trading services and maximize traffic value. We offer competitive commission plans.</span>
+                        </p>
+                    </div>
+                    <div class="cooperation-card">
+                        <h3>
+                            <span class="zh">技术合作</span>
+                            <span class="en">Technical Cooperation</span>
+                        </h3>
+                        <p>
+                            <span class="zh">为寻求数字货币交易解决方案的机构提供技术支持，包括API接入、白标服务等，助力您快速构建自己的交易平台。</span>
+                            <span class="en">Provide technical support for institutions seeking digital currency trading solutions, including API integration and white-label services, helping you quickly build your own trading platform.</span>
+                        </p>
+                    </div>
+                </div>
+
+                <h2>
+                    <span class="zh">合作优势</span>
+                    <span class="en">Cooperation Advantages</span>
+                </h2>
+                <div class="advantages-list">
+                    <div class="advantage-item">
+                        <div class="advantage-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="advantage-content">
+                            <h3>
+                                <span class="zh">安全可靠</span>
+                                <span class="en">Secure & Reliable</span>
+                            </h3>
+                            <p>
+                                <span class="zh">多重安全机制保障交易安全，完善的资金托管体系</span>
+                                <span class="en">Multiple security mechanisms ensure transaction safety, complete fund custody system</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="advantage-item">
+                        <div class="advantage-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="advantage-content">
+                            <h3>
+                                <span class="zh">流量支持</span>
+                                <span class="en">Traffic Support</span>
+                            </h3>
+                            <p>
+                                <span class="zh">平台优质流量支持，助力业务快速成长</span>
+                                <span class="en">Platform high-quality traffic support, helping business grow rapidly</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="advantage-item">
+                        <div class="advantage-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <div class="advantage-content">
+                            <h3>
+                                <span class="zh">专业服务</span>
+                                <span class="en">Professional Service</span>
+                            </h3>
+                            <p>
+                                <span class="zh">7*24小时专业客服团队，提供全方位支持</span>
+                                <span class="en">24/7 professional customer service team, providing comprehensive support</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="advantage-item">
+                        <div class="advantage-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <div class="advantage-content">
+                            <h3>
+                                <span class="zh">技术支持</span>
+                                <span class="en">Technical Support</span>
+                            </h3>
+                            <p>
+                                <span class="zh">专业的技术团队，提供稳定可靠的技术支持</span>
+                                <span class="en">Professional technical team providing stable and reliable technical support</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>
+                    <span class="zh">联系方式</span>
+                    <span class="en">Contact Us</span>
+                </h2>
+                <div class="contact-info">
+                    <p>
+                        <i class="fas fa-envelope"></i>
+                        <span class="zh">商务合作邮箱：business@paybree.com</span>
+                        <span class="en">Business Email: business@paybree.com</span>
+                    </p>
+                    <p>
+                        <i class="fas fa-phone"></i>
+                        <span class="zh">商务合作电话：400-888-8888</span>
+                        <span class="en">Business Phone: 400-888-8888</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航栏 -->
+    <footer class="footer">
+        <div class="container" style="text-align: center;">
+            <div style="margin-bottom: var(--spacing-sm);">
+                <span class="zh">© 2025 Paybree 版权所有</span>
+                <span class="en">© 2025 Paybree. All rights reserved.</span>
+            </div>
+            <div class="footer-language">
+                <select class="language-select" onchange="changeLanguage(this.value)">
+                    <option value="zh-CN">简体中文</option>
+                    <option value="en-US">English</option>
+                </select>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 

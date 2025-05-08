@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景圆圈 -->
+    <circle cx="32" cy="32" r="32" fill="#EDFAF6"/>
+    
+    <!-- 交易图标 - 双向箭头和货币符号 -->
+    <path d="M20 28H44" stroke="#16C784" stroke-width="3" stroke-linecap="round"/>
+    <path d="M38 22L44 28L38 34" stroke="#16C784" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <path d="M44 36H20" stroke="#16C784" stroke-width="3" stroke-linecap="round"/>
+    <path d="M26 30L20 36L26 42" stroke="#16C784" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- 货币符号 -->
+    <circle cx="32" cy="32" r="6" fill="white" stroke="#16C784" stroke-width="2"/>
+    <path d="M32 29V35" stroke="#16C784" stroke-width="2" stroke-linecap="round"/>
+    <path d="M34 31H31C30.4477 31 30 31.4477 30 32C30 32.5523 30.4477 33 31 33H33C33.5523 33 34 33.4477 34 34C34 34.5523 33.5523 35 33 35H30" stroke="#16C784" stroke-width="2" stroke-linecap="round"/>
+</svg> 

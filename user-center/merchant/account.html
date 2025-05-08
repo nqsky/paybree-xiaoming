@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">账户管理 - Paybree</span>
+        <span class="en">Account Management - Paybree</span>
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* 语言切换样式 */
+        .zh, .en {
+            display: none;
+        }
+        html[lang="zh-CN"] .zh {
+            display: inline;
+        }
+        html[lang="en-US"] .en {
+            display: inline;
+        }
+        html[lang="zh-CN"] .zh-block {
+            display: block;
+        }
+        html[lang="en-US"] .en-block {
+            display: block;
+        }
+        :root {
+            --color-white: #fff;
+            --color-gray-50: #f9fafb;
+            --color-gray-100: #f3f4f6;
+            --color-gray-200: #e5e7eb;
+            --color-gray-300: #d1d5db;
+            --color-gray-500: #6b7280;
+            --color-gray-600: #4b5563;
+            --color-gray-700: #374151;
+            --color-gray-900: #111827;
+            --color-primary: #16C36A;
+            --color-primary-dark: #12a85a;
+            --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+            background: var(--color-gray-50);
+        }
+        iframe {
+            border: none;
+            width: 100%;
+        }
+        .header-iframe {
+            height: 80px;
+        }
+        .footer-iframe {
+            height: 100px;
+        }
+        .user-center {
+            display: flex;
+            min-height: calc(100vh - 180px);
+            padding: 24px 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 24px;
+            width: 100%;
+        }
+        .sidebar {
+            width: 240px;
+            background: var(--color-white);
+            border-radius: 12px;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+            padding: 16px 0;
+        }
+        .sidebar .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--color-gray-600);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        .sidebar .nav-item:hover {
+            background: var(--color-gray-50);
+            color: var(--color-primary);
+        }
+        .sidebar .nav-item.active {
+            background: var(--color-primary);
+            color: #fff;
+        }
+        .sidebar .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            min-height: 600px;
+            width: 0;
+        }
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 32px;
+            color: var(--color-gray-500);
+            font-size: 15px;
+            width: 100%;
+            max-width: 700px;
+        }
+        .breadcrumb a {
+            color: var(--color-gray-600);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--color-primary);
+        }
+        .breadcrumb i {
+            font-size: 12px;
+        }
+        .card {
+            background: var(--color-white);
+            border-radius: 12px;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+            width: 100%;
+        }
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--color-gray-100);
+        }
+        .card-body {
+            padding: 24px;
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+            margin: 0;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+        }
+        .btn-outline-primary {
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+            background: transparent;
+        }
+        .btn-outline-primary:hover {
+            background: var(--color-primary);
+            color: #fff;
+        }
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--color-gray-100);
+        }
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            width: 120px;
+            color: var(--color-gray-600);
+            font-size: 14px;
+        }
+        .info-value {
+            flex: 1;
+            color: var(--color-gray-900);
+            font-size: 14px;
+        }
+        .info-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-success {
+            background: #ECFDF5;
+            color: #059669;
+        }
+        .badge-warning {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+        .badge-danger {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+        .quick-actions {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .quick-action-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px;
+            background: var(--color-white);
+            border-radius: 12px;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .quick-action-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .quick-action-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--color-gray-50);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-primary);
+            font-size: 20px;
+        }
+        .quick-action-text {
+            font-size: 14px;
+            color: var(--color-gray-700);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <iframe src="/components/header/logged-in.html" class="header-iframe"></iframe>
+
+    <!-- 主内容区 -->
+    <div class="user-center">
+        <div class="container">
+            <!-- 侧边栏 -->
+            <div class="sidebar">
+                <a href="/user-center/merchant/account.html" class="nav-item active">
+                    <i class="fas fa-user"></i>
+                    <span class="zh">账号管理</span>
+                    <span class="en">Account</span>
+                </a>
+                <a href="/user-center/merchant/assets.html" class="nav-item">
+                    <i class="fas fa-wallet"></i>
+                    <span class="zh">资产管理</span>
+                    <span class="en">Assets</span>
+                </a>
+                <a href="/user-center/merchant/quote-management" class="nav-item">
+                    <i class="fas fa-tags"></i>
+                    <span class="zh">报价管理</span>
+                    <span class="en">Quotes</span>
+                </a>
+                <a href="/user-center/merchant/messages.html" class="nav-item">
+                    <i class="fas fa-envelope"></i>
+                    <span class="zh">系统通知</span>
+                    <span class="en">Messages</span>
+                </a>
+            </div>
+
+            <!-- 内容区 -->
+            <div class="content">
+                <div class="breadcrumb">
+                    <a href="/">
+                        <span class="zh">首页</span>
+                        <span class="en">Home</span>
+                    </a>
+                    <i class="fas fa-chevron-right"></i>
+                    <a href="/user-center/merchant/account.html">
+                        <span class="zh">承兑商中心</span>
+                        <span class="en">Merchant Center</span>
+                    </a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>
+                        <span class="zh">账号管理</span>
+                        <span class="en">Account</span>
+                    </span>
+                </div>
+
+                <!-- 基本信息管理 -->
+                <div class="card" style="margin-bottom: 24px;">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <span class="zh">基本信息管理</span>
+                            <span class="en">Basic Information</span>
+                        </h5>
+                    </div>
+                    <div class="card-body" style="display: flex; align-items: center; gap: 32px;">
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <a href="edit-avatar.html" class="avatar-preview" style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 2px solid #f3f4f6; display: block;">
+                                <img src="../../assets/images/avatar.png" alt="商家头像" style="width: 100%; height: 100%; object-fit: cover;">
+                            </a>
+                            <a href="edit-avatar.html" class="btn btn-outline-primary btn-sm" style="margin-top: 8px;">
+                                <span class="zh">更换头像</span>
+                                <span class="en">Change Avatar</span>
+                            </a>
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="info-item">
+                                <div class="info-label">
+                                    <span class="zh">商家名称</span>
+                                    <span class="en">Merchant Name</span>
+                                </div>
+                                <div class="info-value" id="merchantName">
+                                    <span class="zh">Paybree商家</span>
+                                    <span class="en">Paybree Merchant</span>
+                                </div>
+                                <div class="info-actions">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="openEditModal('name')">
+                                        <span class="zh">编辑</span>
+                                        <span class="en">Edit</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">
+                                    <span class="zh">商家简介</span>
+                                    <span class="en">Merchant Description</span>
+                                </div>
+                                <div class="info-value" id="merchantDesc">
+                                    <span class="zh">专业的数字资产交易服务商，提供安全、便捷的交易体验。</span>
+                                    <span class="en">Professional digital asset trading service provider, offering secure and convenient trading experience.</span>
+                                </div>
+                                <div class="info-actions">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="openEditModal('desc')">
+                                        <span class="zh">编辑</span>
+                                        <span class="en">Edit</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 快捷操作 -->
+                <!-- 账号管理 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <span class="zh">账号管理</span>
+                            <span class="en">Account Management</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <span class="zh">登录邮箱</span>
+                                <span class="en">Login Email</span>
+                            </div>
+                            <div class="info-value">merchant@Paybree.com</div>
+                            <div class="info-actions">
+                                <a href="edit-email.html" class="btn btn-outline-primary btn-sm">
+                                    <span class="zh">替换</span>
+                                    <span class="en">Change</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 认证状态 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <span class="zh">认证状态</span>
+                            <span class="en">Verification Status</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <span class="zh">承兑商认证</span>
+                                <span class="en">Merchant Verification</span>
+                            </div>
+                            <div class="info-value">
+                                <span class="badge badge-success">
+                                    <span class="zh">已认证</span>
+                                    <span class="en">Verified</span>
+                                </span>
+                            </div>
+                            <div class="info-actions">
+                                <a href="kyc-info.html" class="btn btn-outline-primary btn-sm">
+                                    <span class="zh">查看认证信息</span>
+                                    <span class="en">View Details</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <iframe src="/components/footer/logged-in.html" class="footer-iframe"></iframe>
+
+    <!-- 弹窗模态框 -->
+    <div id="editModal" style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);align-items:center;justify-content:center;">
+        <div style="background:#fff;border-radius:12px;min-width:320px;max-width:90vw;padding:32px 24px;box-shadow:0 4px 24px rgba(0,0,0,0.12);position:relative;">
+            <h4 id="modalTitle" style="margin:0 0 16px 0;font-size:18px;font-weight:600;color:#111827;">
+                <span class="zh">编辑</span>
+                <span class="en">Edit</span>
+            </h4>
+            <input id="modalInput" type="text" style="width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:6px;font-size:15px;margin-bottom:20px;display:none;">
+            <textarea id="modalTextarea" rows="4" style="width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:6px;font-size:15px;margin-bottom:20px;display:none;"></textarea>
+            <div style="display:flex;gap:16px;justify-content:flex-end;">
+                <button class="btn btn-outline-primary btn-sm" onclick="closeEditModal()">
+                    <span class="zh">取消</span>
+                    <span class="en">Cancel</span>
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="saveEditModal()">
+                    <span class="zh">保存</span>
+                    <span class="en">Save</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 邮箱替换弹窗 -->
+    <div id="emailModal" style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);align-items:center;justify-content:center;">
+        <div style="background:#fff;border-radius:12px;min-width:320px;max-width:90vw;padding:32px 24px;box-shadow:0 4px 24px rgba(0,0,0,0.12);position:relative;">
+            <h4 style="margin:0 0 16px 0;font-size:18px;font-weight:600;color:#111827;">
+                <span class="zh">替换登录邮箱</span>
+                <span class="en">Change Login Email</span>
+            </h4>
+            <input type="email" id="newEmail" placeholder="Enter new email address" style="width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:6px;font-size:15px;margin-bottom:12px;">
+            <div style="display:flex;gap:12px;margin-bottom:12px;">
+                <input type="text" id="verificationCode" placeholder="Enter verification code" style="flex:1;padding:10px 12px;border:1px solid #e5e7eb;border-radius:6px;font-size:15px;">
+                <button class="btn btn-outline-primary btn-sm" onclick="sendVerificationCode()">
+                    <span class="zh">获取验证码</span>
+                    <span class="en">Get Code</span>
+                </button>
+            </div>
+            <div style="display:flex;gap:16px;justify-content:flex-end;">
+                <button class="btn btn-outline-primary btn-sm" onclick="closeEmailModal()">
+                    <span class="zh">取消</span>
+                    <span class="en">Cancel</span>
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="confirmEmailModal()">
+                    <span class="zh">确认替换</span>
+                    <span class="en">Confirm</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 认证信息弹窗 -->
+    <div id="authModal" style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);align-items:center;justify-content:center;">
+        <div style="background:#fff;border-radius:12px;min-width:320px;max-width:90vw;padding:32px 24px;box-shadow:0 4px 24px rgba(0,0,0,0.12);position:relative;">
+            <h4 style="margin:0 0 16px 0;font-size:18px;font-weight:600;color:#111827;">
+                <span class="zh">认证信息</span>
+                <span class="en">Verification Details</span>
+            </h4>
+            <div style="margin-bottom:16px;">
+                <div style="margin-bottom:8px;">
+                    <span class="zh">认证状态：</span>
+                    <span class="en">Status: </span>
+                    <span class="badge badge-success">
+                        <span class="zh">已认证</span>
+                        <span class="en">Verified</span>
+                    </span>
+                </div>
+                <div style="margin-bottom:8px;">
+                    <span class="zh">认证时间：</span>
+                    <span class="en">Verification Date: </span>
+                    2024-05-01 12:00:00
+                </div>
+                <div>
+                    <span class="zh">认证类型：</span>
+                    <span class="en">Type: </span>
+                    <span class="zh">企业认证</span>
+                    <span class="en">Business Verification</span>
+                </div>
+            </div>
+            <div style="display:flex;gap:16px;justify-content:flex-end;">
+                <button class="btn btn-outline-primary btn-sm" onclick="closeAuthModal()">
+                    <span class="zh">关闭</span>
+                    <span class="en">Close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 语言切换
+        function changeLanguage(lang) {
+            document.documentElement.lang = lang;
+            localStorage.setItem('preferred_language', lang);
+            // 通知父页面（如果有）
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'languageChange', language: lang }, '*');
+            }
+        }
+
+        // 初始化语言
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('preferred_language') || 'en-US';
+            changeLanguage(lang);
+        });
+
+        let editingType = '';
+        function openEditModal(type) {
+            editingType = type;
+            document.getElementById('editModal').style.display = 'flex';
+            if(type === 'name') {
+                document.getElementById('modalTitle').innerHTML = document.documentElement.lang === 'zh-CN' ? '编辑商家名称' : 'Edit Merchant Name';
+                document.getElementById('modalInput').style.display = '';
+                document.getElementById('modalTextarea').style.display = 'none';
+                document.getElementById('modalInput').value = document.getElementById('merchantName').innerText;
+            } else {
+                document.getElementById('modalTitle').innerHTML = document.documentElement.lang === 'zh-CN' ? '编辑商家简介' : 'Edit Merchant Description';
+                document.getElementById('modalInput').style.display = 'none';
+                document.getElementById('modalTextarea').style.display = '';
+                document.getElementById('modalTextarea').value = document.getElementById('merchantDesc').innerText;
+            }
+        }
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+        function saveEditModal() {
+            if(editingType === 'name') {
+                document.getElementById('merchantName').innerText = document.getElementById('modalInput').value;
+            } else {
+                document.getElementById('merchantDesc').innerText = document.getElementById('modalTextarea').value;
+            }
+            closeEditModal();
+        }
+        // 点击遮罩关闭弹窗
+        if(document.getElementById('editModal')){
+            document.getElementById('editModal').addEventListener('click', function(e) {
+                if(e.target === this) closeEditModal();
+            });
+        }
+        function openEmailModal() {
+            document.getElementById('emailModal').style.display = 'flex';
+        }
+        function closeEmailModal() {
+            document.getElementById('emailModal').style.display = 'none';
+        }
+        function sendVerificationCode() {
+            alert(document.documentElement.lang === 'zh-CN' ? '验证码已发送到您的新邮箱' : 'Verification code has been sent to your new email');
+        }
+        function confirmEmailModal() {
+            var email = document.getElementById('newEmail').value;
+            var code = document.getElementById('verificationCode').value;
+            if(!email || !code) {
+                alert(document.documentElement.lang === 'zh-CN' ? '请填写完整信息' : 'Please fill in all information');
+                return;
+            }
+            alert(document.documentElement.lang === 'zh-CN' ? '邮箱替换成功！' : 'Email changed successfully!');
+            closeEmailModal();
+        }
+        function openAuthModal() {
+            document.getElementById('authModal').style.display = 'flex';
+        }
+        function closeAuthModal() {
+            document.getElementById('authModal').style.display = 'none';
+        }
+        // 点击遮罩关闭弹窗
+        if(document.getElementById('emailModal')){
+            document.getElementById('emailModal').addEventListener('click', function(e) {
+                if(e.target === this) closeEmailModal();
+            });
+        }
+        if(document.getElementById('authModal')){
+            document.getElementById('authModal').addEventListener('click', function(e) {
+                if(e.target === this) closeAuthModal();
+            });
+        }
+    </script>
+</body>
+</html> 

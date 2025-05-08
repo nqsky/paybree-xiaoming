@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">聊天窗口</span>
+        <span class="en">Chat Window</span>
+    </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <style>
+        /* 语言切换样式 */
+        .zh, .en {
+            display: none;
+        }
+
+        html[lang="zh-CN"] .zh {
+            display: inline !important;
+        }
+
+        html[lang="en-US"] .en {
+            display: inline !important;
+        }
+
+        html[lang="zh-CN"] .zh-block {
+            display: block !important;
+        }
+
+        html[lang="en-US"] .en-block {
+            display: block !important;
+        }
+
+        /* 语言选择器样式 */
+        .language-switch {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1000;
+        }
+
+        .language-select {
+            appearance: none;
+            background: var(--color-white);
+            border: 1px solid var(--color-gray-300);
+            border-radius: 4px;
+            color: var(--color-gray-600);
+            font-size: 14px;
+            padding: 6px 12px;
+            padding-right: 30px;
+            cursor: pointer;
+            min-width: 100px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .language-select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px rgba(22, 199, 132, 0.1);
+        }
+
+        .language-switch::after {
+            content: '';
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid var(--color-gray-600);
+            pointer-events: none;
+        }
+
+        .language-select option {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+            padding: 8px;
+        }
+
+        :root {
+            /* 主色调 */
+            --color-primary: #16C784;
+            --color-primary-hover: #20E19F;
+            --color-primary-light: #EDFAF6;
+            
+            /* 辅助色 */
+            --color-white: #FFFFFF;
+            --color-gray-100: #F5F5F5;
+            --color-gray-300: #E5E5E5;
+            --color-gray-500: #666666;
+            --color-gray-900: #333333;
+            
+            /* 功能色 */
+            --color-success: #16C784;
+            --color-warning: #FFB800;
+            --color-error: #FF4D4F;
+            --color-link: #1890FF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-gray-900);
+        }
+
+        /* 聊天窗口容器 */
+        .chat-container {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            width: 780px;
+            height: 600px;
+            background: var(--color-white);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 会话列表 */
+        .chat-sidebar {
+            width: 280px;
+            border-right: 1px solid var(--color-gray-300);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-sidebar-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--color-gray-300);
+        }
+
+        .chat-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .chat-item {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .chat-item:hover {
+            background-color: var(--color-primary-light);
+        }
+
+        .chat-item.active {
+            background-color: var(--color-primary-light);
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+            position: relative;
+        }
+
+        .chat-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .online-status {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--color-success);
+            border: 2px solid var(--color-white);
+        }
+
+        .chat-info {
+            flex: 1;
+        }
+
+        .chat-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .chat-preview {
+            color: var(--color-gray-500);
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .unread-badge {
+            background: var(--color-error);
+            color: var(--color-white);
+            font-size: 12px;
+            padding: 0 6px;
+            border-radius: 10px;
+            margin-left: 8px;
+        }
+
+        /* 聊天内容区 */
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--color-gray-300);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .merchant-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .merchant-name {
+            font-weight: 500;
+            margin-right: 8px;
+        }
+
+        .merchant-tag {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            background: var(--color-gray-100);
+        }
+
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message.received {
+            align-items: flex-start;
+        }
+
+        .message.sent {
+            align-items: flex-end;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 4px;
+        }
+
+        .message.received .message-content {
+            background: var(--color-white);
+        }
+
+        .message.sent .message-content {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: var(--color-gray-500);
+        }
+
+        .message-status {
+            font-size: 12px;
+            color: var(--color-gray-500);
+            display: flex;
+            align-items: center;
+        }
+
+        .system-message {
+            text-align: center;
+            margin: 16px 0;
+            color: var(--color-gray-500);
+            font-size: 12px;
+            background: var(--color-gray-100);
+            padding: 8px 16px;
+            border-radius: 16px;
+            display: inline-block;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* 保证金状态消息样式 */
+        .margin-status-message {
+            text-align: center;
+            margin: 16px 0;
+            font-size: 13px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 80%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 100%托管模式状态消息 */
+        .margin-status-escrow {
+            background: rgba(22, 199, 132, 0.1);
+            color: var(--color-primary);
+            border: 1px solid rgba(22, 199, 132, 0.2);
+        }
+
+        /* 无托管模式状态消息 */
+        .margin-status-direct {
+            background: rgba(255, 184, 0, 0.1);
+            color: var(--color-warning);
+            border: 1px solid rgba(255, 184, 0, 0.2);
+        }
+
+        /* 拒绝状态消息 */
+        .margin-status-rejected {
+            background: rgba(255, 77, 79, 0.1);
+            color: var(--color-error);
+            border: 1px solid rgba(255, 77, 79, 0.2);
+        }
+
+        /* 等待确认状态消息 */
+        .margin-status-waiting {
+            background: rgba(24, 144, 255, 0.1);
+            color: var(--color-link);
+            border: 1px solid rgba(24, 144, 255, 0.2);
+        }
+
+        /* 保证金协商 */
+        .margin-negotiation {
+            background: var(--color-white);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px auto;
+            width: 90%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .margin-title {
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: var(--color-gray-900);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .margin-title i {
+            color: var(--color-primary);
+        }
+
+        /* 保证金协商 - 输入方式选择 */
+        .margin-type {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .margin-type-option {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--color-gray-300);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--color-white);
+            color: var(--color-gray-900);
+        }
+
+        .margin-type-option:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .margin-type-option.active {
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .margin-type-option i {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 20px;
+        }
+
+        /* 比例输入部分 */
+        .margin-percentage {
+            display: none;
+        }
+
+        .margin-percentage.show {
+            display: block;
+        }
+
+        .margin-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .margin-option {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--color-white);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .margin-option i {
+            font-size: 24px;
+            color: var(--color-gray-600);
+        }
+
+        .margin-option-content {
+            flex: 1;
+        }
+
+        .margin-option-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 6px;
+            color: var(--color-gray-900);
+        }
+
+        .margin-option-desc {
+            font-size: 14px;
+            color: var(--color-gray-600);
+            line-height: 1.5;
+        }
+
+        /* 具体金额输入部分 */
+        .margin-amount {
+            display: none;
+        }
+
+        .margin-amount.show {
+            display: block;
+        }
+
+        .margin-amount-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--color-gray-300);
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .margin-amount-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        /* 结果显示区域样式 */
+        .margin-result {
+            padding: 16px;
+            background: var(--color-primary-light);
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+
+        .margin-result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .margin-result-row:not(:last-child) {
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(22, 199, 132, 0.1);
+        }
+
+        .margin-result-label {
+            color: var(--color-gray-500);
+            font-size: 14px;
+        }
+
+        .margin-result-amount {
+            color: var(--color-gray-900);
+            font-size: 14px;
+        }
+
+        .margin-result-amount.highlight {
+            color: var(--color-primary);
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .margin-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .margin-button {
+            padding: 8px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .margin-accept {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+        }
+
+        .margin-accept:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .margin-reject {
+            background: var(--color-white);
+            border: 1px solid var(--color-gray-300);
+            color: var(--color-gray-500);
+        }
+
+        .margin-reject:hover {
+            border-color: var(--color-error);
+            color: var(--color-error);
+        }
+
+        /* 输入区域 */
+        .chat-input {
+            padding: 16px;
+            border-top: 1px solid var(--color-gray-300);
+        }
+
+        .input-toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .toolbar-button {
+            padding: 8px 16px;
+            border: 1px solid var(--color-gray-300);
+            border-radius: 4px;
+            background: var(--color-white);
+            cursor: pointer;
+            color: var(--color-gray-500);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        .toolbar-button:hover {
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+            background: var(--color-primary-light);
+        }
+
+        .toolbar-button i {
+            font-size: 16px;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 12px;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--color-gray-300);
+            border-radius: 4px;
+            resize: none;
+            height: 60px;
+            font-family: inherit;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .send-button {
+            padding: 8px 24px;
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            align-self: flex-end;
+        }
+
+        .send-button:hover {
+            background: var(--color-primary-hover);
+        }
+
+        /* Toast 提示 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background: rgba(0, 0, 0, 0.8);
+            color: var(--color-white);
+            border-radius: 4px;
+            font-size: 14px;
+            display: none;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 自定义比例输入 */
+        .margin-custom {
+            display: none;
+            margin-bottom: 16px;
+        }
+
+        .margin-custom.show {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .margin-custom-input {
+            width: 100px;
+            padding: 8px 12px;
+            border: 1px solid var(--color-gray-300);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .margin-custom-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        /* 聊天消息保证金协商 */
+        .margin-negotiation-message {
+            width: 100%;
+            max-width: 80%;
+            margin-bottom: 16px;
+            padding: 16px;
+            background: var(--color-primary-light);
+            border-radius: 8px;
+            border-top-left-radius: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .margin-negotiation-title {
+            font-weight: 500;
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .margin-negotiation-title i {
+            font-size: 16px;
+        }
+
+        .margin-choice {
+            margin-top: 12px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .margin-choice-btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .margin-accept-btn {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+        }
+
+        .margin-accept-btn:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .margin-reject-btn {
+            background: var(--color-white);
+            border: 1px solid var(--color-gray-300);
+            color: var(--color-gray-500);
+        }
+
+        .margin-reject-btn:hover {
+            border-color: var(--color-error);
+            color: var(--color-error);
+        }
+
+        .margin-custom-btn {
+            background: var(--color-white);
+            border: 1px solid var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .margin-custom-btn:hover {
+            background: var(--color-primary-light);
+        }
+    </style>
+</head>
+<body>
+    <!-- 语言切换选择器 -->
+    <div class="language-switch">
+        <select class="language-select">
+            <option value="zh-CN">中文</option>
+            <option value="en-US">English</option>
+        </select>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-sidebar">
+            <div class="chat-sidebar-header">
+                <h2>
+                    <span class="zh">会话列表</span>
+                    <span class="en">Conversations</span>
+                </h2>
+            </div>
+            <div class="chat-list">
+                <div class="chat-item active">
+                    <div class="chat-avatar">
+                        <img src="/images/avatar-merchant.jpg" alt="商家头像">
+                        <div class="online-status"></div>
+                    </div>
+                    <div class="chat-info">
+                        <div class="chat-name">
+                            <span class="zh">商家客服</span>
+                            <span class="en">Merchant Support</span>
+                            <span class="unread-badge">3</span>
+                        </div>
+                        <div class="chat-preview">
+                            <span class="zh">您好，有什么可以帮您？</span>
+                            <span class="en">Hello, how can I help you?</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-main">
+            <div class="chat-header">
+                <div class="merchant-info">
+                    <div class="merchant-name">
+                        <span class="zh">商家客服</span>
+                        <span class="en">Merchant Support</span>
+                    </div>
+                    <div class="merchant-tag">
+                        <span class="zh">在线</span>
+                        <span class="en">Online</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-messages">
+                <div class="message-date">
+                    <span class="zh">今天</span>
+                    <span class="en">Today</span>
+                </div>
+                
+                <div class="message received">
+                    <div class="message-content">
+                        <span class="zh">您好，我对您的报价感兴趣</span>
+                        <span class="en">Hello, I'm interested in your offer</span>
+                    </div>
+                    <span class="message-time">10:15</span>
+                </div>
+                
+                <div class="message sent">
+                    <div class="message-content">
+                        <span class="zh">感谢您的关注！我们可以开始交易流程</span>
+                        <span class="en">Thank you for your interest! We can start the trading process</span>
+                    </div>
+                    <span class="message-time">10:16</span>
+                </div>
+                
+                <!-- 系统消息 -->
+                <div class="system-message">
+                    <span class="zh">系统提示：请选择保证金模式以继续交易</span>
+                    <span class="en">System prompt: Please select a margin mode to continue</span>
+                </div>
+                
+                <!-- 保证金协商消息 -->
+                <div class="message-row">
+                    <div class="message-avatar">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="John Doe">
+                    </div>
+                    <div class="message">
+                        <div class="message-sender">John Doe</div>
+                        <div class="message-content margin-negotiation-message">
+                            <div class="margin-negotiation-title">
+                                <i class="fas fa-shield-alt"></i>
+                                <span class="zh">保证金请求</span>
+                                <span class="en">Margin Request</span>
+                            </div>
+                            
+                            <div class="margin-details">
+                                <div class="margin-info-row">
+                                    <div class="margin-info-label">
+                                        <span class="zh">交易金额</span>
+                                        <span class="en">Trade Amount</span>
+                                    </div>
+                                    <div class="margin-info-value">5,000 USDT</div>
+                                </div>
+                                <div class="margin-info-row">
+                                    <div class="margin-info-label">
+                                        <span class="zh">请求保证金比例</span>
+                                        <span class="en">Requested Margin</span>
+                                    </div>
+                                    <div class="margin-info-value">25%</div>
+                                </div>
+                                <div class="margin-info-row">
+                                    <div class="margin-info-label">
+                                        <span class="zh">保证金金额</span>
+                                        <span class="en">Margin Amount</span>
+                                    </div>
+                                    <div class="margin-info-value highlight">1,250 USDT</div>
+                                </div>
+                                <div class="margin-info-row">
+                                    <div class="margin-info-label">
+                                        <span class="zh">特殊说明</span>
+                                        <span class="en">Special Note</span>
+                                    </div>
+                                    <div class="margin-info-value">
+                                        <span class="zh">我有良好的交易记录，希望减少保证金比例，谢谢理解。</span>
+                                        <span class="en">I have a good trading history and hope to reduce the margin ratio. Thank you for understanding.</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="margin-choice">
+                                <button class="margin-choice-btn margin-accept-btn">
+                                    <i class="fas fa-check"></i>
+                                    <span class="zh">接受</span>
+                                    <span class="en">Accept</span>
+                                </button>
+                                <button class="margin-choice-btn margin-reject-btn">
+                                    <i class="fas fa-times"></i>
+                                    <span class="zh">拒绝</span>
+                                    <span class="en">Reject</span>
+                                </button>
+                                <button class="margin-choice-btn margin-custom-btn">
+                                    <i class="fas fa-edit"></i>
+                                    <span class="zh">自定义</span>
+                                    <span class="en">Custom</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="message-time">15:32</div>
+                    </div>
+                </div>
+                
+                <!-- 可以在这里添加更多消息 -->
+            </div>
+            
+            <div class="chat-input">
+                <div class="input-toolbar">
+                    <button class="toolbar-button">
+                        <i class="far fa-image"></i>
+                        <span class="zh">图片</span>
+                        <span class="en">Image</span>
+                    </button>
+                    <button class="toolbar-button">
+                        <i class="far fa-file"></i>
+                        <span class="zh">文件</span>
+                        <span class="en">File</span>
+                    </button>
+                    <button class="toolbar-button margin-button">
+                        <i class="fas fa-shield-alt"></i>
+                        <span class="zh">保证金协商</span>
+                        <span class="en">Margin</span>
+                    </button>
+                </div>
+                <div class="input-area">
+                    <textarea class="message-input" placeholder="输入消息..."></textarea>
+                    <button class="send-button">
+                        <span class="zh">发送</span>
+                        <span class="en">Send</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="actionToast">操作成功</div>
+
+    <script>
+        // 初始化语言设置
+        document.addEventListener('DOMContentLoaded', function() {
+            // 从本地存储中获取语言设置，默认中文
+            const lang = localStorage.getItem('language') || 'zh-CN';
+            document.documentElement.lang = lang;
+            
+            // 设置语言选择器的值
+            const langSelect = document.querySelector('.language-select');
+            if (langSelect) {
+                langSelect.value = lang;
+                
+                // 监听语言切换
+                langSelect.addEventListener('change', function() {
+                    document.documentElement.lang = this.value;
+                    localStorage.setItem('language', this.value);
+                });
+            }
+            
+            // 保证金按钮点击事件
+            const marginButton = document.querySelector('.margin-button');
+            if (marginButton) {
+                marginButton.addEventListener('click', function() {
+                    // 实际项目中这里会打开保证金协商表单
+                    // 为了演示，我们显示一个提示
+                    showToast(document.documentElement.lang === 'zh-CN' ? '打开保证金协商' : 'Open margin negotiation');
+                });
+            }
+            
+            // 保证金消息中的按钮点击事件
+            const marginChoiceBtns = document.querySelectorAll('.margin-choice-btn');
+            marginChoiceBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    let action = '';
+                    if (this.classList.contains('margin-accept-btn')) {
+                        action = document.documentElement.lang === 'zh-CN' ? '接受保证金请求' : 'Accepted margin request';
+                    } else if (this.classList.contains('margin-reject-btn')) {
+                        action = document.documentElement.lang === 'zh-CN' ? '拒绝保证金请求' : 'Rejected margin request';
+                    } else if (this.classList.contains('margin-custom-btn')) {
+                        action = document.documentElement.lang === 'zh-CN' ? '自定义保证金请求' : 'Custom margin request';
+                    }
+                    
+                    showToast(action);
+                });
+            });
+        });
+        
+        // 显示提示信息
+        function showToast(message) {
+            const toast = document.getElementById('actionToast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html> 

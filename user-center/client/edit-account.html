@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><span class="zh">修改登录账号 - Paybree</span><span class="en">Change Login Account - Paybree</span></title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --color-primary: #16C36A;
+      --color-primary-dark: #12a85a;
+      --color-gray-50: #f9fafb;
+      --color-gray-100: #f3f4f6;
+      --color-gray-700: #374151;
+      --color-gray-900: #111827;
+      --color-white: #fff;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      background: var(--color-gray-50);
+    }
+    .zh { display: none; }
+    .en { display: block; }
+    body[lang="zh-CN"] .zh { display: block; }
+    body[lang="zh-CN"] .en { display: none; }
+    .container {
+      max-width: 400px;
+      margin: 48px auto;
+      background: var(--color-white);
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(22,195,106,0.08);
+      padding: 32px 24px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-gray-900);
+      margin-bottom: 28px;
+    }
+    .form-group {
+      width: 100%;
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .form-label {
+      color: var(--color-gray-700);
+      font-weight: 500;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--color-gray-100);
+      border-radius: 6px;
+      font-size: 16px;
+      background: var(--color-gray-50);
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px #e6f9f0;
+    }
+    .actions {
+      display: flex;
+      gap: 16px;
+      width: 100%;
+      justify-content: center;
+    }
+    .btn {
+      padding: 10px 24px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      background: var(--color-primary);
+      color: #fff;
+      transition: background 0.2s;
+    }
+    .btn:hover {
+      background: var(--color-primary-dark);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--color-primary);
+      color: var(--color-primary);
+    }
+    .btn-outline:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+    /* 验证码相关样式 */
+    .verification-group {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+    }
+    .verification-input {
+      flex: 1;
+    }
+    .send-code-btn {
+      width: 120px;
+      white-space: nowrap;
+    }
+    .send-code-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">
+      <span class="zh">修改登录账号</span>
+      <span class="en">Change Login Account</span>
+    </div>
+    <form>
+      <div class="form-group">
+        <label class="form-label">
+          <span class="zh">当前账号</span>
+          <span class="en">Current Account</span>
+        </label>
+        <input type="text" class="form-control" value="johndoe@example.com" readonly>
+      </div>
+      <div class="form-group">
+        <label class="form-label">
+          <span class="zh">新账号</span>
+          <span class="en">New Account</span>
+        </label>
+        <input type="email" class="form-control" placeholder="Enter new email address">
+      </div>
+      <div class="form-group">
+        <label class="form-label">
+          <span class="zh">验证码</span>
+          <span class="en">Verification Code</span>
+        </label>
+        <div class="verification-group">
+          <input type="text" class="form-control verification-input" placeholder="Enter verification code">
+          <button type="button" class="btn send-code-btn" disabled>
+            <span class="zh">60秒后重试</span>
+            <span class="en">Retry in 60s</span>
+          </button>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn" type="submit">
+          <span class="zh">保存</span>
+          <span class="en">Save</span>
+        </button>
+        <button class="btn-outline" type="button" onclick="window.history.back()">
+          <span class="zh">取消</span>
+          <span class="en">Cancel</span>
+        </button>
+      </div>
+    </form>
+  </div>
+  <script>
+    // 从 localStorage 获取语言设置
+    const savedLang = localStorage.getItem('language') || 'en-US';
+    document.body.lang = savedLang;
+
+    // 监听语言切换消息
+    window.addEventListener('message', function(event) {
+      if (event.data.type === 'languageChange') {
+        document.body.lang = event.data.language;
+        localStorage.setItem('language', event.data.language);
+      }
+    });
+  </script>
+</body>
+</html> 

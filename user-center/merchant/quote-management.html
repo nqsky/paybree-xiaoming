@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><span class="zh">报价管理 - Paybree</span><span class="en">Quote Management - Paybree</span></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --color-white: #fff;
+            --color-gray-50: #f9fafb;
+            --color-gray-100: #f3f4f6;
+            --color-gray-200: #e5e7eb;
+            --color-gray-300: #d1d5db;
+            --color-gray-500: #6b7280;
+            --color-gray-600: #4b5563;
+            --color-gray-700: #374151;
+            --color-gray-900: #111827;
+            --color-primary: #16C36A;
+            --color-primary-dark: #12a85a;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+            background: var(--color-gray-50);
+        }
+        iframe {
+            border: none;
+            width: 100%;
+        }
+        .header-iframe {
+            height: 80px;
+        }
+        .footer-iframe {
+            height: 100px;
+        }
+        .user-center {
+            display: flex;
+            min-height: calc(100vh - 180px);
+            padding: 24px 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 24px;
+            width: 100%;
+        }
+        .sidebar {
+            width: 240px;
+            background: var(--color-white);
+            border-radius: 12px;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+            padding: 16px 0;
+        }
+        .sidebar .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--color-gray-600);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        .sidebar .nav-item:hover {
+            background: var(--color-gray-50);
+            color: var(--color-primary);
+        }
+        .sidebar .nav-item.active {
+            background: var(--color-primary);
+            color: #fff;
+        }
+        .sidebar .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            min-height: 600px;
+            width: 0;
+        }
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 32px;
+            color: var(--color-gray-500);
+            font-size: 15px;
+            width: 100%;
+            max-width: 700px;
+        }
+        .breadcrumb a {
+            color: var(--color-gray-600);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--color-primary);
+        }
+        .breadcrumb i {
+            font-size: 12px;
+        }
+        .card {
+            background: var(--color-white);
+            border-radius: 12px;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+            width: 100%;
+        }
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--color-gray-100);
+        }
+        .card-body {
+            padding: 24px;
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+            margin: 0;
+        }
+        .form-row {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 180px;
+            flex: 1;
+        }
+        .form-label {
+            margin-bottom: 8px;
+            color: var(--color-gray-700);
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .form-control {
+            padding: 10px 12px;
+            border: 1px solid var(--color-gray-200);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--color-gray-900);
+        }
+        .form-actions {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+        }
+        .btn-outline-primary {
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+            background: transparent;
+        }
+        .btn-outline-primary:hover {
+            background: var(--color-primary);
+            color: #fff;
+        }
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .table th {
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 500;
+            color: var(--color-gray-600);
+            border-bottom: 1px solid var(--color-gray-200);
+        }
+        .table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--color-gray-100);
+        }
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-success {
+            background: #ECFDF5;
+            color: #059669;
+        }
+        .badge-warning {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+        .badge-danger {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+        .zh { display: none; }
+        .en { display: block; }
+        body[lang="zh-CN"] .zh { display: block; }
+        body[lang="zh-CN"] .en { display: none; }
+    </style>
+</head>
+<body>
+    <iframe src="../../components/header/header.html" class="header-iframe"></iframe>
+    <main class="user-center">
+        <div class="container">
+            <aside class="sidebar">
+                <a href="account.html" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    <span class="zh">账号管理</span>
+                    <span class="en">Account</span>
+                </a>
+                <a href="assets.html" class="nav-item">
+                    <i class="fas fa-wallet"></i>
+                    <span class="zh">资产管理</span>
+                    <span class="en">Assets</span>
+                </a>
+                <a href="kyc-info.html" class="nav-item">
+                    <i class="fas fa-id-card"></i>
+                    <span class="zh">认证信息</span>
+                    <span class="en">Verification</span>
+                </a>
+                <a href="quote-management.html" class="nav-item active">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="zh">报价管理</span>
+                    <span class="en">Quotes</span>
+                </a>
+                <a href="messages.html" class="nav-item">
+                    <i class="fas fa-envelope"></i>
+                    <span class="zh">消息通知</span>
+                    <span class="en">Messages</span>
+                </a>
+            </aside>
+            <div class="content">
+                <div class="breadcrumb">
+                    <a href="/"><span class="zh">首页</span><span class="en">Home</span></a>
+                    <i class="fas fa-chevron-right"></i>
+                    <a href="account.html"><span class="zh">商家中心</span><span class="en">Merchant Center</span></a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span><span class="zh">报价管理</span><span class="en">Quote Management</span></span>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span class="zh">报价设置</span>
+                            <span class="en">Quote Settings</span>
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <span class="zh">交易类型</span>
+                                        <span class="en">Trade Type</span>
+                                    </label>
+                                    <select class="form-control">
+                                        <option value="buy">
+                                            <span class="zh">买入</span>
+                                            <span class="en">Buy</span>
+                                        </option>
+                                        <option value="sell">
+                                            <span class="zh">卖出</span>
+                                            <span class="en">Sell</span>
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <span class="zh">币种</span>
+                                        <span class="en">Currency</span>
+                                    </label>
+                                    <select class="form-control">
+                                        <option value="USDT">USDT</option>
+                                        <option value="BTC">BTC</option>
+                                        <option value="ETH">ETH</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <span class="zh">价格</span>
+                                        <span class="en">Price</span>
+                                    </label>
+                                    <input type="number" class="form-control" placeholder="Enter price">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <span class="zh">保存报价</span>
+                                    <span class="en">Save Quote</span>
+                                </button>
+                                <button type="button" class="btn btn-outline-primary">
+                                    <span class="zh">重置</span>
+                                    <span class="en">Reset</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span class="zh">报价列表</span>
+                            <span class="en">Quote List</span>
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <span class="zh">交易类型</span>
+                                        <span class="en">Trade Type</span>
+                                    </th>
+                                    <th>
+                                        <span class="zh">币种</span>
+                                        <span class="en">Currency</span>
+                                    </th>
+                                    <th>
+                                        <span class="zh">价格</span>
+                                        <span class="en">Price</span>
+                                    </th>
+                                    <th>
+                                        <span class="zh">状态</span>
+                                        <span class="en">Status</span>
+                                    </th>
+                                    <th>
+                                        <span class="zh">操作</span>
+                                        <span class="en">Actions</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span class="zh">买入</span>
+                                        <span class="en">Buy</span>
+                                    </td>
+                                    <td>USDT</td>
+                                    <td>7.20</td>
+                                    <td>
+                                        <span class="zh">生效中</span>
+                                        <span class="en">Active</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-outline-primary btn-sm">
+                                            <span class="zh">编辑</span>
+                                            <span class="en">Edit</span>
+                                        </button>
+                                        <button class="btn btn-outline-primary btn-sm">
+                                            <span class="zh">删除</span>
+                                            <span class="en">Delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <iframe src="../../components/footer/footer.html" class="footer-iframe"></iframe>
+    <script>
+        // 从 localStorage 获取语言设置
+        const savedLang = localStorage.getItem('language') || 'en-US';
+        document.body.lang = savedLang;
+
+        // 监听语言切换消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'languageChange') {
+                document.body.lang = event.data.language;
+                localStorage.setItem('language', event.data.language);
+            }
+        });
+    </script>
+</body>
+</html> 

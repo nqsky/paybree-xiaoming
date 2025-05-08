@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景圆圈 -->
+    <circle cx="32" cy="32" r="32" fill="#EDFAF6"/>
+    
+    <!-- 钱包图标 -->
+    <rect x="16" y="24" width="32" height="20" rx="2" fill="white" stroke="#16C784" stroke-width="2"/>
+    
+    <!-- 加号符号 -->
+    <path d="M32 28V40" stroke="#16C784" stroke-width="2" stroke-linecap="round"/>
+    <path d="M26 34H38" stroke="#16C784" stroke-width="2" stroke-linecap="round"/>
+</svg> 

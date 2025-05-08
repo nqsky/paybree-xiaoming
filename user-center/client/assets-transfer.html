@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <span class="zh">平台内转账 - Paybree</span>
+    <span class="en">Internal Transfer - Paybree</span>
+  </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --color-white: #fff;
+      --color-gray-50: #f9fafb;
+      --color-gray-100: #f3f4f6;
+      --color-gray-200: #e5e7eb;
+      --color-gray-300: #d1d5db;
+      --color-gray-500: #6b7280;
+      --color-gray-600: #4b5563;
+      --color-gray-700: #374151;
+      --color-gray-900: #111827;
+      --color-primary: #16C36A;
+      --color-primary-dark: #12a85a;
+      --color-primary-light: rgba(22, 195, 106, 0.1);
+      --color-danger: #ef4444;
+      --color-danger-light: rgba(239, 68, 68, 0.1);
+      --color-info: #3b82f6;
+      --color-info-light: rgba(59, 130, 246, 0.1);
+      --color-warning: #f59e0b;
+      --color-warning-light: rgba(245, 158, 11, 0.1);
+      --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      background: var(--color-gray-50);
+    }
+    .zh, .en {
+      display: none;
+    }
+    html[lang="zh-CN"] .zh {
+      display: inline;
+    }
+    html[lang="en-US"] .en {
+      display: inline;
+    }
+    .header {
+      background: var(--color-white);
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .container-header {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+    }
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--color-primary);
+      text-decoration: none;
+      letter-spacing: 1px;
+      line-height: 1;
+    }
+    .main-nav {
+      display: flex;
+      gap: 40px;
+    }
+    .nav-item {
+      color: var(--color-gray-700);
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 500;
+      position: relative;
+      padding: 4px 0;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-item:hover {
+      color: var(--color-primary);
+    }
+    .nav-item.active {
+      color: var(--color-primary);
+    }
+    .nav-item.active::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -2px;
+      height: 2px;
+      background: var(--color-primary);
+      border-radius: 1px;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .user-menu {
+      position: relative;
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+    .username {
+      color: var(--color-gray-700);
+      font-weight: 500;
+      font-size: 15px;
+    }
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: 120%;
+      right: 0;
+      background: var(--color-white);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      padding: 8px 0;
+      min-width: 180px;
+      display: none;
+    }
+    .user-menu:hover .dropdown-menu {
+      display: block;
+    }
+    .dropdown-menu a, .dropdown-menu .dropdown-lang {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      color: var(--color-gray-700);
+      text-decoration: none;
+      font-size: 15px;
+      border-radius: 4px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .dropdown-menu a:hover, .dropdown-menu .dropdown-lang:hover {
+      background: var(--color-gray-50);
+      color: var(--color-primary);
+    }
+    .dropdown-menu i {
+      width: 16px;
+      text-align: center;
+    }
+    .dropdown-divider {
+      height: 1px;
+      background: var(--color-gray-100);
+      margin: 4px 0;
+    }
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        height: auto;
+        gap: 12px;
+        padding: 12px 0;
+      }
+      .main-nav {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+    }
+    .user-center {
+      display: flex;
+      min-height: calc(100vh - 180px);
+      padding: 24px 0;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 24px;
+      width: 100%;
+    }
+    .sidebar {
+      width: 240px;
+      background: var(--color-white);
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+      padding: 20px 16px;
+      height: fit-content;
+    }
+    .sidebar-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-gray-900);
+      margin-bottom: 20px;
+      padding-left: 8px;
+    }
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sidebar-menu-item {
+      margin-bottom: 8px;
+    }
+    .sidebar-menu-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--color-gray-700);
+      text-decoration: none;
+      font-size: 16px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .sidebar-menu-link:hover {
+      background: var(--color-gray-50);
+      color: var(--color-primary);
+    }
+    .sidebar-menu-link.active {
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+      font-weight: 500;
+    }
+    .sidebar-menu-link i {
+      width: 16px;
+      text-align: center;
+    }
+    .content {
+      flex: 1;
+      background: var(--color-white);
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+      padding: 24px;
+      overflow: hidden;
+    }
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .page-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--color-gray-900);
+      margin: 0;
+    }
+    .transfer-form {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--color-gray-700);
+    }
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--color-gray-300);
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px var(--color-primary-light);
+    }
+    .form-select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--color-gray-300);
+      border-radius: 8px;
+      font-size: 16px;
+      background-color: var(--color-white);
+      transition: all 0.2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234b5563'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+    }
+    .form-select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px var(--color-primary-light);
+    }
+    .form-helper {
+      margin-top: 6px;
+      font-size: 14px;
+      color: var(--color-gray-500);
+    }
+    .input-group {
+      display: flex;
+      align-items: center;
+    }
+    .input-group .form-input {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-right: none;
+    }
+    .input-group-append {
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      background: var(--color-gray-100);
+      border: 1px solid var(--color-gray-300);
+      border-left: none;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+      color: var(--color-gray-700);
+      font-weight: 500;
+      height: 48px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--color-primary);
+      color: var(--color-white);
+    }
+    .btn-primary:hover {
+      background: var(--color-primary-dark);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--color-gray-700);
+      border: 1px solid var(--color-gray-300);
+    }
+    .btn-outline:hover {
+      background: var(--color-gray-50);
+      border-color: var(--color-gray-400);
+    }
+    .btn-link {
+      background: transparent;
+      color: var(--color-primary);
+      padding: 0;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .btn-link:hover {
+      text-decoration: underline;
+    }
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 32px;
+    }
+    .alert {
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .alert-warning {
+      background: var(--color-warning-light);
+      color: var(--color-warning);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+    .alert-warning i {
+      color: var(--color-warning);
+    }
+    .alert-content {
+      flex: 1;
+    }
+    .alert-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .alert-text {
+      color: var(--color-gray-700);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .form-note {
+      text-align: center;
+      margin-top: 24px;
+      color: var(--color-gray-600);
+      font-size: 14px;
+    }
+    .max-btn {
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--color-gray-100);
+      border: none;
+      color: var(--color-primary);
+      font-weight: 500;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      z-index: 2;
+    }
+    .max-btn:hover {
+      background: var(--color-gray-200);
+    }
+    .relative {
+      position: relative;
+    }
+    .summary-card {
+      background: var(--color-gray-50);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 32px;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .summary-row:last-child {
+      margin-bottom: 0;
+      padding-top: 12px;
+      border-top: 1px dashed var(--color-gray-300);
+    }
+    .summary-label {
+      color: var(--color-gray-600);
+    }
+    .summary-value {
+      font-weight: 500;
+      color: var(--color-gray-900);
+    }
+    .summary-value.highlight {
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+    .footer {
+      padding: 24px 0;
+      text-align: center;
+      color: var(--color-gray-500);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container-header">
+      <div class="header-content">
+        <a href="/" class="logo">Paybree</a>
+        <nav class="main-nav">
+          <a href="/trading/quotes.html" class="nav-item">
+            <i class="fas fa-exchange-alt"></i>
+            <span class="zh">交易</span>
+            <span class="en">Trade</span>
+          </a>
+          <a href="/user-center/client" class="nav-item active">
+            <i class="fas fa-user"></i>
+            <span class="zh">个人中心</span>
+            <span class="en">Account</span>
+          </a>
+          <a href="/help" class="nav-item">
+            <i class="fas fa-question-circle"></i>
+            <span class="zh">帮助</span>
+            <span class="en">Help</span>
+          </a>
+        </nav>
+        <div class="header-right">
+          <div class="user-menu">
+            <div class="user-info">
+              <div class="avatar">
+                <span>A</span>
+              </div>
+              <span class="username">Alice</span>
+            </div>
+            <div class="dropdown-menu">
+              <a href="/user-center/client/account.html">
+                <i class="fas fa-user-circle"></i>
+                <span class="zh">个人资料</span>
+                <span class="en">Profile</span>
+              </a>
+              <a href="/user-center/client/assets.html">
+                <i class="fas fa-wallet"></i>
+                <span class="zh">我的资产</span>
+                <span class="en">My Assets</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <div class="dropdown-lang">
+                <i class="fas fa-globe"></i>
+                <select class="language-select" style="border:none;background:transparent;cursor:pointer">
+                  <option value="en-US">English</option>
+                  <option value="zh-CN">简体中文</option>
+                </select>
+              </div>
+              <div class="dropdown-divider"></div>
+              <a href="/auth/logout.html">
+                <i class="fas fa-sign-out-alt"></i>
+                <span class="zh">退出登录</span>
+                <span class="en">Logout</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="user-center">
+    <div class="container">
+      <div class="sidebar">
+        <div class="sidebar-title">
+          <span class="zh">个人中心</span>
+          <span class="en">User Center</span>
+        </div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item">
+            <a href="/user-center/client/account.html" class="sidebar-menu-link">
+              <i class="fas fa-user-circle"></i>
+              <span class="zh">账户信息</span>
+              <span class="en">Account Info</span>
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
+            <a href="/user-center/client/assets.html" class="sidebar-menu-link active">
+              <i class="fas fa-wallet"></i>
+              <span class="zh">资产管理</span>
+              <span class="en">Assets</span>
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
+            <a href="/user-center/client/kyc-info.html" class="sidebar-menu-link">
+              <i class="fas fa-id-card"></i>
+              <span class="zh">KYC 认证</span>
+              <span class="en">KYC Verification</span>
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
+            <a href="/user-center/client/messages.html" class="sidebar-menu-link">
+              <i class="fas fa-bell"></i>
+              <span class="zh">消息中心</span>
+              <span class="en">Messages</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="content">
+        <div class="content-header">
+          <h1 class="page-title">
+            <span class="zh">平台内转账</span>
+            <span class="en">Internal Transfer</span>
+          </h1>
+          <a href="/user-center/client/assets.html" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i>
+            <span class="zh" style="margin-left:8px">返回资产页面</span>
+            <span class="en" style="margin-left:8px">Back to Assets</span>
+          </a>
+        </div>
+
+        <div class="alert alert-warning">
+          <i class="fas fa-exclamation-triangle" style="margin-top:3px"></i>
+          <div class="alert-content">
+            <div class="alert-title">
+              <span class="zh">安全提示</span>
+              <span class="en">Security Notice</span>
+            </div>
+            <div class="alert-text">
+              <span class="zh">请确认收款方信息准确无误，平台内转账一旦完成将无法撤销。</span>
+              <span class="en">Please confirm that the recipient information is accurate. Internal transfers cannot be reversed once completed.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="transfer-form">
+          <div class="form-group">
+            <label class="form-label">
+              <span class="zh">收款方信息</span>
+              <span class="en">Recipient Information</span>
+            </label>
+            <input type="text" class="form-input" placeholder="用户名/邮箱/手机号 | Username/Email/Phone Number">
+            <div class="form-helper">
+              <span class="zh">输入收款方的用户名、邮箱或已绑定的手机号</span>
+              <span class="en">Enter recipient's username, email or registered phone number</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <span class="zh">币种</span>
+              <span class="en">Currency</span>
+            </label>
+            <select class="form-select">
+              <option value="usdt">USDT</option>
+              <option value="usdc">USDC</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <span class="zh">转账金额</span>
+              <span class="en">Transfer Amount</span>
+            </label>
+            <div class="relative">
+              <input type="number" class="form-input" placeholder="0.00" min="0" step="0.01">
+              <button class="max-btn">MAX</button>
+            </div>
+            <div class="form-helper">
+              <span class="zh">可用余额: 1,000.00 USDT</span>
+              <span class="en">Available balance: 1,000.00 USDT</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <span class="zh">备注信息 (选填，最多50字)</span>
+              <span class="en">Memo (Optional, max 50 characters)</span>
+            </label>
+            <input type="text" class="form-input" placeholder="添加备注信息 | Add memo" maxlength="50">
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-row">
+              <div class="summary-label">
+                <span class="zh">转账金额</span>
+                <span class="en">Transfer Amount</span>
+              </div>
+              <div class="summary-value">0.00 USDT</div>
+            </div>
+            <div class="summary-row">
+              <div class="summary-label">
+                <span class="zh">手续费</span>
+                <span class="en">Fee</span>
+              </div>
+              <div class="summary-value">0.00 USDT</div>
+            </div>
+            <div class="summary-row">
+              <div class="summary-label">
+                <span class="zh">总计</span>
+                <span class="en">Total</span>
+              </div>
+              <div class="summary-value highlight">0.00 USDT</div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-outline">
+              <span class="zh">取消</span>
+              <span class="en">Cancel</span>
+            </button>
+            <button class="btn btn-primary" id="submit-transfer">
+              <span class="zh">确认转账</span>
+              <span class="en">Confirm Transfer</span>
+            </button>
+          </div>
+
+          <div class="form-note">
+            <span class="zh">平台内转账免手续费，实时到账</span>
+            <span class="en">Internal transfers are fee-free and processed instantly</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2023 Paybree. <span class="zh">保留所有权利</span><span class="en">All rights reserved</span>.</p>
+    </div>
+  </footer>
+
+  <script>
+    // 语言切换功能
+    function changeLanguage(lang) {
+      document.documentElement.lang = lang;
+      localStorage.setItem('preferred_language', lang);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const langSelect = document.querySelector('.language-select');
+      const savedLang = localStorage.getItem('preferred_language') || 'en-US';
+      
+      document.documentElement.lang = savedLang;
+      langSelect.value = savedLang;
+
+      langSelect.addEventListener('change', function() {
+        changeLanguage(this.value);
+      });
+
+      // 设置最大金额按钮
+      document.querySelector('.max-btn').addEventListener('click', function() {
+        document.querySelector('input[type="number"]').value = '1000.00';
+        updateSummary(1000);
+      });
+
+      // 金额输入更新摘要
+      document.querySelector('input[type="number"]').addEventListener('input', function() {
+        const amount = parseFloat(this.value) || 0;
+        updateSummary(amount);
+      });
+
+      // 提交按钮
+      document.getElementById('submit-transfer').addEventListener('click', function() {
+        alert('转账功能将在后端实现 | Transfer function will be implemented in the backend');
+      });
+    });
+
+    // 更新摘要区域
+    function updateSummary(amount) {
+      const fee = 0; // 平台内转账无手续费
+      const total = amount + fee;
+      
+      document.querySelectorAll('.summary-value')[0].textContent = `${amount.toFixed(2)} USDT`;
+      document.querySelectorAll('.summary-value')[1].textContent = `${fee.toFixed(2)} USDT`;
+      document.querySelectorAll('.summary-value')[2].textContent = `${total.toFixed(2)} USDT`;
+    }
+  </script>
+</body>
+</html> 

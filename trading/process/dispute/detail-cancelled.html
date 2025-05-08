@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">争议详情 - Paybree</span>
+        <span class="en">Dispute Details - Paybree</span>
+    </title>
+    <link rel="stylesheet" href="../../../css/common.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <style>
+        /* 语言切换样式 */
+        .zh, .en {
+            display: none;
+        }
+
+        html[lang="zh-CN"] .zh {
+            display: inline;
+        }
+
+        html[lang="en-US"] .en {
+            display: inline;
+        }
+
+        html[lang="zh-CN"] .zh-block {
+            display: block;
+        }
+
+        html[lang="en-US"] .en-block {
+            display: block;
+        }
+
+        /* 语言选择器样式 */
+        .language-switch {
+            position: relative;
+            margin-left: 16px;
+        }
+
+        .language-select {
+            appearance: none;
+            background: transparent;
+            border: none;
+            color: var(--color-gray-600);
+            font-size: 14px;
+            padding-right: 20px;
+            cursor: pointer;
+        }
+
+        .language-select:focus {
+            outline: none;
+        }
+
+        .language-switch::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid var(--color-gray-600);
+        }
+
+        .language-select option {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+        }
+
+        /* 复制 detail.html 的所有样式 */
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 104px 24px 24px;
+        }
+
+        .page-title-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 16px;
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-gray-700);
+        }
+
+        .page-title-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 15px;
+            color: var(--color-gray-500);
+            margin-left: 4px;
+            font-weight: normal;
+        }
+
+        .status-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 500;
+            gap: 4px;
+        }
+
+        .status-tag-processing {
+            background: var(--color-primary-50);
+            color: var(--color-primary-600);
+        }
+
+        .status-tag-completed {
+            background: var(--color-success-50);
+            color: var(--color-success-600);
+        }
+
+        .status-tag-cancelled {
+            background: var(--color-gray-100);
+            color: var(--color-gray-600);
+        }
+
+        .status-tag i {
+            font-size: 14px;
+        }
+
+        /* 基本信息样式 */
+        .basic-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .basic-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .basic-info-label {
+            font-size: 13px;
+            color: var(--color-gray-500);
+        }
+
+        .basic-info-value {
+            font-size: 14px;
+            color: var(--color-gray-900);
+        }
+
+        .basic-info-value.highlight {
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+
+        /* 信息卡片统一样式 */
+        .info-card {
+            background: var(--color-gray-50);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .info-card-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-gray-900);
+            margin-bottom: 12px;
+        }
+
+        .record-text {
+            font-size: 14px;
+            color: var(--color-gray-700);
+            line-height: 1.6;
+        }
+
+        /* 时间轴样式 */
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+            margin-bottom: 32px;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: var(--color-gray-100);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 32px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -29px;
+            top: 8px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--color-gray-600);
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 2px var(--color-gray-100);
+        }
+
+        .timeline-header {
+            margin-bottom: 12px;
+        }
+
+        .timeline-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--color-gray-900);
+            margin-bottom: 4px;
+        }
+
+        .timeline-time {
+            font-size: 13px;
+            color: var(--color-gray-500);
+        }
+
+        .evidence-items {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .evidence-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .evidence-img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--color-border);
+        }
+
+        .evidence-info {
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .evidence-name {
+            font-size: 13px;
+            color: var(--color-gray-600);
+        }
+
+        .record-content {
+            background: var(--color-gray-50);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        /* 操作按钮样式 */
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 120px;
+        }
+
+        .action-btn-default {
+            background: #fff;
+            color: var(--color-gray-900);
+            border: 1px solid var(--color-border);
+        }
+
+        .action-btn-default:hover {
+            background: var(--color-gray-50);
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container">
+            <a href="/index.html" class="logo">Paybree</a>
+            <nav class="nav">
+                <a href="/trading/quotes.html" class="nav-link">交易大厅</a>
+                <a href="/trading/merchant-detail.html" class="nav-link">开始交易</a>
+                <a href="/trading/process/buy/client/margin.html" class="nav-link">买入（用户）</a>
+                <a href="/trading/process/buy/merchant/margin.html" class="nav-link">买入（承兑商）</a>
+                <a href="/components/chat/index.html" class="nav-link">在线聊天</a>
+                <a href="/merchant/orders.html" class="nav-link">交易记录</a>
+                <a href="/trading/process/dispute/list.html" class="nav-link">
+                    <span class="zh">争议记录</span>
+                    <span class="en">Dispute Records</span>
+                </a>
+                <a href="/trading/process/dispute/create.html" class="nav-link">
+                    <span class="zh">提交争议</span>
+                    <span class="en">Submit Dispute</span>
+                </a>
+                <div class="language-switch">
+                    <select class="language-select">
+                        <option value="en-US">English</option>
+                        <option value="zh-CN">简体中文</option>
+                    </select>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-container">
+        <!-- 面包屑导航 -->
+        <nav class="breadcrumb">
+            <a href="/">
+                <span class="zh">首页</span>
+                <span class="en">Home</span>
+            </a>
+            <span class="separator">/</span>
+            <a href="/merchant/index.html">
+                <span class="zh">商家中心</span>
+                <span class="en">Merchant Center</span>
+            </a>
+            <span class="separator">/</span>
+            <a href="/trading/process/dispute/list.html">
+                <span class="zh">争议列表</span>
+                <span class="en">Dispute List</span>
+            </a>
+            <span class="separator">/</span>
+            <span class="current">
+                <span class="zh">争议详情</span>
+                <span class="en">Dispute Details</span>
+            </span>
+        </nav>
+
+        <div class="dispute-detail">
+            <!-- 页面标题 -->
+            <div class="page-title-wrapper">
+                <div class="page-title">
+                    <div class="page-title-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="page-title-text">
+                        争议详情
+                        <span class="page-subtitle">TX24032115304789</span>
+                    </div>
+                </div>
+                <span class="status-tag status-tag-cancelled">
+                    <i class="fas fa-times-circle"></i>
+                    <span class="zh">已取消</span>
+                    <span class="en">Cancelled</span>
+                </span>
+            </div>
+
+            <div class="dispute-content">
+                <!-- 基本信息 -->
+                <div class="basic-info">
+                    <div class="basic-info-item">
+                        <span class="basic-info-label">争议类型</span>
+                        <span class="basic-info-value">未收到付款</span>
+                    </div>
+                    <div class="basic-info-item">
+                        <span class="basic-info-label">交易金额</span>
+                        <span class="basic-info-value highlight">5,000 USDT</span>
+                    </div>
+                    <div class="basic-info-item">
+                        <span class="basic-info-label">提交时间</span>
+                        <span class="basic-info-value">2024-03-20 17:45:32</span>
+                    </div>
+                </div>
+                
+                <!-- 问题描述 -->
+                <div class="info-card">
+                    <div class="info-card-title">问题描述</div>
+                    <div class="record-text">
+                        <span class="zh">买家声称已经完成付款，但经过仔细核对，我的账户中并未收到相应的转账记录。我已经等待了超过2小时，但仍然没有收到款项。</span>
+                        <span class="en">Buyer claims to have made payment, but we have not received the corresponding amount. I have waited for more than 2 hours, but still have not received the payment.</span>
+                    </div>
+                </div>
+
+                <!-- 时间轴 -->
+                <div class="timeline">
+                    <!-- 初始提交 -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-header">
+                            <div class="timeline-title">初始提交</div>
+                            <div class="timeline-time">2024-03-20 17:45:32</div>
+                        </div>
+                        <div class="evidence-items">
+                            <div class="evidence-item">
+                                <img src="/images/payment-proof-1.jpg" alt="账户交易记录" class="evidence-img">
+                                <div class="evidence-info">
+                                    <div class="evidence-name">账户交易记录截图</div>
+                                </div>
+                            </div>
+                            <div class="evidence-item">
+                                <img src="/images/payment-proof-2.jpg" alt="聊天记录" class="evidence-img">
+                                <div class="evidence-info">
+                                    <div class="evidence-name">与买家的聊天记录</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 平台初步处理 -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-header">
+                            <div class="timeline-title">平台初步处理意见</div>
+                            <div class="timeline-time">2024-03-20 18:30:15</div>
+                        </div>
+                        <div class="record-content">
+                            <div class="record-text">
+                                <span class="zh">经初步核实，建议双方先进行沟通确认。如有需要，平台可提供协调服务。</span>
+                                <span class="en">After preliminary verification, we suggest that both parties communicate and confirm first. If needed, the platform can provide coordination services.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 买家回应 -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-header">
+                            <div class="timeline-title">买家回应</div>
+                            <div class="timeline-time">2024-03-20 19:15:45</div>
+                        </div>
+                        <div class="record-content">
+                            <div class="record-text">
+                                <span class="zh">经过核实，发现是我的转账操作有误。我已重新完成正确的转账操作，资金已到账。对此造成的困扰深表歉意。</span>
+                                <span class="en">After verification, it was found that my transfer operation was incorrect. I have completed the correct transfer operation again, and the funds have been received. I apologize for any inconvenience caused.</span>
+                            </div>
+                            <div class="evidence-items" style="margin-top: 16px;">
+                                <div class="evidence-item">
+                                    <img src="/images/payment-proof-3.jpg" alt="正确的转账凭证" class="evidence-img">
+                                    <div class="evidence-info">
+                                        <div class="evidence-name">正确的转账凭证</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 争议撤销 -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-header">
+                            <div class="timeline-title">争议撤销</div>
+                            <div class="timeline-time">2024-03-20 19:30:12</div>
+                        </div>
+                        <div class="record-content">
+                            <div class="record-text">
+                                <span class="zh">由于买家已完成正确的转账操作，且资金已到账，商家确认撤销本次争议申请。</span>
+                                <span class="en">Since the buyer has completed the correct transfer operation and the funds have been received, the merchant confirms that the dispute application is canceled.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="action-buttons">
+                    <button class="action-btn action-btn-default" onclick="history.back()">返回</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 语言切换功能
+        function changeLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.querySelectorAll('.zh').forEach(el => {
+                el.style.display = (lang === 'zh-CN') ? 'inline' : 'none';
+            });
+            document.querySelectorAll('.en').forEach(el => {
+                el.style.display = (lang === 'en-US') ? 'inline' : 'none';
+            });
+            document.querySelector('.language-select').value = lang;
+            localStorage.setItem('preferred_language', lang);
+        }
+
+        // 监听来自父页面的消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'languageChange') {
+                changeLanguage(event.data.language);
+            }
+        });
+
+        // 监听语言选择器的变化
+        document.querySelector('.language-select').addEventListener('change', function() {
+            const lang = this.value;
+            changeLanguage(lang);
+            // 通知父页面语言变化
+            window.parent.postMessage({
+                type: 'languageChange',
+                language: lang
+            }, '*');
+        });
+
+        // 初始化语言
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('preferred_language') || 'en-US';
+            changeLanguage(lang);
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">保证金划拨 - Paybree</span>
+        <span class="en">Margin Deposit - Paybree</span>
+    </title>
+    <link rel="stylesheet" href="../../../css/common.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --color-primary: #16C784;
+            --color-primary-hover: #20E19F;
+            --color-white: #FFFFFF;
+            --color-gray-50: #F5F5F5;
+            --color-gray-600: #666666;
+            --color-gray-900: #333333;
+            --color-border: #E5E5E5;
+            --color-error: #FF4D4F;
+            --color-warning: #FFA940;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-gray-900);
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+        }
+
+        .header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        .nav {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--color-gray-600);
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--color-primary);
+        }
+
+        .nav-link.active {
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+
+        /* 页面内容样式 */
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 104px 24px 24px;
+        }
+
+        /* 面包屑导航样式 */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            font-size: 14px;
+            color: var(--color-gray-600);
+        }
+
+        .breadcrumb a {
+            color: var(--color-gray-600);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--color-primary);
+        }
+
+        .breadcrumb .separator {
+            margin: 0 8px;
+            color: var(--color-gray-600);
+        }
+
+        .breadcrumb .current {
+            color: var(--color-gray-900);
+            font-weight: 500;
+        }
+
+        /* 进度条组件样式 */
+        .sell-progress {
+            padding: 32px 0;
+            margin-bottom: 40px;
+            background: var(--color-white);
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 24px;
+            right: 24px;
+            height: 1px;
+            background: var(--color-border);
+            z-index: 1;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-white);
+            border: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            transition: all 0.3s ease;
+        }
+
+        .step-number {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-gray-600);
+        }
+
+        .step-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-gray-600);
+        }
+
+        .step.active .step-circle {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .step.active .step-number {
+            color: var(--color-white);
+        }
+
+        .step.active .step-label {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        /* 主要内容区域 */
+        .deposit-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        @media (min-width: 1024px) {
+            .deposit-content {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+        }
+
+        .deposit-card {
+            flex: 1;
+            min-width: 0;
+            background: var(--color-white);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 24px;
+        }
+
+        .deposit-header {
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .deposit-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+            margin-bottom: 8px;
+        }
+
+        .deposit-subtitle {
+            font-size: 14px;
+            color: var(--color-gray-600);
+        }
+
+        /* 保证金信息卡片 */
+        .deposit-info {
+            background: var(--color-gray-50);
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 32px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--color-gray-600);
+        }
+
+        .info-value {
+            font-weight: 500;
+            color: var(--color-gray-900);
+        }
+
+        .info-value.primary {
+            color: var(--color-primary);
+        }
+
+        .info-value.error {
+            color: var(--color-error);
+        }
+
+        /* 划拨状态 */
+        .deposit-status {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .status-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 24px;
+        }
+
+        .status-icon.waiting {
+            background: rgba(22, 199, 132, 0.1);
+            color: var(--color-primary);
+        }
+
+        .status-icon.success {
+            background: rgba(22, 199, 132, 0.1);
+            color: var(--color-primary);
+        }
+
+        .status-icon.error {
+            background: rgba(255, 77, 79, 0.1);
+            color: var(--color-error);
+        }
+
+        .status-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .status-desc {
+            color: var(--color-gray-600);
+            margin-bottom: 16px;
+        }
+
+        /* 按钮样式 */
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin: 32px 0;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 120px;
+        }
+
+        .action-btn-primary {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+        }
+
+        .action-btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .action-btn-default {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+            border: 1px solid var(--color-border);
+        }
+
+        .action-btn-default:hover {
+            background: var(--color-gray-50);
+        }
+
+        .action-btn-error {
+            background: var(--color-error);
+            color: var(--color-white);
+            border: none;
+        }
+
+        .action-btn-error:hover {
+            background: #FF7875;
+        }
+
+        /* 钱包余额区域 */
+        .wallet-balance {
+            background: var(--color-gray-50);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .balance-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .balance-amount {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+        }
+
+        .balance-desc {
+            color: var(--color-gray-600);
+            font-size: 14px;
+        }
+
+        /* 划拨输入区域 */
+        .deposit-form {
+            margin-top: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group .form-input {
+            flex: 1;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .input-group-append {
+            background: var(--color-gray-50);
+            padding: 12px 16px;
+            border: 1px solid var(--color-border);
+            border-left: none;
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+            font-weight: 500;
+        }
+
+        /* 错误提示 */
+        .error-message {
+            color: var(--color-error);
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* 语言切换样式 */
+        .zh, .en {
+            display: none;
+        }
+
+        html[lang="zh-CN"] .zh {
+            display: inline;
+        }
+
+        html[lang="en-US"] .en {
+            display: inline;
+        }
+
+        html[lang="zh-CN"] .zh-block {
+            display: block;
+        }
+
+        html[lang="en-US"] .en-block {
+            display: block;
+        }
+
+        /* 语言选择器样式 */
+        .language-switch {
+            position: relative;
+            margin-left: 16px;
+        }
+
+        .language-select {
+            appearance: none;
+            background: transparent;
+            border: none;
+            color: var(--color-gray-600);
+            font-size: 14px;
+            padding-right: 20px;
+            cursor: pointer;
+        }
+
+        .language-select:focus {
+            outline: none;
+        }
+
+        .language-switch::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid var(--color-gray-600);
+        }
+
+        .language-select option {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container">
+            <a href="/index.html" class="logo">Paybree</a>
+            <nav class="nav">
+                <div class="language-switch">
+                    <select class="language-select">
+                        <option value="zh-CN">简体中文</option>
+                        <option value="en-US">English</option>
+                    </select>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-container">
+        <!-- 面包屑导航 -->
+        <nav class="breadcrumb">
+            <a href="/">
+                <span class="zh">首页</span>
+                <span class="en">Home</span>
+            </a>
+            <span class="separator">/</span>
+            <a href="/trading/quotes.html">
+                <span class="zh">交易大厅</span>
+                <span class="en">Trading Hall</span>
+            </a>
+            <span class="separator">/</span>
+            <span class="current">
+                <span class="zh">保证金划拨</span>
+                <span class="en">Margin Deposit</span>
+            </span>
+        </nav>
+
+        <!-- 进度条 -->
+        <div class="sell-progress">
+            <div class="progress-steps">
+                <div class="step active">
+                    <div class="step-circle">
+                        <span class="step-number">1</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">保证金协商</span>
+                        <span class="en">Margin Negotiation</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">2</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">创建订单</span>
+                        <span class="en">Create Order</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">3</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">锁定USDT</span>
+                        <span class="en">Lock USDT</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">4</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">等待付款</span>
+                        <span class="en">Waiting for Payment</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">5</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">交易完成</span>
+                        <span class="en">Complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="deposit-content">
+            <!-- 左侧：保证金划拨操作 -->
+            <div class="deposit-card">
+                <div class="deposit-header">
+                    <h1 class="deposit-title">
+                        <span class="zh">划拨保证金</span>
+                        <span class="en">Deposit Margin</span>
+                    </h1>
+                    <p class="deposit-subtitle">
+                        <span class="zh">从您的钱包中划拨保证金至交易智能合约</span>
+                        <span class="en">Transfer margin from your wallet to the trading smart contract</span>
+                    </p>
+                </div>
+
+                <!-- 钱包余额显示 -->
+                <div class="wallet-balance">
+                    <h3 class="balance-title">
+                        <span class="zh">钱包余额</span>
+                        <span class="en">Wallet Balance</span>
+                    </h3>
+                    <div class="balance-amount">10,000.00 USDT</div>
+                    <p class="balance-desc">
+                        <span class="zh">可用于划拨的USDT余额</span>
+                        <span class="en">Available USDT balance for deposit</span>
+                    </p>
+                </div>
+
+                <!-- 划拨表单 -->
+                <div class="deposit-form">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="zh">保证金金额</span>
+                            <span class="en">Margin Amount</span>
+                        </label>
+                        <div class="input-group">
+                            <input type="number" class="form-input" id="depositAmount" value="1000" readonly>
+                            <div class="input-group-append">USDT</div>
+                        </div>
+                    </div>
+                    
+                    <div class="error-message" id="balanceError">
+                        <span class="zh">您的钱包余额不足</span>
+                        <span class="en">Your wallet balance is insufficient</span>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn action-btn-default" onclick="cancelDeposit()">
+                        <span class="zh">返回</span>
+                        <span class="en">Back</span>
+                    </button>
+                    <button class="action-btn action-btn-primary" onclick="confirmDeposit()">
+                        <span class="zh">确认划拨</span>
+                        <span class="en">Confirm Deposit</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 右侧：交易信息 -->
+            <div class="deposit-card">
+                <div class="deposit-status">
+                    <h3 class="status-title">
+                        <span class="zh">交易信息</span>
+                        <span class="en">Transaction Information</span>
+                    </h3>
+                </div>
+
+                <div class="deposit-info">
+                    <div class="info-item">
+                        <span class="info-label">
+                            <span class="zh">买家昵称</span>
+                            <span class="en">Buyer Name</span>
+                        </span>
+                        <span class="info-value">John</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">
+                            <span class="zh">交易金额</span>
+                            <span class="en">Transaction Amount</span>
+                        </span>
+                        <span class="info-value">1,000 USDT</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">
+                            <span class="zh">保证金模式</span>
+                            <span class="en">Margin Mode</span>
+                        </span>
+                        <span class="info-value">
+                            <span class="zh">100% 托管</span>
+                            <span class="en">100% Escrow</span>
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">
+                            <span class="zh">保证金金额</span>
+                            <span class="en">Margin Amount</span>
+                        </span>
+                        <span class="info-value primary">1,000 USDT</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">
+                            <span class="zh">手续费</span>
+                            <span class="en">Fee</span>
+                        </span>
+                        <span class="info-value">5.00 USDT (0.5%)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化变量
+        const walletBalance = 10000; // 模拟钱包余额
+        const requiredDeposit = 1000; // 需要划拨的保证金金额
+
+        // 取消划拨
+        function cancelDeposit() {
+            if (confirm(document.documentElement.lang === 'zh-CN' ? '确定要取消保证金划拨吗？' : 'Are you sure you want to cancel the margin deposit?')) {
+                window.location.href = '/trading/quotes.html';
+            }
+        }
+
+        // 确认划拨
+        function confirmDeposit() {
+            // 检查余额
+            if (walletBalance < requiredDeposit) {
+                document.getElementById('balanceError').classList.add('show');
+                return;
+            }
+            
+            // 模拟划拨过程（实际环境中应调用区块链接口）
+            setTimeout(() => {
+                // 划拨成功后跳转到等待页面
+                window.location.href = 'margin-waiting.html';
+            }, 1500);
+        }
+
+        // 语言切换功能
+        function changeLanguage(lang) {
+            document.documentElement.lang = lang;
+            localStorage.setItem('preferred_language', lang);
+        }
+
+        // 监听语言选择器的变化
+        document.querySelector('.language-select').addEventListener('change', function() {
+            const lang = this.value;
+            changeLanguage(lang);
+        });
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('preferred_language') || 'en-US';
+            document.documentElement.lang = lang;
+            document.querySelector('.language-select').value = lang;
+            
+            // 检查并显示余额不足警告
+            if (walletBalance < requiredDeposit) {
+                document.getElementById('balanceError').classList.add('show');
+            }
+        });
+    </script>
+</body>
+</html> 

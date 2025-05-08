@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <span class="zh">资产管理 - Paybree</span>
+    <span class="en">Asset Management - Paybree</span>
+  </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --color-white: #fff;
+      --color-gray-50: #f9fafb;
+      --color-gray-100: #f3f4f6;
+      --color-gray-200: #e5e7eb;
+      --color-gray-300: #d1d5db;
+      --color-gray-500: #6b7280;
+      --color-gray-600: #4b5563;
+      --color-gray-700: #374151;
+      --color-gray-900: #111827;
+      --color-primary: #16C36A;
+      --color-primary-dark: #12a85a;
+      --color-primary-light: rgba(22, 195, 106, 0.1);
+      --color-danger: #ef4444;
+      --color-danger-light: rgba(239, 68, 68, 0.1);
+      --color-info: #3b82f6;
+      --color-info-light: rgba(59, 130, 246, 0.1);
+      --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      background: var(--color-gray-50);
+    }
+    .zh, .en {
+      display: none;
+    }
+    html[lang="zh-CN"] .zh {
+      display: inline;
+    }
+    html[lang="en-US"] .en {
+      display: inline;
+    }
+    .header {
+      background: var(--color-white);
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .container-header {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+    }
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--color-primary);
+      text-decoration: none;
+      letter-spacing: 1px;
+      line-height: 1;
+    }
+    .main-nav {
+      display: flex;
+      gap: 40px;
+    }
+    .nav-item {
+      color: var(--color-gray-700);
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 500;
+      position: relative;
+      padding: 4px 0;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-item:hover {
+      color: var(--color-primary);
+    }
+    .nav-item.active {
+      color: var(--color-primary);
+    }
+    .nav-item.active::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -2px;
+      height: 2px;
+      background: var(--color-primary);
+      border-radius: 1px;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .user-menu {
+      position: relative;
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+    .username {
+      color: var(--color-gray-700);
+      font-weight: 500;
+      font-size: 15px;
+    }
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: 120%;
+      right: 0;
+      background: var(--color-white);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      padding: 8px 0;
+      min-width: 180px;
+      display: none;
+    }
+    .user-menu:hover .dropdown-menu {
+      display: block;
+    }
+    .dropdown-menu a, .dropdown-menu .dropdown-lang {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      color: var(--color-gray-700);
+      text-decoration: none;
+      font-size: 15px;
+      border-radius: 4px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .dropdown-menu a:hover, .dropdown-menu .dropdown-lang:hover {
+      background: var(--color-gray-50);
+      color: var(--color-primary);
+    }
+    .dropdown-menu i {
+      width: 16px;
+      text-align: center;
+    }
+    .dropdown-divider {
+      height: 1px;
+      background: var(--color-gray-100);
+      margin: 4px 0;
+    }
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        height: auto;
+        gap: 12px;
+        padding: 12px 0;
+      }
+      .main-nav {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+    }
+    .user-center {
+      display: flex;
+      min-height: calc(100vh - 180px);
+      padding: 24px 0;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 24px;
+      width: 100%;
+    }
+    .sidebar {
+      width: 240px;
+      background: var(--color-white);
+      border-radius: 12px;
+      box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+      padding: 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .sidebar .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: var(--color-gray-600);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 16px;
+      border-radius: 4px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .sidebar .nav-item:hover {
+      background: var(--color-gray-50);
+      color: var(--color-primary);
+    }
+    .sidebar .nav-item.active {
+      background: var(--color-primary);
+      color: #fff;
+    }
+    .sidebar .nav-item i {
+      width: 20px;
+      text-align: center;
+    }
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      min-height: 600px;
+      width: 0;
+    }
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 32px;
+      color: var(--color-gray-500);
+      font-size: 15px;
+      width: 100%;
+      max-width: 900px;
+    }
+    .breadcrumb a {
+      color: var(--color-gray-600);
+      text-decoration: none;
+    }
+    .breadcrumb a:hover {
+      color: var(--color-primary);
+    }
+    .breadcrumb i {
+      font-size: 12px;
+    }
+    .card {
+      background: var(--color-white);
+      border-radius: 18px;
+      box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+      padding: 32px;
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 32px;
+      box-sizing: border-box;
+    }
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-gray-900);
+      margin-bottom: 24px;
+    }
+    
+    /* 资产管理页面特有样式 */
+    .asset-overview {
+      background: linear-gradient(135deg, #16C36A 0%, #12a85a 100%);
+      border-radius: 20px;
+      padding: 32px;
+      color: white;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 20px rgba(22, 195, 106, 0.15);
+    }
+
+    .asset-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .asset-title {
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .visibility-toggle {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 16px;
+      padding: 8px 16px;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      transition: background 0.2s ease;
+    }
+
+    .visibility-toggle:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .asset-balance {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .asset-value {
+      font-size: 16px;
+      opacity: 0.8;
+    }
+
+    .asset-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .asset-action-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 16px;
+      padding: 12px 20px;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      text-decoration: none;
+      transition: background 0.2s ease;
+    }
+
+    .asset-action-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .asset-action-btn i {
+      font-size: 20px;
+    }
+
+    .asset-action-label {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .token-cards {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .token-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .token-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .token-name {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .token-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .token-icon img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .token-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-gray-900);
+    }
+
+    .token-network {
+      font-size: 14px;
+      color: var(--color-gray-500);
+    }
+
+    .token-balance {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--color-gray-900);
+      margin-bottom: 4px;
+    }
+
+    .token-value {
+      font-size: 14px;
+      color: var(--color-gray-500);
+    }
+
+    .token-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .token-btn {
+      background: var(--color-gray-100);
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      color: var(--color-gray-700);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .token-btn:hover {
+      background: var(--color-gray-200);
+      color: var(--color-gray-900);
+    }
+
+    .token-btn.primary {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    .token-btn.primary:hover {
+      background: var(--color-primary-dark);
+      color: white;
+    }
+
+    .recent-transactions {
+      margin-top: 32px;
+    }
+
+    .transaction-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .transaction-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-gray-900);
+    }
+
+    .view-all {
+      color: var(--color-primary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .view-all:hover {
+      text-decoration: underline;
+    }
+
+    .transaction-list {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .transaction-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--color-gray-100);
+    }
+
+    .transaction-item:last-child {
+      border-bottom: none;
+    }
+
+    .transaction-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .transaction-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-gray-700);
+    }
+
+    .transaction-icon.deposit {
+      background: rgba(22, 195, 106, 0.1);
+      color: var(--color-primary);
+    }
+
+    .transaction-icon.withdraw {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+    }
+
+    .transaction-icon.transfer {
+      background: rgba(59, 130, 246, 0.1);
+      color: #3b82f6;
+    }
+
+    .transaction-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .transaction-type {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--color-gray-900);
+    }
+
+    .transaction-date {
+      font-size: 14px;
+      color: var(--color-gray-500);
+    }
+
+    .transaction-amount {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .amount {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-gray-900);
+    }
+
+    .amount.positive {
+      color: var(--color-primary);
+    }
+
+    .amount.negative {
+      color: #ef4444;
+    }
+
+    .transaction-status {
+      font-size: 14px;
+      color: var(--color-gray-500);
+    }
+
+    .hidden-balance {
+      font-size: 36px;
+      letter-spacing: 3px;
+    }
+
+    @media (max-width: 768px) {
+      .asset-overview {
+        padding: 24px 16px;
+      }
+      
+      .token-cards {
+        flex-direction: column;
+      }
+      
+      .token-card {
+        width: 100%;
+      }
+      
+      .transaction-item {
+        padding: 16px;
+      }
+      
+      .transaction-icon {
+        width: 32px;
+        height: 32px;
+      }
+      
+      .user-center {
+        padding: 12px 0;
+      }
+      
+      .container {
+        flex-direction: column;
+        gap: 0;
+      }
+      
+      .sidebar {
+        width: 100%;
+        margin-bottom: 16px;
+      }
+      
+      .content {
+        padding: 12px 0;
+        max-width: 100%;
+      }
+      
+      .card {
+        padding: 24px 16px;
+        max-width: 100%;
+      }
+      
+      .asset-actions {
+        flex-wrap: wrap;
+      }
+      
+      .asset-action-btn {
+        min-width: calc(50% - 6px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container-header">
+      <div class="header-content">
+        <a href="/" class="logo">Paybree</a>
+        <nav class="main-nav">
+          <a href="/trading/quotes.html" class="nav-item">
+            <span class="zh">交易大厅</span>
+            <span class="en">Trading Hall</span>
+          </a>
+          <a href="/merchant/orders.html" class="nav-item">
+            <span class="zh">交易记录</span>
+            <span class="en">Transaction Records</span>
+          </a>
+          <a href="/help/index.html" class="nav-item">
+            <span class="zh">帮助中心</span>
+            <span class="en">Help Center</span>
+          </a>
+        </nav>
+        <div class="header-right">
+          <div class="user-menu">
+            <div class="user-info">
+              <span class="username">John Doe</span>
+              <div class="avatar">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 5C13.66 5 15 6.34 15 8C15 9.66 13.66 11 12 11C10.34 11 9 9.66 9 8C9 6.34 10.34 5 12 5ZM12 19.2C9.5 19.2 7.29 17.92 6 15.98C6.03 13.99 10 12.9 12 12.9C13.99 12.9 17.97 13.99 18 15.98C16.71 17.92 14.5 19.2 12 19.2Z" fill="currentColor"/>
+                </svg>
+              </div>
+            </div>
+            <div class="dropdown-menu">
+              <a href="/user-center/client/account.html">
+                <i class="fas fa-user"></i>
+                <span class="zh">个人资料</span>
+                <span class="en">Profile</span>
+              </a>
+              <a href="/user-center/client/account.html">
+                <i class="fas fa-cog"></i>
+                <span class="zh">账号设置</span>
+                <span class="en">Settings</span>
+              </a>
+              <a href="/user-center/merchant/dashboard.html">
+                <i class="fas fa-store"></i>
+                <span class="zh">切换到商家版</span>
+                <span class="en">Switch to Merchant</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <div class="dropdown-lang">
+                <i class="fas fa-globe"></i>
+                <span class="zh">语言切换</span>
+                <span class="en">Language</span>
+              </div>
+              <a href="/auth/login.html">
+                <i class="fas fa-sign-out-alt"></i>
+                <span class="zh">退出登录</span>
+                <span class="en">Sign Out</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main class="user-center">
+    <div class="container">
+      <aside class="sidebar">
+        <a href="/user-center/client/account.html" class="nav-item">
+          <i class="fas fa-user"></i>
+          <span class="zh">账号管理</span>
+          <span class="en">Account</span>
+        </a>
+        <a href="/user-center/client/assets.html" class="nav-item active">
+          <i class="fas fa-wallet"></i>
+          <span class="zh">资产管理</span>
+          <span class="en">Assets</span>
+        </a>
+        <a href="/user-center/client/messages.html" class="nav-item">
+          <i class="fas fa-envelope"></i>
+          <span class="zh">消息通知</span>
+          <span class="en">Messages</span>
+        </a>
+      </aside>
+      <div class="content">
+        <div class="breadcrumb">
+          <a href="/">
+            <span class="zh">首页</span>
+            <span class="en">Home</span>
+          </a>
+          <i class="fas fa-chevron-right"></i>
+          <a href="/user-center/client/account.html">
+            <span class="zh">用户中心</span>
+            <span class="en">User Center</span>
+          </a>
+          <i class="fas fa-chevron-right"></i>
+          <span class="zh">资产管理</span>
+          <span class="en">Asset Management</span>
+        </div>
+
+        <!-- 资产总览 -->
+        <div class="asset-overview">
+          <div class="asset-header">
+            <div class="asset-title">
+              <span class="zh">总资产</span>
+              <span class="en">Total Assets</span>
+            </div>
+            <button class="visibility-toggle" id="toggleVisibility">
+              <i class="fas fa-eye" id="visibilityIcon"></i>
+              <span class="zh">显示</span>
+              <span class="en">Show</span>
+            </button>
+          </div>
+          <div class="asset-balance" id="totalBalance">11,285.42 USDT</div>
+          <div class="asset-value" id="totalValue">≈ $11,285.42</div>
+          <div class="asset-actions">
+            <a href="assets-deposit.html" class="asset-action-btn">
+              <i class="fas fa-arrow-down"></i>
+              <span class="asset-action-label zh">充值</span>
+              <span class="asset-action-label en">Deposit</span>
+            </a>
+            <a href="assets-withdraw.html" class="asset-action-btn">
+              <i class="fas fa-arrow-up"></i>
+              <span class="asset-action-label zh">提现</span>
+              <span class="asset-action-label en">Withdraw</span>
+            </a>
+            <a href="assets-transfer.html" class="asset-action-btn">
+              <i class="fas fa-exchange-alt"></i>
+              <span class="asset-action-label zh">转账</span>
+              <span class="asset-action-label en">Transfer</span>
+            </a>
+            <a href="assets-transactions.html" class="asset-action-btn">
+              <i class="fas fa-history"></i>
+              <span class="asset-action-label zh">记录</span>
+              <span class="asset-action-label en">History</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 稳定币资产卡片 -->
+        <div class="card">
+          <div class="card-title">
+            <span class="zh">稳定币资产</span>
+            <span class="en">Stablecoin Assets</span>
+          </div>
+          <div class="token-cards">
+            <!-- USDT 卡片 -->
+            <div class="token-card">
+              <div class="token-header">
+                <div class="token-name">
+                  <div class="token-icon">
+                    <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="USDT" />
+                  </div>
+                  <div>
+                    <div class="token-title">USDT</div>
+                    <div class="token-network">
+                      <span class="zh">多链资产</span>
+                      <span class="en">Multi-chain</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="token-balance balanceValue">10,285.42</div>
+              <div class="token-value valueUSD">≈ $10,285.42</div>
+              <div class="token-actions">
+                <a href="assets-deposit.html?token=usdt" class="token-btn">
+                  <i class="fas fa-arrow-down"></i>
+                  <span class="zh">充值</span>
+                  <span class="en">Deposit</span>
+                </a>
+                <a href="assets-withdraw.html?token=usdt" class="token-btn">
+                  <i class="fas fa-arrow-up"></i>
+                  <span class="zh">提现</span>
+                  <span class="en">Withdraw</span>
+                </a>
+                <a href="assets-transfer.html?token=usdt" class="token-btn">
+                  <i class="fas fa-exchange-alt"></i>
+                  <span class="zh">转账</span>
+                  <span class="en">Transfer</span>
+                </a>
+              </div>
+            </div>
+            
+            <!-- USDC 卡片 -->
+            <div class="token-card">
+              <div class="token-header">
+                <div class="token-name">
+                  <div class="token-icon">
+                    <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="USDC" />
+                  </div>
+                  <div>
+                    <div class="token-title">USDC</div>
+                    <div class="token-network">
+                      <span class="zh">多链资产</span>
+                      <span class="en">Multi-chain</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="token-balance balanceValue">1,000.00</div>
+              <div class="token-value valueUSD">≈ $1,000.00</div>
+              <div class="token-actions">
+                <a href="assets-deposit.html?token=usdc" class="token-btn">
+                  <i class="fas fa-arrow-down"></i>
+                  <span class="zh">充值</span>
+                  <span class="en">Deposit</span>
+                </a>
+                <a href="assets-withdraw.html?token=usdc" class="token-btn">
+                  <i class="fas fa-arrow-up"></i>
+                  <span class="zh">提现</span>
+                  <span class="en">Withdraw</span>
+                </a>
+                <a href="assets-transfer.html?token=usdc" class="token-btn">
+                  <i class="fas fa-exchange-alt"></i>
+                  <span class="zh">转账</span>
+                  <span class="en">Transfer</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 按网络显示资产 -->
+        <div class="card">
+          <div class="card-title">
+            <span class="zh">按网络查看资产</span>
+            <span class="en">Assets by Network</span>
+          </div>
+          <div class="token-cards">
+            <!-- ETH 网络 -->
+            <div class="token-card">
+              <div class="token-header">
+                <div class="token-name">
+                  <div class="token-icon">
+                    <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH" />
+                  </div>
+                  <div>
+                    <div class="token-title">
+                      <span class="zh">以太坊网络</span>
+                      <span class="en">Ethereum Network</span>
+                    </div>
+                    <div class="token-network">ERC-20</div>
+                  </div>
+                </div>
+              </div>
+              <div class="token-balance balanceValue">5,285.42 USDT</div>
+              <div class="token-value balanceValue">500.00 USDC</div>
+              <div class="token-actions">
+                <a href="assets-deposit.html?network=eth" class="token-btn primary">
+                  <i class="fas fa-arrow-down"></i>
+                  <span class="zh">充值</span>
+                  <span class="en">Deposit</span>
+                </a>
+                <a href="assets-withdraw.html?network=eth" class="token-btn">
+                  <i class="fas fa-arrow-up"></i>
+                  <span class="zh">提现</span>
+                  <span class="en">Withdraw</span>
+                </a>
+              </div>
+            </div>
+            
+            <!-- TRON 网络 -->
+            <div class="token-card">
+              <div class="token-header">
+                <div class="token-name">
+                  <div class="token-icon">
+                    <img src="https://cryptologos.cc/logos/tron-trx-logo.png" alt="TRON" />
+                  </div>
+                  <div>
+                    <div class="token-title">
+                      <span class="zh">波场网络</span>
+                      <span class="en">TRON Network</span>
+                    </div>
+                    <div class="token-network">TRC-20</div>
+                  </div>
+                </div>
+              </div>
+              <div class="token-balance balanceValue">5,000.00 USDT</div>
+              <div class="token-value balanceValue">500.00 USDC</div>
+              <div class="token-actions">
+                <a href="assets-deposit.html?network=tron" class="token-btn primary">
+                  <i class="fas fa-arrow-down"></i>
+                  <span class="zh">充值</span>
+                  <span class="en">Deposit</span>
+                </a>
+                <a href="assets-withdraw.html?network=tron" class="token-btn">
+                  <i class="fas fa-arrow-up"></i>
+                  <span class="zh">提现</span>
+                  <span class="en">Withdraw</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 近期交易记录 -->
+        <div class="card">
+          <div class="transaction-header">
+            <div class="transaction-title">
+              <span class="zh">近期交易</span>
+              <span class="en">Recent Transactions</span>
+            </div>
+            <a href="assets-transactions.html" class="view-all">
+              <span class="zh">查看全部</span>
+              <span class="en">View All</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+          </div>
+          
+          <div class="transaction-list">
+            <!-- 充值记录 -->
+            <div class="transaction-item">
+              <div class="transaction-info">
+                <div class="transaction-icon deposit">
+                  <i class="fas fa-arrow-down"></i>
+                </div>
+                <div class="transaction-details">
+                  <div class="transaction-type">
+                    <span class="zh">充值 USDT</span>
+                    <span class="en">Deposit USDT</span>
+                  </div>
+                  <div class="transaction-date">2023-04-28 10:15:30</div>
+                </div>
+              </div>
+              <div class="transaction-amount">
+                <div class="amount positive">+1,000.00 USDT</div>
+                <div class="transaction-status">
+                  <span class="zh">已完成</span>
+                  <span class="en">Completed</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 提现记录 -->
+            <div class="transaction-item">
+              <div class="transaction-info">
+                <div class="transaction-icon withdraw">
+                  <i class="fas fa-arrow-up"></i>
+                </div>
+                <div class="transaction-details">
+                  <div class="transaction-type">
+                    <span class="zh">提现 USDT</span>
+                    <span class="en">Withdraw USDT</span>
+                  </div>
+                  <div class="transaction-date">2023-04-25 14:22:05</div>
+                </div>
+              </div>
+              <div class="transaction-amount">
+                <div class="amount negative">-500.00 USDT</div>
+                <div class="transaction-status">
+                  <span class="zh">已完成</span>
+                  <span class="en">Completed</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 转账记录 -->
+            <div class="transaction-item">
+              <div class="transaction-info">
+                <div class="transaction-icon transfer">
+                  <i class="fas fa-exchange-alt"></i>
+                </div>
+                <div class="transaction-details">
+                  <div class="transaction-type">
+                    <span class="zh">转账给 user123</span>
+                    <span class="en">Transfer to user123</span>
+                  </div>
+                  <div class="transaction-date">2023-04-20 09:45:12</div>
+                </div>
+              </div>
+              <div class="transaction-amount">
+                <div class="amount negative">-200.00 USDT</div>
+                <div class="transaction-status">
+                  <span class="zh">已完成</span>
+                  <span class="en">Completed</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- OTC交易记录 -->
+            <div class="transaction-item">
+              <div class="transaction-info">
+                <div class="transaction-icon deposit">
+                  <i class="fas fa-handshake"></i>
+                </div>
+                <div class="transaction-details">
+                  <div class="transaction-type">
+                    <span class="zh">OTC交易 - 买入</span>
+                    <span class="en">OTC Trade - Buy</span>
+                  </div>
+                  <div class="transaction-date">2023-04-15 16:30:45</div>
+                </div>
+              </div>
+              <div class="transaction-amount">
+                <div class="amount positive">+2,000.00 USDT</div>
+                <div class="transaction-status">
+                  <span class="zh">已完成</span>
+                  <span class="en">Completed</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 充值 USDC 记录 -->
+            <div class="transaction-item">
+              <div class="transaction-info">
+                <div class="transaction-icon deposit">
+                  <i class="fas fa-arrow-down"></i>
+                </div>
+                <div class="transaction-details">
+                  <div class="transaction-type">
+                    <span class="zh">充值 USDC</span>
+                    <span class="en">Deposit USDC</span>
+                  </div>
+                  <div class="transaction-date">2023-04-10 11:05:30</div>
+                </div>
+              </div>
+              <div class="transaction-amount">
+                <div class="amount positive">+1,000.00 USDC</div>
+                <div class="transaction-status">
+                  <span class="zh">已完成</span>
+                  <span class="en">Completed</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <script>
+    // 设置初始语言
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedLang = localStorage.getItem('preferredLanguage') || 'en-US';
+      document.documentElement.lang = savedLang;
+      
+      // 监听语言切换
+      document.querySelector('.dropdown-lang').addEventListener('click', function() {
+        const currentLang = document.documentElement.lang;
+        const newLang = currentLang === 'en-US' ? 'zh-CN' : 'en-US';
+        document.documentElement.lang = newLang;
+        localStorage.setItem('preferredLanguage', newLang);
+      });
+      
+      // 余额显示/隐藏功能
+      const toggleBtn = document.getElementById('toggleVisibility');
+      const visibilityIcon = document.getElementById('visibilityIcon');
+      const balanceElements = document.querySelectorAll('.balanceValue');
+      const valueElements = document.querySelectorAll('.valueUSD');
+      const totalBalance = document.getElementById('totalBalance');
+      const totalValue = document.getElementById('totalValue');
+      
+      let isVisible = localStorage.getItem('balanceVisible') !== 'false';
+      
+      function updateVisibility() {
+        if (isVisible) {
+          visibilityIcon.className = 'fas fa-eye';
+          balanceElements.forEach(el => {
+            el.style.display = '';
+          });
+          valueElements.forEach(el => {
+            el.style.display = '';
+          });
+          totalBalance.textContent = '11,285.42 USDT';
+          totalValue.textContent = '≈ $11,285.42';
+        } else {
+          visibilityIcon.className = 'fas fa-eye-slash';
+          balanceElements.forEach(el => {
+            el.innerHTML = '<span class="hidden-balance">******</span>';
+          });
+          valueElements.forEach(el => {
+            el.innerHTML = '<span class="hidden-balance">******</span>';
+          });
+          totalBalance.innerHTML = '<span class="hidden-balance">******</span>';
+          totalValue.innerHTML = '<span class="hidden-balance">******</span>';
+        }
+      }
+      
+      toggleBtn.addEventListener('click', function() {
+        isVisible = !isVisible;
+        localStorage.setItem('balanceVisible', isVisible);
+        updateVisibility();
+      });
+      
+      // 初始状态
+      updateVisibility();
+    });
+  </script>
+</body>
+</html> 

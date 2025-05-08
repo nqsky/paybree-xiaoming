@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">等待买家回应 - Paybree</span>
+        <span class="en">Waiting for Buyer Response - Paybree</span>
+    </title>
+    <link rel="stylesheet" href="../../../css/common.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --color-primary: #16C784;
+            --color-primary-hover: #20E19F;
+            --color-white: #FFFFFF;
+            --color-gray-50: #F5F5F5;
+            --color-gray-600: #666666;
+            --color-gray-900: #333333;
+            --color-border: #E5E5E5;
+            --color-error: #FF4D4F;
+            --color-warning: #FFA940;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-gray-900);
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+        }
+
+        .header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        .nav {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--color-gray-600);
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--color-primary);
+        }
+
+        .nav-link.active {
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+
+        /* 页面内容样式 */
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 104px 24px 24px;
+        }
+
+        /* 面包屑导航样式 */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            font-size: 14px;
+            color: var(--color-gray-600);
+        }
+
+        .breadcrumb a {
+            color: var(--color-gray-600);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--color-primary);
+        }
+
+        .breadcrumb .separator {
+            margin: 0 8px;
+            color: var(--color-gray-600);
+        }
+
+        .breadcrumb .current {
+            color: var(--color-gray-900);
+            font-weight: 500;
+        }
+
+        /* 进度条组件样式 */
+        .sell-progress {
+            padding: 32px 0;
+            margin-bottom: 40px;
+            background: var(--color-white);
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 24px;
+            right: 24px;
+            height: 1px;
+            background: var(--color-border);
+            z-index: 1;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-white);
+            border: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            transition: all 0.3s ease;
+        }
+
+        .step-number {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-gray-600);
+        }
+
+        .step-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-gray-600);
+        }
+
+        .step.active .step-circle {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .step.active .step-number {
+            color: var(--color-white);
+        }
+
+        .step.active .step-label {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        /* 主要内容区域 */
+        .margin-content {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .margin-header {
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .margin-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+            margin-bottom: 8px;
+        }
+
+        .margin-subtitle {
+            font-size: 14px;
+            color: var(--color-gray-600);
+        }
+
+        /* 状态卡片样式 */
+        .status-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            margin-top: 24px;
+        }
+
+        .status-card {
+            margin: 0;
+            padding: 32px;
+            background: var(--color-white);
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--color-border);
+        }
+
+        .status-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 32px;
+        }
+
+        .status-icon.waiting {
+            background: rgba(22, 199, 132, 0.1);
+            color: var(--color-primary);
+        }
+
+        .status-icon.accepted {
+            background: rgba(22, 199, 132, 0.1);
+            color: var(--color-primary);
+        }
+
+        .status-icon.rejected {
+            background: rgba(255, 77, 79, 0.1);
+            color: var(--color-error);
+        }
+
+        .status-icon.modified {
+            background: rgba(255, 169, 64, 0.1);
+            color: var(--color-warning);
+        }
+
+        .status-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .status-desc {
+            color: var(--color-gray-600);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .margin-info {
+            background: var(--color-gray-50);
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--color-gray-600);
+        }
+
+        .info-value {
+            font-weight: 500;
+            color: var(--color-gray-900);
+        }
+
+        .info-value.primary {
+            color: var(--color-primary);
+        }
+
+        .info-value.error {
+            color: var(--color-error);
+        }
+
+        .info-value.warning {
+            color: var(--color-warning);
+        }
+
+        /* 按钮样式 */
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 120px;
+        }
+
+        .action-btn-primary {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+        }
+
+        .action-btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .action-btn-default {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+            border: 1px solid var(--color-border);
+        }
+
+        .action-btn-default:hover {
+            background: var(--color-gray-50);
+        }
+
+        .action-btn-error {
+            background: var(--color-error);
+            color: var(--color-white);
+            border: none;
+        }
+
+        .action-btn-error:hover {
+            background: #FF7875;
+        }
+
+        /* 主体内容布局 */
+        .margin-body {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .margin-info-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--color-border);
+        }
+
+        .action-row {
+            display: flex;
+            gap: 16px;
+            margin: 32px 0 0 0;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            padding: 10px 28px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-modify {
+            background: #fff;
+            color: #FFA940;
+            border: 1px solid #FFA940;
+        }
+
+        .btn-modify:hover {
+            background: #FFF7E6;
+        }
+
+        .btn-cancel {
+            background: #fff;
+            color: #FF4D4F;
+            border: 1px solid #FF4D4F;
+        }
+
+        .btn-cancel:hover {
+            background: #FFF1F0;
+        }
+
+        .btn-confirm {
+            background: #16C784;
+            color: #fff;
+        }
+
+        .btn-confirm:hover {
+            background: #20E19F;
+        }
+
+        /* 历史记录样式 */
+        .history-section {
+            margin-top: 0;
+            width: 100%;
+        }
+
+        .history-title { 
+            font-size: 15px; 
+            color: #888; 
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-list { 
+            background: #F5F5F5; 
+            border-radius: 8px; 
+            padding: 16px; 
+            font-size: 14px; 
+            color: #555;
+        }
+
+        .history-item {
+            margin-bottom: 16px;
+        }
+
+        .history-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .history-time {
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .history-content {
+            color: #333;
+            line-height: 1.5;
+        }
+
+        /* 语言切换样式 */
+        .zh, .en {
+            display: none;
+        }
+
+        html[lang="zh-CN"] .zh {
+            display: inline;
+        }
+
+        html[lang="en-US"] .en {
+            display: inline;
+        }
+
+        html[lang="zh-CN"] .zh-block {
+            display: block;
+        }
+
+        html[lang="en-US"] .en-block {
+            display: block;
+        }
+
+        /* 语言选择器样式 */
+        .language-switch {
+            position: relative;
+            margin-left: 16px;
+        }
+
+        .language-select {
+            appearance: none;
+            background: transparent;
+            border: none;
+            color: var(--color-gray-600);
+            font-size: 14px;
+            padding-right: 20px;
+            cursor: pointer;
+        }
+
+        .language-select:focus {
+            outline: none;
+        }
+
+        .language-switch::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid var(--color-gray-600);
+        }
+
+        .language-select option {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+        }
+
+        /* 模态框样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 12px;
+            padding: 32px;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin: 20px;
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+        }
+
+        .modal-body {
+            margin-bottom: 24px;
+        }
+
+        .modal-message {
+            color: var(--color-gray-600);
+            line-height: 1.6;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* 聊天按钮 */
+        .chat-button {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            color: var(--color-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(22, 199, 132, 0.3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 1000;
+        }
+
+        .chat-button:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(22, 199, 132, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container">
+            <a href="/index.html" class="logo">Paybree</a>
+            <nav class="nav">
+                <div class="language-switch">
+                    <select class="language-select">
+                        <option value="zh-CN">简体中文</option>
+                        <option value="en-US">English</option>
+                    </select>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-container">
+        <!-- 面包屑导航 -->
+        <nav class="breadcrumb">
+            <a href="/">
+                <span class="zh">首页</span>
+                <span class="en">Home</span>
+            </a>
+            <span class="separator">/</span>
+            <a href="/trading/quotes.html">
+                <span class="zh">交易大厅</span>
+                <span class="en">Trading Hall</span>
+            </a>
+            <span class="separator">/</span>
+            <span class="current">
+                <span class="zh">等待买家回应</span>
+                <span class="en">Waiting for Buyer Response</span>
+            </span>
+        </nav>
+
+        <!-- 进度条 -->
+        <div class="sell-progress">
+            <div class="progress-steps">
+                <div class="step active">
+                    <div class="step-circle">
+                        <span class="step-number">1</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">保证金协商</span>
+                        <span class="en">Margin Negotiation</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">2</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">创建订单</span>
+                        <span class="en">Create Order</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">3</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">锁定USDT</span>
+                        <span class="en">Lock USDT</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">4</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">等待付款</span>
+                        <span class="en">Waiting for Payment</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">5</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">交易完成</span>
+                        <span class="en">Complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="margin-content">
+            <div class="margin-header">
+                <h1 class="margin-title">
+                    <span class="zh">等待买家处理</span>
+                    <span class="en">Waiting for Buyer Response</span>
+                </h1>
+                <p class="margin-subtitle">
+                    <span class="zh">买家正在处理您的保证金协商请求</span>
+                    <span class="en">The buyer is processing your margin negotiation request</span>
+                </p>
+            </div>
+            <div class="margin-body">
+                <div>
+                    <div class="margin-info-card">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <span class="zh">买家昵称</span>
+                                <span class="en">Buyer Name</span>
+                            </div>
+                            <div class="info-value">John</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <span class="zh">交易金额</span>
+                                <span class="en">Transaction Amount</span>
+                            </div>
+                            <div class="info-value">1,000 USDT</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <span class="zh">协商保证金模式</span>
+                                <span class="en">Negotiated Margin Mode</span>
+                            </div>
+                            <div class="info-value">
+                                <span class="zh">100% 托管</span>
+                                <span class="en">100% Escrow</span>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <span class="zh">手续费</span>
+                                <span class="en">Fee</span>
+                            </div>
+                            <div class="info-value">5.00 USDT (0.5%)</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <span class="zh">协商时间</span>
+                                <span class="en">Negotiation Time</span>
+                            </div>
+                            <div class="info-value">2024-04-26 15:00:00</div>
+                        </div>
+                    </div>
+                    <div class="action-row">
+                        <button class="btn btn-modify" onclick="openChat()">
+                            <i class="fas fa-comments"></i>
+                            <span class="zh">聊天协商</span>
+                            <span class="en">Chat</span>
+                        </button>
+                        <button class="btn btn-cancel" onclick="showCancelModal()">
+                            <span class="zh">取消协商</span>
+                            <span class="en">Cancel Negotiation</span>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <div class="history-section">
+                        <div class="history-title">
+                            <span class="zh">协商历史</span>
+                            <span class="en">Negotiation History</span>
+                        </div>
+                        <div class="history-list">
+                            <div class="history-item">
+                                <div class="history-time">2024-04-26 14:58:00</div>
+                                <div class="history-content">
+                                    <span class="zh">卖方发起协商：保证金模式 100% 托管</span>
+                                    <span class="en">Seller initiated negotiation: Margin mode 100% Escrow</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 取消确认模态框 -->
+    <div class="modal-overlay" id="cancelModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <span class="zh">确认取消</span>
+                    <span class="en">Confirm Cancellation</span>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message">
+                    <span class="zh">确定要取消保证金协商吗？</span>
+                    <span class="en">Are you sure you want to cancel the margin negotiation?</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" onclick="closeCancelModal()">
+                    <span class="zh">返回</span>
+                    <span class="en">Back</span>
+                </button>
+                <button class="btn btn-confirm" onclick="confirmCancel()">
+                    <span class="zh">确认取消</span>
+                    <span class="en">Confirm</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 聊天按钮 -->
+    <div class="chat-button" onclick="openChat()">
+        <i class="fas fa-comments"></i>
+    </div>
+
+    <script>
+        // 从URL获取参数
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+        const amount = urlParams.get('amount');
+
+        // 取消协商
+        function cancelNegotiation() {
+            const confirmMessage = {
+                'zh-CN': '确定要取消保证金协商吗？',
+                'en-US': 'Are you sure you want to cancel the margin negotiation?'
+            };
+            if (confirm(confirmMessage[document.documentElement.lang])) {
+                // TODO: 调用API取消协商
+                window.location.href = '/trading/quotes.html';
+            }
+        }
+
+        // 显示取消确认模态框
+        function showCancelModal() {
+            document.getElementById('cancelModal').style.display = 'flex';
+        }
+
+        // 关闭取消确认模态框
+        function closeCancelModal() {
+            document.getElementById('cancelModal').style.display = 'none';
+        }
+
+        // 确认取消
+        function confirmCancel() {
+            // TODO: 调用API取消协商
+            window.location.href = '/trading/quotes.html';
+        }
+
+        // 打开聊天窗口
+        function openChat() {
+            // TODO: 实现聊天窗口逻辑
+            alert(document.documentElement.lang === 'zh-CN' ? '聊天功能即将上线' : 'Chat feature coming soon');
+        }
+
+        // 继续创建订单
+        function proceedToOrder() {
+            window.location.href = 'create-order.html';
+        }
+
+        // 返回协商页面
+        function goBackToNegotiation() {
+            window.location.href = 'margin.html';
+        }
+
+        // 语言切换功能
+        function changeLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.querySelectorAll('.zh').forEach(el => {
+                el.style.display = (lang === 'zh-CN') ? 'inline' : 'none';
+            });
+            document.querySelectorAll('.en').forEach(el => {
+                el.style.display = (lang === 'en-US') ? 'inline' : 'none';
+            });
+            document.querySelector('.language-select').value = lang;
+            localStorage.setItem('preferred_language', lang);
+        }
+
+        // 监听来自父页面的消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'languageChange') {
+                changeLanguage(event.data.language);
+            }
+        });
+
+        // 监听语言选择器的变化
+        document.querySelector('.language-select').addEventListener('change', function() {
+            const lang = this.value;
+            changeLanguage(lang);
+            // 通知父页面语言变化
+            window.parent.postMessage({
+                type: 'languageChange',
+                language: lang
+            }, '*');
+        });
+
+        // 初始化语言
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('preferred_language') || 'en-US';
+            changeLanguage(lang);
+        });
+
+        // 模拟接受保证金协商并跳转到下一步
+        // 在实际项目中，这里应该是由后端通知前端买家已接受协商
+        function simulateBuyerAccepted() {
+            window.location.href = 'create-order.html';
+        }
+
+        // 定时器模拟：15秒后自动跳转（仅用于演示）
+        // setTimeout(simulateBuyerAccepted, 15000);
+    </script>
+</body>
+</html> 

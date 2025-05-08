@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景圆形 -->
+    <circle cx="32" cy="32" r="28" fill="#EDFAF6"/>
+    
+    <!-- 风控图标 -->
+    <path d="M32 16L20 24V32C20 40 26 48 32 48C38 48 44 40 44 32V24L32 16Z" fill="#16C784"/>
+    <path d="M28 32L32 36L36 32" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg> 

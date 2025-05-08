@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">交易完成 - Paybree</span>
+        <span class="en">Transaction Complete - Paybree</span>
+    </title>
+    <link rel="stylesheet" href="../../../css/common.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <style>
+        /* 语言切换样式 */
+        .zh, .en {
+            display: none;
+        }
+
+        html[lang="zh-CN"] .zh {
+            display: inline;
+        }
+
+        html[lang="en-US"] .en {
+            display: inline;
+        }
+
+        html[lang="zh-CN"] .zh-block {
+            display: block;
+        }
+
+        html[lang="en-US"] .en-block {
+            display: block;
+        }
+
+        /* 语言选择器样式 */
+        .language-switch {
+            position: relative;
+            margin-left: 16px;
+        }
+
+        .language-select {
+            appearance: none;
+            background: transparent;
+            border: none;
+            color: var(--color-gray-600);
+            font-size: 14px;
+            padding-right: 20px;
+            cursor: pointer;
+        }
+
+        .language-select:focus {
+            outline: none;
+        }
+
+        .language-switch::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid var(--color-gray-600);
+        }
+
+        .language-select option {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+        }
+
+        /* 基础样式变量 */
+        :root {
+            --color-primary: #16C784;
+            --color-primary-hover: #20E19F;
+            --color-white: #FFFFFF;
+            --color-gray-50: #F5F5F5;
+            --color-gray-100: #EBEBEB;
+            --color-gray-200: #E0E0E0;
+            --color-gray-600: #666666;
+            --color-gray-900: #333333;
+            --color-border: #E5E5E5;
+            --color-error: #FF4D4F;
+            --color-warning: #FFA940;
+            
+            --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            --font-family-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            --font-size-base: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-xxl: 20px;
+            --line-height-base: 1.5;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height-base);
+            color: var(--color-gray-900);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 导航样式 */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+        }
+
+        .header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        .nav {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--color-gray-600);
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--color-primary);
+        }
+
+        .nav-link.active {
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+
+        /* 页面容器 */
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 104px 24px 24px;
+        }
+
+        /* 面包屑导航 */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            font-size: 14px;
+            color: var(--color-gray-600);
+        }
+
+        .breadcrumb a {
+            color: var(--color-gray-600);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--color-primary);
+        }
+
+        .breadcrumb .separator {
+            margin: 0 8px;
+            color: var(--color-gray-600);
+        }
+
+        .breadcrumb .current {
+            color: var(--color-gray-900);
+            font-weight: 500;
+        }
+
+        /* 进度条样式 */
+        .buy-progress {
+            padding: 32px 0;
+            margin-bottom: 40px;
+            background: var(--color-white);
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 24px;
+            right: 24px;
+            height: 1px;
+            background: var(--color-border);
+            z-index: 1;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-white);
+            border: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            transition: all 0.3s ease;
+        }
+
+        .step.completed .step-circle {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .step.completed .step-number {
+            color: var(--color-white);
+        }
+
+        .step.active .step-circle {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .step.active .step-number {
+            color: var(--color-white);
+        }
+
+        .step.active .step-label {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .step-number {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-gray-600);
+        }
+
+        .step-label {
+            font-size: var(--font-size-base);
+            color: var(--color-gray-600);
+        }
+
+        /* 完成页面样式 */
+        .complete-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px;
+            background: var(--color-white);
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .complete-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(22, 199, 132, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+
+        .complete-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .complete-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+            margin-bottom: 8px;
+        }
+
+        .complete-subtitle {
+            font-size: 14px;
+            color: var(--color-gray-600);
+        }
+
+        .transaction-card {
+            background: var(--color-white);
+            border-radius: 12px;
+            border: 1px solid var(--color-border);
+            margin-bottom: 32px;
+        }
+
+        .card-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+            margin-bottom: 4px;
+        }
+
+        .transaction-info {
+            padding: 24px;
+        }
+
+        .info-card {
+            background: var(--color-white);
+            border-radius: 12px;
+            border: 1px solid var(--color-border);
+            padding: 24px;
+        }
+
+        .info-group {
+            grid-column: 1 / -1;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 24px;
+            margin-bottom: 24px;
+        }
+
+        .info-group:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .group-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+            margin-bottom: 8px;
+        }
+
+        .group-content {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: var(--color-gray-600);
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-gray-900);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: space-between;
+        }
+
+        .info-value.primary {
+            color: var(--color-primary);
+        }
+
+        .blockchain-text {
+            color: var(--color-success);
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            opacity: 0;
+            background: none;
+            border: none;
+            color: var(--color-gray-600);
+            cursor: pointer;
+            padding: 4px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-value:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .copy-btn:hover {
+            color: var(--color-primary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 120px;
+        }
+
+        .action-btn-primary {
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+        }
+
+        .action-btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .action-btn-default {
+            background: #fff;
+            color: var(--color-gray-900);
+            border: 1px solid var(--color-border);
+        }
+
+        .action-btn-default:hover {
+            background: var(--color-gray-50);
+        }
+
+        /* 添加争议按钮样式 */
+        .action-btn-danger {
+            background: #fff;
+            color: var(--color-error);
+            border: 1px solid var(--color-error);
+        }
+
+        .action-btn-danger:hover {
+            background: var(--color-error-light);
+        }
+
+        .action-btn-danger:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: var(--color-gray-400);
+            color: var(--color-gray-400);
+        }
+
+        /* 交易凭证样式 */
+        .proof-section {
+            margin-top: 32px;
+            padding: 0 24px 24px;
+        }
+
+        .proof-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-gray-900);
+            margin-bottom: 16px;
+        }
+
+        .proof-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .proof-item {
+            position: relative;
+            aspect-ratio: 4/3;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .proof-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.2s;
+        }
+
+        .proof-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .proof-item:hover .proof-overlay {
+            opacity: 1;
+        }
+
+        .proof-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .proof-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .proof-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            padding: 8px;
+            font-size: 20px;
+            transition: transform 0.2s;
+        }
+
+        .proof-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* 预览弹窗 */
+        .preview-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-modal.active {
+            display: flex;
+        }
+
+        .preview-image {
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 8px;
+        }
+
+        .preview-close {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #fff;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .preview-close:hover {
+            color: var(--color-gray-200);
+        }
+
+        /* Toast样式 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container">
+            <a href="/index.html" class="logo">Paybree</a>
+            <nav class="nav">
+                <div class="language-switch">
+                    <select class="language-select">
+                        <option value="zh-CN">简体中文</option>
+                        <option value="en-US">English</option>
+                    </select>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-container">
+        <!-- 面包屑导航 -->
+        <nav class="breadcrumb">
+            <a href="/">
+                <span class="zh">首页</span>
+                <span class="en">Home</span>
+            </a>
+            <span class="separator">/</span>
+            <a href="/trading/quotes.html">
+                <span class="zh">交易大厅</span>
+                <span class="en">Trading Hall</span>
+            </a>
+            <span class="separator">/</span>
+            <span class="current">
+                <span class="zh">交易完成</span>
+                <span class="en">Transaction Complete</span>
+            </span>
+        </nav>
+
+        <!-- 进度条 -->
+        <div class="buy-progress">
+            <div class="progress-steps">
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">1</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">保证金协商</span>
+                        <span class="en">Margin Negotiation</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">2</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">给承兑商汇款</span>
+                        <span class="en">Transfer to merchant</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">3</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">等待承兑</span>
+                        <span class="en">Waiting for Merchant</span>
+                    </div>
+                </div>
+                <div class="step active">
+                    <div class="step-circle">
+                        <span class="step-number">4</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">完成交易</span>
+                        <span class="en">Complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="complete-content">
+            <div class="status-card success">
+                <div class="status-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2 class="status-title">
+                    <span class="zh">交易完成</span>
+                    <span class="en">Transaction Complete</span>
+                </h2>
+                <p class="status-desc">
+                    <span class="zh">您已成功完成交易，USDT已转入您的钱包</span>
+                    <span class="en">Transaction completed successfully, USDT has been transferred to your wallet</span>
+                </p>
+                <div class="transaction-info">
+                    <div class="info-card">
+                        <!-- 交易基本信息 -->
+                        <div class="info-group">
+                            <h3 class="group-title">
+                                <span class="zh">交易信息</span>
+                                <span class="en">Transaction Details</span>
+                            </h3>
+                            <div class="group-content">
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <span class="zh">购买数量</span>
+                                        <span class="en">Purchase Amount</span>
+                                    </span>
+                                    <span class="info-value">6,783.22 USDT</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <span class="zh">成交价格</span>
+                                        <span class="en">Price</span>
+                                    </span>
+                                    <span class="info-value">1.002</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <span class="zh">支付金额</span>
+                                        <span class="en">Payment Amount</span>
+                                    </span>
+                                    <span class="info-value">47,482.54 CNY</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <span class="zh">保证金比例</span>
+                                        <span class="en">Margin Percentage</span>
+                                    </span>
+                                    <span class="info-value">100%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 承兑商信息 -->
+                        <div class="info-group">
+                            <h3 class="group-title">
+                                <span class="zh">承兑商信息</span>
+                                <span class="en">Merchant Information</span>
+                            </h3>
+                            <div class="group-content">
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <span class="zh">承兑商</span>
+                                        <span class="en">Merchant</span>
+                                    </span>
+                                    <span class="info-value">商家名称</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <span class="zh">承兑商评分</span>
+                                        <span class="en">Merchant Rating</span>
+                                    </span>
+                                    <span class="info-value">4.9/5.0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 钱包信息 -->
+                        <div class="info-group">
+                            <h3 class="group-title">
+                                <span class="zh">钱包信息</span>
+                                <span class="en">Wallet Information</span>
+                            </h3>
+                            <div class="group-content">
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <span class="zh">您的钱包地址</span>
+                                        <span class="en">Your Wallet Address</span>
+                                    </span>
+                                    <div class="info-value">
+                                        <span class="address">0x1234567890abcdef1234567890abcdef12345678</span>
+                                        <button class="copy-btn" onclick="copyText('0x1234567890abcdef1234567890abcdef12345678')">
+                                            <span class="zh">复制</span>
+                                            <span class="en">Copy</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <span class="zh">交易哈希</span>
+                                        <span class="en">Transaction Hash</span>
+                                    </span>
+                                    <div class="info-value">
+                                        <span class="address">0xabcdef1234567890abcdef1234567890abcdef1234</span>
+                                        <button class="copy-btn" onclick="copyText('0xabcdef1234567890abcdef1234567890abcdef1234')">
+                                            <span class="zh">复制</span>
+                                            <span class="en">Copy</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 时间信息 -->
+                        <div class="info-group">
+                            <h3 class="group-title">
+                                <span class="zh">时间信息</span>
+                                <span class="en">Time Information</span>
+                            </h3>
+                            <div class="group-content">
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <span class="zh">开始时间</span>
+                                        <span class="en">Start Time</span>
+                                    </span>
+                                    <span class="info-value">2024-04-26 15:00:00</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <span class="zh">支付时间</span>
+                                        <span class="en">Payment Time</span>
+                                    </span>
+                                    <span class="info-value">2024-04-26 15:15:00</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <span class="zh">完成时间</span>
+                                        <span class="en">Completion Time</span>
+                                    </span>
+                                    <span class="info-value" data-completion-time="2024-04-26 15:30:00">2024-04-26 15:30:00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="action-btn action-btn-default" onclick="goToOrders()">
+                        <span class="zh">提交争议？</span>
+                        <span class="en">Submit dispute?</span>
+                    </button>
+                    <button class="action-btn action-btn-primary" onclick="goToTrading()">
+                        <span class="zh">继续交易</span>
+                        <span class="en">Continue Trading</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 图片预览弹窗 -->
+    <div class="preview-modal" id="previewModal">
+        <button class="preview-close" onclick="closePreviewModal()">
+            <i class="fas fa-times"></i>
+        </button>
+        <img id="previewImage" src="" alt="凭证预览" class="preview-image">
+    </div>
+
+    <script>
+        // 复制文本
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const message = {
+                    'zh-CN': '复制成功',
+                    'en-US': 'Copied successfully'
+                };
+                alert(message[document.documentElement.lang]);
+            });
+        }
+
+        // 查看订单
+        function goToOrders() {
+            window.location.href = '/trading/process/dispute/create.html';
+        }
+
+        // 继续交易
+        function goToTrading() {
+            window.location.href = '/trading/quotes.html';
+        }
+
+        // 预览图片
+        function previewImage(src) {
+            document.getElementById('previewImage').src = src;
+            document.getElementById('previewModal').classList.add('active');
+        }
+
+        // 关闭预览弹窗
+        function closePreviewModal() {
+            document.getElementById('previewModal').classList.remove('active');
+        }
+
+        // 点击预览弹窗背景关闭
+        document.getElementById('previewModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePreviewModal();
+            }
+        });
+
+        // ESC键关闭弹窗
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePreviewModal();
+            }
+        });
+
+        // 下载图片
+        function downloadImage(src, filename) {
+            const link = document.createElement('a');
+            link.href = src;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // 显示Toast提示
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            toastMessage.textContent = message;
+            toast.style.display = 'block';
+            
+            // 添加消失动画
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease forwards';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                    toast.style.animation = 'slideIn 0.3s ease';
+                }, 300);
+            }, duration);
+        }
+
+        // 添加争议提交处理函数
+        function handleDisputeSubmit() {
+            // 获取URL中的订单ID参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('orderId') || 'TX24032115304789';
+            
+            // 检查是否在争议提交期限内
+            const completionTimeStr = document.querySelector('[data-completion-time]')?.getAttribute('data-completion-time');
+            if (completionTimeStr) {
+                const completionTime = new Date(completionTimeStr);
+                const now = new Date();
+                const daysDiff = Math.floor((now - completionTime) / (1000 * 60 * 60 * 24));
+                
+                if (daysDiff > 7) {
+                    showToast('超出争议提交期限（7天），无法提交争议');
+                    return;
+                }
+            }
+            
+            // 跳转到争议提交页面
+            window.location.href = `/trading/process/dispute/create.html?orderId=${orderId}`;
+        }
+
+        // 更新争议按钮状态（移除禁用状态的控制）
+        function updateDisputeButtonState() {
+            const disputeButton = document.querySelector('.action-btn-danger');
+            const completionTimeStr = document.querySelector('[data-completion-time]')?.getAttribute('data-completion-time');
+            
+            if (completionTimeStr) {
+                const completionTime = new Date(completionTimeStr);
+                const now = new Date();
+                const daysDiff = Math.floor((now - completionTime) / (1000 * 60 * 60 * 24));
+                
+                if (daysDiff > 7) {
+                    disputeButton.title = '已超出争议提交期限（7天）';
+                } else {
+                    disputeButton.title = '点击提交争议';
+                }
+            }
+        }
+
+        // 页面加载时检查争议按钮状态
+        document.addEventListener('DOMContentLoaded', updateDisputeButtonState);
+
+        // 语言切换功能
+        function changeLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.querySelectorAll('.zh').forEach(el => {
+                el.style.display = (lang === 'zh-CN') ? 'inline' : 'none';
+            });
+            document.querySelectorAll('.en').forEach(el => {
+                el.style.display = (lang === 'en-US') ? 'inline' : 'none';
+            });
+            document.querySelector('.language-select').value = lang;
+            localStorage.setItem('preferred_language', lang);
+        }
+
+        // 监听来自父页面的消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'languageChange') {
+                changeLanguage(event.data.language);
+            }
+        });
+
+        // 监听语言选择器的变化
+        document.querySelector('.language-select').addEventListener('change', function() {
+            const lang = this.value;
+            changeLanguage(lang);
+            // 通知父页面语言变化
+            window.parent.postMessage({
+                type: 'languageChange',
+                language: lang
+            }, '*');
+        });
+
+        // 初始化语言
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('preferred_language') || 'en-US';
+            changeLanguage(lang);
+        });
+    </script>
+</body>
+</html> 

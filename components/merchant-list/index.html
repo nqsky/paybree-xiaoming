@@ -1,0 +1,288 @@
+<!-- 承兑商列表组件 -->
+<div class="merchant-list">
+    <table class="quotes-table">
+        <thead>
+            <tr>
+                <th>承兑方</th>
+                <th>价格</th>
+                <th>数量/订单限额</th>
+                <th>交易</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="merchant-info">
+                        <div class="merchant-avatar">A</div>
+                        <div class="merchant-details">
+                            <div class="merchant-name">
+                                Alice Trading
+                                <span class="merchant-badge badge-recommended">推荐</span>
+                            </div>
+                            <div class="merchant-badges">
+                                <span class="merchant-badge badge-margin">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                                    </svg>
+                                    已缴保证金
+                                </span>
+                            </div>
+                            <div class="merchant-stats">
+                                <div class="stat-item">98% 完成率</div>
+                                <div class="stat-item">1,234 笔成交</div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="price-info">
+                        <div class="price-amount">1.002 USD</div>
+                        <div class="price-change">+0.2%</div>
+                    </div>
+                </td>
+                <td>
+                    <div>1,728.03 USDT</div>
+                    <div class="stat-item">$1,000 - $10,000</div>
+                </td>
+                <td>
+                    <div class="quote-actions">
+                        <button class="action-btn btn-buy">买入</button>
+                        <button class="action-btn btn-sell">卖出</button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<style>
+    /* 表格基础样式 */
+    .quotes-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .quotes-table th,
+    .quotes-table td {
+        text-align: left;
+        padding: 16px 12px;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .quotes-table th {
+        font-weight: 500;
+        color: var(--color-gray-600);
+    }
+
+    .quotes-table tr:hover {
+        background-color: var(--color-primary-light);
+    }
+
+    /* 承兑商信息样式 */
+    .merchant-info {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .merchant-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--color-primary-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-primary);
+        font-weight: 500;
+        font-size: 20px;
+    }
+
+    .merchant-details {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .merchant-name {
+        font-weight: 500;
+        color: var(--color-gray-900);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .merchant-badges {
+        display: flex;
+        gap: 8px;
+        margin-top: 4px;
+    }
+
+    .merchant-badge {
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-block;
+    }
+
+    .badge-recommended {
+        background: var(--color-primary-light);
+        color: var(--color-primary);
+    }
+
+    .badge-margin {
+        background: var(--color-warning);
+        color: var(--color-white);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 8px;
+    }
+
+    .badge-margin svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .merchant-stats {
+        display: flex;
+        gap: 16px;
+        color: var(--color-gray-600);
+        font-size: 14px;
+        margin-top: 4px;
+    }
+
+    /* 价格信息样式 */
+    .price-info {
+        font-weight: 500;
+        text-align: left;
+    }
+
+    .price-amount {
+        color: var(--color-gray-900);
+        font-size: 16px;
+    }
+
+    .price-change {
+        font-size: 12px;
+        color: var(--color-success);
+    }
+
+    .price-change.negative {
+        color: var(--color-error);
+    }
+
+    /* 交易按钮样式 */
+    .quote-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-start;
+    }
+
+    .action-btn {
+        padding: 6px 16px;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-buy {
+        background: var(--color-primary);
+        color: var(--color-white);
+        border: none;
+    }
+
+    .btn-buy:hover {
+        background: var(--color-primary-hover);
+        transform: translateY(-2px);
+    }
+
+    .btn-sell {
+        background: var(--color-white);
+        color: var(--color-primary);
+        border: 1px solid var(--color-primary);
+    }
+
+    .btn-sell:hover {
+        background: var(--color-primary-light);
+        transform: translateY(-2px);
+    }
+</style>
+
+<script>
+// 示例数据
+const merchantData = [
+    {
+        avatar: 'A',
+        name: 'Alice Trading',
+        isRecommended: true,
+        hasMargin: true,
+        completionRate: 98,
+        totalTrades: 1234,
+        price: 1.002,
+        priceChange: 0.2,
+        amount: 1728.03,
+        minLimit: 1000,
+        maxLimit: 10000
+    },
+    // ... 更多数据
+];
+
+// 渲染函数
+function renderMerchantList(data) {
+    const tbody = document.querySelector('.quotes-table tbody');
+    tbody.innerHTML = data.map(merchant => `
+        <tr>
+            <td>
+                <div class="merchant-info">
+                    <div class="merchant-avatar">${merchant.avatar}</div>
+                    <div class="merchant-details">
+                        <div class="merchant-name">
+                            ${merchant.name}
+                            ${merchant.isRecommended ? '<span class="merchant-badge badge-recommended">推荐</span>' : ''}
+                        </div>
+                        <div class="merchant-badges">
+                            ${merchant.hasMargin ? `
+                                <span class="merchant-badge badge-margin">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                                    </svg>
+                                    已缴保证金
+                                </span>
+                            ` : ''}
+                        </div>
+                        <div class="merchant-stats">
+                            <div class="stat-item">${merchant.completionRate}% 完成率</div>
+                            <div class="stat-item">${merchant.totalTrades.toLocaleString()} 笔成交</div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="price-info">
+                    <div class="price-amount">${merchant.price.toFixed(3)} USD</div>
+                    <div class="price-change ${merchant.priceChange < 0 ? 'negative' : ''}">${merchant.priceChange > 0 ? '+' : ''}${merchant.priceChange.toFixed(1)}%</div>
+                </div>
+            </td>
+            <td>
+                <div>${merchant.amount.toFixed(2)} USDT</div>
+                <div class="stat-item">$${merchant.minLimit.toLocaleString()} - $${merchant.maxLimit.toLocaleString()}</div>
+            </td>
+            <td>
+                <div class="quote-actions">
+                    <button class="action-btn btn-buy">买入</button>
+                    <button class="action-btn btn-sell">卖出</button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// 初始化
+document.addEventListener('DOMContentLoaded', () => {
+    renderMerchantList(merchantData);
+});
+</script> 

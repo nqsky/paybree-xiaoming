@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景圆圈 -->
+    <circle cx="32" cy="32" r="32" fill="#EDFAF6"/>
+    
+    <!-- 货币符号 -->
+    <path d="M32 20V44" stroke="#16C784" stroke-width="3" stroke-linecap="round"/>
+    <path d="M38 26H29C26.2386 26 24 28.2386 24 31C24 33.7614 26.2386 36 29 36H35C37.7614 36 40 38.2386 40 41C40 43.7614 37.7614 46 35 46H26" stroke="#16C784" stroke-width="3" stroke-linecap="round"/>
+</svg> 

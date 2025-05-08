@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <span class="zh">交易记录 - Paybree</span>
+    <span class="en">Transaction History - Paybree</span>
+  </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="assets-css.html">
+  <style>
+    .transactions-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+      align-items: center;
+    }
+    
+    .filter-item {
+      flex: none;
+    }
+    
+    .filter-label {
+      font-size: 14px;
+      color: var(--color-gray-600);
+      margin-bottom: 4px;
+    }
+    
+    .filter-select {
+      padding: 8px 12px;
+      border: 1px solid var(--color-gray-300);
+      border-radius: 6px;
+      background-color: var(--color-white);
+      font-size: 14px;
+      min-width: 120px;
+    }
+    
+    .filter-input {
+      padding: 8px 12px;
+      border: 1px solid var(--color-gray-300);
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    
+    .transactions-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .transactions-table th {
+      text-align: left;
+      padding: 12px 16px;
+      font-weight: 500;
+      color: var(--color-gray-600);
+      background: var(--color-gray-50);
+      border-bottom: 1px solid var(--color-gray-200);
+    }
+    
+    .transactions-table td {
+      padding: 16px;
+      border-bottom: 1px solid var(--color-gray-200);
+      color: var(--color-gray-700);
+    }
+    
+    .transactions-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .transactions-table tr:hover {
+      background: var(--color-gray-50);
+    }
+    
+    .transaction-id {
+      font-family: monospace;
+      font-size: 14px;
+      color: var(--color-gray-600);
+    }
+    
+    .transaction-date {
+      white-space: nowrap;
+    }
+    
+    .transaction-type {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .transaction-type.deposit {
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+    }
+    
+    .transaction-type.withdraw {
+      background: var(--color-danger-light);
+      color: var(--color-danger);
+    }
+    
+    .transaction-type.transfer {
+      background: var(--color-info-light);
+      color: var(--color-info);
+    }
+    
+    .transaction-amount {
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    
+    .transaction-amount.positive {
+      color: var(--color-primary);
+    }
+    
+    .transaction-amount.negative {
+      color: var(--color-danger);
+    }
+    
+    .transaction-status {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .transaction-status.completed {
+      background: rgba(16, 185, 129, 0.1);
+      color: #10B981;
+    }
+    
+    .transaction-status.pending {
+      background: rgba(245, 158, 11, 0.1);
+      color: #F59E0B;
+    }
+    
+    .transaction-status.failed {
+      background: rgba(239, 68, 68, 0.1);
+      color: #EF4444;
+    }
+    
+    .transaction-action {
+      color: var(--color-primary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .transaction-action:hover {
+      text-decoration: underline;
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 32px;
+      gap: 8px;
+    }
+    
+    .page-item {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      padding: 0 8px;
+      border-radius: 6px;
+      font-size: 14px;
+      color: var(--color-gray-700);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .page-item:hover {
+      background: var(--color-gray-100);
+    }
+    
+    .page-item.active {
+      background: var(--color-primary);
+      color: var(--color-white);
+      font-weight: 500;
+    }
+    
+    .page-item.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 48px 0;
+      color: var(--color-gray-500);
+    }
+    
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+    
+    .empty-state-text {
+      font-size: 16px;
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container-header">
+      <div class="header-content">
+        <a href="/" class="logo">Paybree</a>
+        <nav class="main-nav">
+          <a href="/trading/quotes.html" class="nav-item">
+            <i class="fas fa-exchange-alt"></i>
+            <span class="zh">交易</span>
+            <span class="en">Trade</span>
+          </a>
+          <a href="/user-center/client" class="nav-item active">
+            <i class="fas fa-user"></i>
+            <span class="zh">个人中心</span>
+            <span class="en">Account</span>
+          </a>
+          <a href="/help" class="nav-item">
+            <i class="fas fa-question-circle"></i>
+            <span class="zh">帮助</span>
+            <span class="en">Help</span>
+          </a>
+        </nav>
+        <div class="header-right">
+          <div class="user-menu">
+            <div class="user-info">
+              <div class="avatar">
+                <span>A</span>
+              </div>
+              <span class="username">Alice</span>
+            </div>
+            <div class="dropdown-menu">
+              <a href="/user-center/client/account.html">
+                <i class="fas fa-user-circle"></i>
+                <span class="zh">个人资料</span>
+                <span class="en">Profile</span>
+              </a>
+              <a href="/user-center/client/assets.html">
+                <i class="fas fa-wallet"></i>
+                <span class="zh">我的资产</span>
+                <span class="en">My Assets</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <div class="dropdown-lang">
+                <i class="fas fa-globe"></i>
+                <select class="language-select" style="border:none;background:transparent;cursor:pointer">
+                  <option value="en-US">English</option>
+                  <option value="zh-CN">简体中文</option>
+                </select>
+              </div>
+              <div class="dropdown-divider"></div>
+              <a href="/auth/logout.html">
+                <i class="fas fa-sign-out-alt"></i>
+                <span class="zh">退出登录</span>
+                <span class="en">Logout</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="user-center">
+    <div class="container">
+      <div class="sidebar">
+        <div class="sidebar-title">
+          <span class="zh">个人中心</span>
+          <span class="en">User Center</span>
+        </div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item">
+            <a href="/user-center/client/account.html" class="sidebar-menu-link">
+              <i class="fas fa-user-circle"></i>
+              <span class="zh">账户信息</span>
+              <span class="en">Account Info</span>
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
+            <a href="/user-center/client/assets.html" class="sidebar-menu-link active">
+              <i class="fas fa-wallet"></i>
+              <span class="zh">资产管理</span>
+              <span class="en">Assets</span>
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
+            <a href="/user-center/client/kyc-info.html" class="sidebar-menu-link">
+              <i class="fas fa-id-card"></i>
+              <span class="zh">KYC 认证</span>
+              <span class="en">KYC Verification</span>
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
+            <a href="/user-center/client/messages.html" class="sidebar-menu-link">
+              <i class="fas fa-bell"></i>
+              <span class="zh">消息中心</span>
+              <span class="en">Messages</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="content">
+        <div class="content-header">
+          <h1 class="page-title">
+            <span class="zh">交易记录</span>
+            <span class="en">Transaction History</span>
+          </h1>
+          <a href="/user-center/client/assets.html" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i>
+            <span class="zh" style="margin-left:8px">返回资产页面</span>
+            <span class="en" style="margin-left:8px">Back to Assets</span>
+          </a>
+        </div>
+
+        <div class="transactions-filter">
+          <div class="filter-item">
+            <label class="filter-label">
+              <span class="zh">类型</span>
+              <span class="en">Type</span>
+            </label>
+            <select class="filter-select" id="type-filter">
+              <option value="all">
+                <span class="zh">全部</span>
+                <span class="en">All</span>
+              </option>
+              <option value="deposit">
+                <span class="zh">充值</span>
+                <span class="en">Deposit</span>
+              </option>
+              <option value="withdraw">
+                <span class="zh">提现</span>
+                <span class="en">Withdraw</span>
+              </option>
+              <option value="transfer">
+                <span class="zh">转账</span>
+                <span class="en">Transfer</span>
+              </option>
+              <option value="trade">
+                <span class="zh">交易</span>
+                <span class="en">Trade</span>
+              </option>
+            </select>
+          </div>
+          
+          <div class="filter-item">
+            <label class="filter-label">
+              <span class="zh">币种</span>
+              <span class="en">Currency</span>
+            </label>
+            <select class="filter-select" id="currency-filter">
+              <option value="all">
+                <span class="zh">全部</span>
+                <span class="en">All</span>
+              </option>
+              <option value="usdt">USDT</option>
+              <option value="usdc">USDC</option>
+            </select>
+          </div>
+          
+          <div class="filter-item">
+            <label class="filter-label">
+              <span class="zh">状态</span>
+              <span class="en">Status</span>
+            </label>
+            <select class="filter-select" id="status-filter">
+              <option value="all">
+                <span class="zh">全部</span>
+                <span class="en">All</span>
+              </option>
+              <option value="completed">
+                <span class="zh">已完成</span>
+                <span class="en">Completed</span>
+              </option>
+              <option value="pending">
+                <span class="zh">处理中</span>
+                <span class="en">Pending</span>
+              </option>
+              <option value="failed">
+                <span class="zh">失败</span>
+                <span class="en">Failed</span>
+              </option>
+            </select>
+          </div>
+          
+          <div class="filter-item">
+            <label class="filter-label">
+              <span class="zh">网络</span>
+              <span class="en">Network</span>
+            </label>
+            <select class="filter-select" id="network-filter">
+              <option value="all">
+                <span class="zh">全部</span>
+                <span class="en">All</span>
+              </option>
+              <option value="btc">BTC</option>
+              <option value="eth">ETH</option>
+              <option value="tron">TRON</option>
+            </select>
+          </div>
+          
+          <div class="filter-item" style="margin-left: auto">
+            <button class="btn btn-outline" id="reset-filters">
+              <span class="zh">重置</span>
+              <span class="en">Reset</span>
+            </button>
+          </div>
+        </div>
+
+        <table class="transactions-table">
+          <thead>
+            <tr>
+              <th>
+                <span class="zh">时间</span>
+                <span class="en">Time</span>
+              </th>
+              <th>
+                <span class="zh">类型</span>
+                <span class="en">Type</span>
+              </th>
+              <th>
+                <span class="zh">金额</span>
+                <span class="en">Amount</span>
+              </th>
+              <th>
+                <span class="zh">网络</span>
+                <span class="en">Network</span>
+              </th>
+              <th>
+                <span class="zh">状态</span>
+                <span class="en">Status</span>
+              </th>
+              <th>
+                <span class="zh">手续费</span>
+                <span class="en">Fee</span>
+              </th>
+              <th>
+                <span class="zh">操作</span>
+                <span class="en">Action</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="transaction-date">2023-10-15 14:23:45</td>
+              <td>
+                <span class="transaction-type deposit">
+                  <span class="zh">充值</span>
+                  <span class="en">Deposit</span>
+                </span>
+              </td>
+              <td class="transaction-amount positive">+500.00 USDT</td>
+              <td>TRON</td>
+              <td>
+                <span class="transaction-status completed">
+                  <span class="zh">已完成</span>
+                  <span class="en">Completed</span>
+                </span>
+              </td>
+              <td>0.00 USDT</td>
+              <td>
+                <a href="/user-center/client/assets-transaction-details.html?id=tx123456" class="transaction-action">
+                  <span class="zh">详情</span>
+                  <span class="en">Details</span>
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td class="transaction-date">2023-10-13 09:15:32</td>
+              <td>
+                <span class="transaction-type withdraw">
+                  <span class="zh">提现</span>
+                  <span class="en">Withdraw</span>
+                </span>
+              </td>
+              <td class="transaction-amount negative">-200.00 USDT</td>
+              <td>ETH</td>
+              <td>
+                <span class="transaction-status completed">
+                  <span class="zh">已完成</span>
+                  <span class="en">Completed</span>
+                </span>
+              </td>
+              <td>1.50 USDT</td>
+              <td>
+                <a href="/user-center/client/assets-transaction-details.html?id=tx123457" class="transaction-action">
+                  <span class="zh">详情</span>
+                  <span class="en">Details</span>
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td class="transaction-date">2023-10-10 17:42:18</td>
+              <td>
+                <span class="transaction-type transfer">
+                  <span class="zh">转账</span>
+                  <span class="en">Transfer</span>
+                </span>
+              </td>
+              <td class="transaction-amount negative">-150.00 USDT</td>
+              <td>-</td>
+              <td>
+                <span class="transaction-status completed">
+                  <span class="zh">已完成</span>
+                  <span class="en">Completed</span>
+                </span>
+              </td>
+              <td>0.00 USDT</td>
+              <td>
+                <a href="/user-center/client/assets-transaction-details.html?id=tx123458" class="transaction-action">
+                  <span class="zh">详情</span>
+                  <span class="en">Details</span>
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td class="transaction-date">2023-10-08 11:05:27</td>
+              <td>
+                <span class="transaction-type deposit">
+                  <span class="zh">充值</span>
+                  <span class="en">Deposit</span>
+                </span>
+              </td>
+              <td class="transaction-amount positive">+300.00 USDC</td>
+              <td>ETH</td>
+              <td>
+                <span class="transaction-status completed">
+                  <span class="zh">已完成</span>
+                  <span class="en">Completed</span>
+                </span>
+              </td>
+              <td>0.00 USDC</td>
+              <td>
+                <a href="/user-center/client/assets-transaction-details.html?id=tx123459" class="transaction-action">
+                  <span class="zh">详情</span>
+                  <span class="en">Details</span>
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td class="transaction-date">2023-10-05 08:30:15</td>
+              <td>
+                <span class="transaction-type withdraw">
+                  <span class="zh">提现</span>
+                  <span class="en">Withdraw</span>
+                </span>
+              </td>
+              <td class="transaction-amount negative">-100.00 USDT</td>
+              <td>TRON</td>
+              <td>
+                <span class="transaction-status pending">
+                  <span class="zh">处理中</span>
+                  <span class="en">Pending</span>
+                </span>
+              </td>
+              <td>1.00 USDT</td>
+              <td>
+                <a href="/user-center/client/assets-transaction-details.html?id=tx123460" class="transaction-action">
+                  <span class="zh">详情</span>
+                  <span class="en">Details</span>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="pagination">
+          <div class="page-item disabled">
+            <i class="fas fa-chevron-left"></i>
+          </div>
+          <div class="page-item active">1</div>
+          <div class="page-item">2</div>
+          <div class="page-item">3</div>
+          <div class="page-item">
+            <i class="fas fa-chevron-right"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2023 Paybree. <span class="zh">保留所有权利</span><span class="en">All rights reserved</span>.</p>
+    </div>
+  </footer>
+
+  <script>
+    // 语言切换功能
+    function changeLanguage(lang) {
+      document.documentElement.lang = lang;
+      localStorage.setItem('preferred_language', lang);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const langSelect = document.querySelector('.language-select');
+      const savedLang = localStorage.getItem('preferred_language') || 'en-US';
+      
+      document.documentElement.lang = savedLang;
+      langSelect.value = savedLang;
+
+      langSelect.addEventListener('change', function() {
+        changeLanguage(this.value);
+      });
+
+      // 重置过滤器
+      document.getElementById('reset-filters').addEventListener('click', function() {
+        document.querySelectorAll('.filter-select').forEach(select => {
+          select.value = 'all';
+        });
+        // 这里应该触发数据重新加载
+      });
+    });
+  </script>
+</body>
+</html> 

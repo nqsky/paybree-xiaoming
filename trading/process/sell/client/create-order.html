@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">创建订单 - Paybree</span>
+        <span class="en">Create Order - Paybree</span>
+    </title>
+    <link rel="stylesheet" href="../../../css/common.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --color-primary: #16C784;
+            --color-primary-hover: #20E19F;
+            --color-white: #FFFFFF;
+            --color-gray-50: #F5F5F5;
+            --color-gray-100: #EBEBEB;
+            --color-gray-200: #E0E0E0;
+            --color-gray-600: #666666;
+            --color-gray-900: #333333;
+            --color-border: #E5E5E5;
+            --color-error: #FF4D4F;
+            --color-warning: #FFA940;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-gray-900);
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+        }
+
+        .header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        .nav {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--color-gray-600);
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--color-primary);
+        }
+
+        .nav-link.active {
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+
+        /* 语言切换样式 */
+        .zh, .en {
+            display: none;
+        }
+
+        html[lang="zh-CN"] .zh {
+            display: inline;
+        }
+
+        html[lang="en-US"] .en {
+            display: inline;
+        }
+
+        html[lang="zh-CN"] .zh-block {
+            display: block;
+        }
+
+        html[lang="en-US"] .en-block {
+            display: block;
+        }
+
+        /* 语言选择器样式 */
+        .language-switch {
+            position: relative;
+            margin-left: 16px;
+        }
+
+        .language-select {
+            appearance: none;
+            background: transparent;
+            border: none;
+            color: var(--color-gray-600);
+            font-size: 14px;
+            padding-right: 20px;
+            cursor: pointer;
+        }
+
+        .language-select:focus {
+            outline: none;
+        }
+
+        .language-switch::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid var(--color-gray-600);
+        }
+
+        .language-select option {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+        }
+
+        /* 页面内容样式 */
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 104px 24px 24px;
+        }
+
+        /* 面包屑导航样式 */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            font-size: 14px;
+            color: var(--color-gray-600);
+        }
+
+        .breadcrumb a {
+            color: var(--color-gray-600);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--color-primary);
+        }
+
+        .breadcrumb .separator {
+            margin: 0 8px;
+            color: var(--color-gray-600);
+        }
+
+        .breadcrumb .current {
+            color: var(--color-gray-900);
+            font-weight: 500;
+        }
+
+        /* 进度条组件样式 */
+        .sell-progress {
+            padding: 32px 0;
+            margin-bottom: 40px;
+            background: var(--color-white);
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 24px;
+            right: 24px;
+            height: 1px;
+            background: var(--color-border);
+            z-index: 1;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-white);
+            border: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            transition: all 0.3s ease;
+        }
+
+        .step-number {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-gray-600);
+        }
+
+        .step-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-gray-600);
+        }
+
+        .step.active .step-circle {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .step.active .step-number {
+            color: var(--color-white);
+        }
+
+        .step.active .step-label {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        /* 主要内容区域样式 */
+        .order-content {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .order-header {
+            margin-bottom: 32px;
+        }
+
+        .order-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+            margin-bottom: 8px;
+        }
+
+        .order-subtitle {
+            font-size: 14px;
+            color: var(--color-gray-600);
+        }
+
+        .order-body {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .order-form {
+            background: var(--color-white);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        /* 支付方式选择 */
+        .payment-methods {
+            margin-bottom: 24px;
+        }
+
+        .payment-methods-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .payment-method-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .payment-method {
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 180px;
+        }
+
+        .payment-method.active {
+            border-color: var(--color-primary);
+            background: rgba(22, 199, 132, 0.05);
+        }
+
+        .payment-method-icon {
+            font-size: 20px;
+            color: var(--color-gray-600);
+        }
+
+        .payment-method.active .payment-method-icon {
+            color: var(--color-primary);
+        }
+
+        .payment-method-info {
+            flex: 1;
+        }
+
+        .payment-method-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .payment-method-desc {
+            font-size: 12px;
+            color: var(--color-gray-600);
+        }
+
+        /* 输入字段 */
+        .input-field {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .input-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-control:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        /* 订单信息卡片 */
+        .order-info {
+            background: var(--color-gray-50);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .info-section {
+            margin-bottom: 24px;
+        }
+
+        .info-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-section-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-gray-900);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: var(--color-gray-600);
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-gray-900);
+        }
+
+        .info-value.primary {
+            color: var(--color-primary);
+        }
+
+        .info-value.highlight {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* 手续费标签 */
+        .fee-tag {
+            display: inline-block;
+            font-size: 12px;
+            padding: 2px 6px;
+            background: rgba(22, 199, 132, 0.1);
+            color: var(--color-primary);
+            border-radius: 4px;
+            margin-left: 4px;
+        }
+
+        /* 操作按钮 */
+        .order-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .order-btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .order-btn-primary {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+        }
+
+        .order-btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .order-btn-default {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+            border: 1px solid var(--color-border);
+        }
+
+        .order-btn-default:hover {
+            background: var(--color-gray-50);
+        }
+
+        /* 聊天按钮 */
+        .chat-button {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            color: var(--color-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(22, 199, 132, 0.3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 1000;
+        }
+
+        .chat-button:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(22, 199, 132, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container">
+            <a href="/index.html" class="logo">Paybree</a>
+            <nav class="nav">
+                <div class="language-switch">
+                    <select class="language-select">
+                        <option value="zh-CN">简体中文</option>
+                        <option value="en-US">English</option>
+                    </select>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-container">
+        <!-- 面包屑导航 -->
+        <nav class="breadcrumb">
+            <a href="/">
+                <span class="zh">首页</span>
+                <span class="en">Home</span>
+            </a>
+            <span class="separator">/</span>
+            <a href="/trading/quotes.html">
+                <span class="zh">交易大厅</span>
+                <span class="en">Trading Hall</span>
+            </a>
+            <span class="separator">/</span>
+            <span class="current">
+                <span class="zh">创建订单</span>
+                <span class="en">Create Order</span>
+            </span>
+        </nav>
+
+        <!-- 进度条 -->
+        <div class="sell-progress">
+            <div class="progress-steps">
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">1</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">保证金协商</span>
+                        <span class="en">Margin Negotiation</span>
+                    </div>
+                </div>
+                <div class="step active">
+                    <div class="step-circle">
+                        <span class="step-number">2</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">创建订单</span>
+                        <span class="en">Create Order</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">3</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">锁定USDT</span>
+                        <span class="en">Lock USDT</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">4</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">等待付款</span>
+                        <span class="en">Waiting for Payment</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">5</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">交易完成</span>
+                        <span class="en">Complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="order-content">
+            <div class="order-header">
+                <h1 class="order-title">
+                    <span class="zh">创建卖出订单</span>
+                    <span class="en">Create Sell Order</span>
+                </h1>
+                <p class="order-subtitle">
+                    <span class="zh">请填写您的收款信息并确认交易细节</span>
+                    <span class="en">Please fill in your payment information and confirm transaction details</span>
+                </p>
+            </div>
+
+            <div class="order-body">
+                <div class="order-form">
+                    <!-- 收款方式选择 -->
+                    <div class="payment-methods">
+                        <h2 class="payment-methods-title">
+                            <span class="zh">选择您的收款方式</span>
+                            <span class="en">Select Your Payment Method</span>
+                        </h2>
+                        <div class="payment-method-list">
+                            <div class="payment-method active" data-method="bank">
+                                <div class="payment-method-icon">
+                                    <i class="fas fa-university"></i>
+                                </div>
+                                <div class="payment-method-info">
+                                    <div class="payment-method-name">
+                                        <span class="zh">银行转账</span>
+                                        <span class="en">Bank Transfer</span>
+                                    </div>
+                                    <div class="payment-method-desc">
+                                        <span class="zh">标准银行转账</span>
+                                        <span class="en">Standard bank transfer</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="payment-method" data-method="alipay">
+                                <div class="payment-method-icon">
+                                    <i class="fab fa-alipay"></i>
+                                </div>
+                                <div class="payment-method-info">
+                                    <div class="payment-method-name">
+                                        <span class="zh">支付宝</span>
+                                        <span class="en">Alipay</span>
+                                    </div>
+                                    <div class="payment-method-desc">
+                                        <span class="zh">快速电子支付</span>
+                                        <span class="en">Fast electronic payment</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="payment-method" data-method="wechat">
+                                <div class="payment-method-icon">
+                                    <i class="fab fa-weixin"></i>
+                                </div>
+                                <div class="payment-method-info">
+                                    <div class="payment-method-name">
+                                        <span class="zh">微信支付</span>
+                                        <span class="en">WeChat Pay</span>
+                                    </div>
+                                    <div class="payment-method-desc">
+                                        <span class="zh">微信移动支付</span>
+                                        <span class="en">WeChat mobile payment</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 收款信息输入 -->
+                    <div class="bank-payment-info">
+                        <div class="input-field">
+                            <label class="input-label">
+                                <span class="zh">收款人姓名</span>
+                                <span class="en">Recipient Name</span>
+                            </label>
+                            <input type="text" class="input-control" id="recipientName" placeholder="请输入收款人姓名" required>
+                        </div>
+                        <div class="input-field">
+                            <label class="input-label">
+                                <span class="zh">银行名称</span>
+                                <span class="en">Bank Name</span>
+                            </label>
+                            <input type="text" class="input-control" id="bankName" placeholder="请输入银行名称" required>
+                        </div>
+                        <div class="input-field">
+                            <label class="input-label">
+                                <span class="zh">银行账号</span>
+                                <span class="en">Bank Account Number</span>
+                            </label>
+                            <input type="text" class="input-control" id="bankAccount" placeholder="请输入银行账号" required>
+                        </div>
+                        <div class="input-field">
+                            <label class="input-label">
+                                <span class="zh">备注说明</span>
+                                <span class="en">Notes</span>
+                            </label>
+                            <textarea class="input-control" id="remarks" rows="3" placeholder="可选: 添加其他付款说明或要求"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- 操作按钮 -->
+                    <div class="order-actions">
+                        <button class="order-btn order-btn-default" onclick="goBack()">
+                            <span class="zh">返回</span>
+                            <span class="en">Back</span>
+                        </button>
+                        <button class="order-btn order-btn-primary" onclick="createOrder()">
+                            <span class="zh">创建订单</span>
+                            <span class="en">Create Order</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="order-info">
+                    <!-- 交易详情 -->
+                    <div class="info-section">
+                        <h3 class="info-section-title">
+                            <span class="zh">交易详情</span>
+                            <span class="en">Transaction Details</span>
+                        </h3>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <span class="zh">交易类型</span>
+                                <span class="en">Transaction Type</span>
+                            </span>
+                            <span class="info-value primary">
+                                <span class="zh">卖出 USDT</span>
+                                <span class="en">Sell USDT</span>
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <span class="zh">卖出金额</span>
+                                <span class="en">Sell Amount</span>
+                            </span>
+                            <span class="info-value" id="sellAmount">1000.00 USDT</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <span class="zh">手续费 (0.5%)</span>
+                                <span class="en">Fee (0.5%)</span>
+                            </span>
+                            <span class="info-value" id="feeAmount">5.00 USDT</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <span class="zh">实际收到</span>
+                                <span class="en">You Receive</span>
+                            </span>
+                            <span class="info-value highlight" id="receiveAmount">6650.00 CNY</span>
+                        </div>
+                    </div>
+
+                    <!-- 保证金信息 -->
+                    <div class="info-section">
+                        <h3 class="info-section-title">
+                            <span class="zh">保证金信息</span>
+                            <span class="en">Margin Information</span>
+                        </h3>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <span class="zh">保证金模式</span>
+                                <span class="en">Margin Mode</span>
+                            </span>
+                            <span class="info-value" id="marginMode">
+                                <span class="zh">100% 托管</span>
+                                <span class="en">100% Escrow</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 买家信息 -->
+                    <div class="info-section">
+                        <h3 class="info-section-title">
+                            <span class="zh">买家信息</span>
+                            <span class="en">Buyer Information</span>
+                        </h3>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <span class="zh">买家</span>
+                                <span class="en">Buyer</span>
+                            </span>
+                            <span class="info-value" id="buyerName">John Doe</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <span class="zh">成交率</span>
+                                <span class="en">Completion Rate</span>
+                            </span>
+                            <span class="info-value" id="completionRate">98%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 聊天按钮 -->
+    <div class="chat-button" onclick="openChat()">
+        <i class="fas fa-comments"></i>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化页面数据
+            initPageData();
+            
+            // 初始化收款方式选择
+            initPaymentMethods();
+        });
+
+        // 初始化页面数据
+        function initPageData() {
+            // 从URL获取参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode');
+            const amount = urlParams.get('amount');
+            
+            // 计算手续费和实际收款金额
+            const fee = parseFloat(amount) * 0.005; // 0.5% 手续费率
+            const sellAmount = parseFloat(amount);
+            const receiveAmount = (sellAmount * 6.65).toFixed(2); // 假设汇率为 1 USDT = 6.65 CNY
+            
+            // 更新显示
+            document.getElementById('sellAmount').textContent = `${amount} USDT`;
+            document.getElementById('feeAmount').textContent = `${fee.toFixed(2)} USDT`;
+            document.getElementById('receiveAmount').textContent = `${receiveAmount} CNY`;
+            
+            // 更新保证金模式
+            if (mode === '100') {
+                document.getElementById('marginMode').innerHTML = '<span class="zh">100% 托管</span><span class="en">100% Escrow</span>';
+            } else {
+                document.getElementById('marginMode').innerHTML = '<span class="zh">无托管（直接交易）</span><span class="en">No Escrow (Direct)</span>';
+            }
+        }
+
+        // 初始化收款方式选择
+        function initPaymentMethods() {
+            const paymentMethods = document.querySelectorAll('.payment-method');
+            
+            paymentMethods.forEach(method => {
+                method.addEventListener('click', () => {
+                    // 移除所有活跃状态
+                    paymentMethods.forEach(m => m.classList.remove('active'));
+                    
+                    // 添加当前选中项的活跃状态
+                    method.classList.add('active');
+                    
+                    // 更新表单显示（如有需要可扩展）
+                    const selectedMethod = method.dataset.method;
+                });
+            });
+        }
+
+        // 返回上一步
+        function goBack() {
+            window.location.href = 'margin.html';
+        }
+
+        // 创建订单
+        function createOrder() {
+            // 验证表单
+            if (!validateForm()) {
+                return;
+            }
+            
+            // 获取选中的收款方式
+            const selectedMethod = document.querySelector('.payment-method.active').dataset.method;
+            
+            // 获取表单数据
+            const formData = {
+                recipientName: document.getElementById('recipientName').value,
+                bankName: document.getElementById('bankName').value,
+                bankAccount: document.getElementById('bankAccount').value,
+                remarks: document.getElementById('remarks').value,
+                paymentMethod: selectedMethod
+            };
+            
+            // 构建URL参数
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.append('paymentMethod', selectedMethod);
+            
+            // 模拟API调用 - 实际项目中应该调用后端API
+            console.log('Creating order with data:', formData);
+            
+            // 跳转到下一步
+            window.location.href = `lock-usdt.html?${urlParams.toString()}`;
+        }
+
+        // 表单验证
+        function validateForm() {
+            const recipientName = document.getElementById('recipientName').value;
+            const bankName = document.getElementById('bankName').value;
+            const bankAccount = document.getElementById('bankAccount').value;
+            
+            if (!recipientName) {
+                alert(document.documentElement.lang === 'zh-CN' ? '请输入收款人姓名' : 'Please enter recipient name');
+                return false;
+            }
+            
+            if (!bankName) {
+                alert(document.documentElement.lang === 'zh-CN' ? '请输入银行名称' : 'Please enter bank name');
+                return false;
+            }
+            
+            if (!bankAccount) {
+                alert(document.documentElement.lang === 'zh-CN' ? '请输入银行账号' : 'Please enter bank account number');
+                return false;
+            }
+            
+            return true;
+        }
+
+        // 打开聊天窗口
+        function openChat() {
+            console.log('Opening chat window');
+            alert(document.documentElement.lang === 'zh-CN' ? '聊天功能即将上线' : 'Chat feature coming soon');
+        }
+
+        // 语言切换功能
+        function changeLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.querySelectorAll('.zh').forEach(el => {
+                el.style.display = (lang === 'zh-CN') ? 'inline' : 'none';
+            });
+            document.querySelectorAll('.en').forEach(el => {
+                el.style.display = (lang === 'en-US') ? 'inline' : 'none';
+            });
+            document.querySelector('.language-select').value = lang;
+            localStorage.setItem('preferred_language', lang);
+        }
+
+        // 监听来自父页面的消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'languageChange') {
+                changeLanguage(event.data.language);
+            }
+        });
+
+        // 监听语言选择器的变化
+        document.querySelector('.language-select').addEventListener('change', function() {
+            const lang = this.value;
+            changeLanguage(lang);
+            // 通知父页面语言变化
+            window.parent.postMessage({
+                type: 'languageChange',
+                language: lang
+            }, '*');
+        });
+
+        // 初始化语言
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('preferred_language') || 'en-US';
+            changeLanguage(lang);
+        });
+    </script>
+</body>
+</html> 

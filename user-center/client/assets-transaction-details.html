@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <span class="zh">交易详情 - Paybree</span>
+    <span class="en">Transaction Details - Paybree</span>
+  </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="assets-css.html">
+  <style>
+    .transaction-details-card {
+      background-color: var(--color-white);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-gray-900);
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--color-gray-200);
+      padding-bottom: 12px;
+    }
+    
+    .detail-row {
+      display: flex;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    
+    .detail-row:last-child {
+      margin-bottom: 0;
+    }
+    
+    .detail-label {
+      width: 180px;
+      font-weight: 500;
+      color: var(--color-gray-700);
+    }
+    
+    .detail-value {
+      flex: 1;
+      color: var(--color-gray-900);
+    }
+    
+    .detail-value.mono {
+      font-family: monospace;
+      word-break: break-all;
+    }
+    
+    .detail-value.highlight {
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+    
+    .detail-value.error {
+      color: var(--color-danger);
+    }
+    
+    .hash-link {
+      color: var(--color-info);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .hash-link:hover {
+      text-decoration: underline;
+    }
+    
+    .transaction-status {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .transaction-status.completed {
+      background: rgba(16, 185, 129, 0.1);
+      color: #10B981;
+    }
+    
+    .transaction-status.pending {
+      background: rgba(245, 158, 11, 0.1);
+      color: #F59E0B;
+    }
+    
+    .transaction-status.failed {
+      background: rgba(239, 68, 68, 0.1);
+      color: #EF4444;
+    }
+    
+    .btn-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container-header">
+      <div class="header-content">
+        <a href="/" class="logo">Paybree</a>
+        <nav class="main-nav">
+          <a href="/trading/quotes.html" class="nav-item">
+            <i class="fas fa-exchange-alt"></i>
+            <span class="zh">交易</span>
+            <span class="en">Trade</span>
+          </a>
+          <a href="/user-center/client" class="nav-item active">
+            <i class="fas fa-user"></i>
+            <span class="zh">个人中心</span>
+            <span class="en">Account</span>
+          </a>
+          <a href="/help" class="nav-item">
+            <i class="fas fa-question-circle"></i>
+            <span class="zh">帮助</span>
+            <span class="en">Help</span>
+          </a>
+        </nav>
+        <div class="header-right">
+          <div class="user-menu">
+            <div class="user-info">
+              <div class="avatar">
+                <span>A</span>
+              </div>
+              <span class="username">Alice</span>
+            </div>
+            <div class="dropdown-menu">
+              <a href="/user-center/client/account.html">
+                <i class="fas fa-user-circle"></i>
+                <span class="zh">个人资料</span>
+                <span class="en">Profile</span>
+              </a>
+              <a href="/user-center/client/assets.html">
+                <i class="fas fa-wallet"></i>
+                <span class="zh">我的资产</span>
+                <span class="en">My Assets</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <div class="dropdown-lang">
+                <i class="fas fa-globe"></i>
+                <select class="language-select" style="border:none;background:transparent;cursor:pointer">
+                  <option value="en-US">English</option>
+                  <option value="zh-CN">简体中文</option>
+                </select>
+              </div>
+              <div class="dropdown-divider"></div>
+              <a href="/auth/logout.html">
+                <i class="fas fa-sign-out-alt"></i>
+                <span class="zh">退出登录</span>
+                <span class="en">Logout</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="user-center">
+    <div class="container">
+      <div class="sidebar">
+        <div class="sidebar-title">
+          <span class="zh">个人中心</span>
+          <span class="en">User Center</span>
+        </div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item">
+            <a href="/user-center/client/account.html" class="sidebar-menu-link">
+              <i class="fas fa-user-circle"></i>
+              <span class="zh">账户信息</span>
+              <span class="en">Account Info</span>
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
+            <a href="/user-center/client/assets.html" class="sidebar-menu-link active">
+              <i class="fas fa-wallet"></i>
+              <span class="zh">资产管理</span>
+              <span class="en">Assets</span>
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
+            <a href="/user-center/client/kyc-info.html" class="sidebar-menu-link">
+              <i class="fas fa-id-card"></i>
+              <span class="zh">KYC 认证</span>
+              <span class="en">KYC Verification</span>
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
+            <a href="/user-center/client/messages.html" class="sidebar-menu-link">
+              <i class="fas fa-bell"></i>
+              <span class="zh">消息中心</span>
+              <span class="en">Messages</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="content">
+        <div class="content-header">
+          <h1 class="page-title">
+            <span class="zh">交易详情</span>
+            <span class="en">Transaction Details</span>
+          </h1>
+          <a href="/user-center/client/assets-transactions.html" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i>
+            <span class="zh" style="margin-left:8px">返回交易记录</span>
+            <span class="en" style="margin-left:8px">Back to Transactions</span>
+          </a>
+        </div>
+
+        <div class="transaction-details-card">
+          <h2 class="card-title">
+            <span class="zh">基本信息</span>
+            <span class="en">Basic Information</span>
+          </h2>
+          
+          <div class="detail-row">
+            <div class="detail-label">
+              <span class="zh">交易ID</span>
+              <span class="en">Transaction ID</span>
+            </div>
+            <div class="detail-value mono">tx123456789abcdef</div>
+          </div>
+          
+          <div class="detail-row">
+            <div class="detail-label">
+              <span class="zh">类型</span>
+              <span class="en">Type</span>
+            </div>
+            <div class="detail-value">
+              <span class="zh">充值</span>
+              <span class="en">Deposit</span>
+            </div>
+          </div>
+          
+          <div class="detail-row">
+            <div class="detail-label">
+              <span class="zh">时间</span>
+              <span class="en">Time</span>
+            </div>
+            <div class="detail-value">2023-10-15 14:23:45</div>
+          </div>
+          
+          <div class="detail-row">
+            <div class="detail-label">
+              <span class="zh">状态</span>
+              <span class="en">Status</span>
+            </div>
+            <div class="detail-value">
+              <span class="transaction-status completed">
+                <span class="zh">已完成</span>
+                <span class="en">Completed</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="transaction-details-card">
+          <h2 class="card-title">
+            <span class="zh">金额详情</span>
+            <span class="en">Amount Details</span>
+          </h2>
+          
+          <div class="detail-row">
+            <div class="detail-label">
+              <span class="zh">币种</span>
+              <span class="en">Currency</span>
+            </div>
+            <div class="detail-value">USDT</div>
+          </div>
+          
+          <div class="detail-row">
+            <div class="detail-label">
+              <span class="zh">金额</span>
+              <span class="en">Amount</span>
+            </div>
+            <div class="detail-value highlight">500.00 USDT</div>
+          </div>
+          
+          <div class="detail-row">
+            <div class="detail-label">
+              <span class="zh">手续费</span>
+              <span class="en">Fee</span>
+            </div>
+            <div class="detail-value">0.00 USDT</div>
+          </div>
+          
+          <div class="detail-row">
+            <div class="detail-label">
+              <span class="zh">实际到账</span>
+              <span class="en">Net Amount</span>
+            </div>
+            <div class="detail-value highlight">500.00 USDT</div>
+          </div>
+        </div>
+
+        <div class="transaction-details-card">
+          <h2 class="card-title">
+            <span class="zh">区块链信息</span>
+            <span class="en">Blockchain Information</span>
+          </h2>
+          
+          <div class="detail-row">
+            <div class="detail-label">
+              <span class="zh">网络</span>
+              <span class="en">Network</span>
+            </div>
+            <div class="detail-value">TRON</div>
+          </div>
+          
+          <div class="detail-row">
+            <div class="detail-label">
+              <span class="zh">交易哈希</span>
+              <span class="en">Transaction Hash</span>
+            </div>
+            <div class="detail-value mono">
+              <a href="https://tronscan.org/#/transaction/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef" target="_blank" class="hash-link">
+                0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+                <i class="fas fa-external-link-alt" style="font-size:12px"></i>
+              </a>
+            </div>
+          </div>
+          
+          <div class="detail-row">
+            <div class="detail-label">
+              <span class="zh">发送地址</span>
+              <span class="en">From Address</span>
+            </div>
+            <div class="detail-value mono">TAbCdEfGhIjKlMnOpQrStUvWxYz1234567890</div>
+          </div>
+          
+          <div class="detail-row">
+            <div class="detail-label">
+              <span class="zh">接收地址</span>
+              <span class="en">To Address</span>
+            </div>
+            <div class="detail-value mono">TBcDeFgHiJkLmNoPqRsTuVwXyZ0987654321</div>
+          </div>
+          
+          <div class="detail-row">
+            <div class="detail-label">
+              <span class="zh">确认数</span>
+              <span class="en">Confirmations</span>
+            </div>
+            <div class="detail-value">65</div>
+          </div>
+        </div>
+
+        <div class="btn-actions">
+          <button class="btn btn-outline" onclick="window.print()">
+            <i class="fas fa-print"></i>
+            <span class="zh" style="margin-left:8px">打印</span>
+            <span class="en" style="margin-left:8px">Print</span>
+          </button>
+          <a href="/help/contact.html" class="btn btn-outline">
+            <i class="fas fa-question-circle"></i>
+            <span class="zh" style="margin-left:8px">需要帮助</span>
+            <span class="en" style="margin-left:8px">Get Help</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2023 Paybree. <span class="zh">保留所有权利</span><span class="en">All rights reserved</span>.</p>
+    </div>
+  </footer>
+
+  <script>
+    // 语言切换功能
+    function changeLanguage(lang) {
+      document.documentElement.lang = lang;
+      localStorage.setItem('preferred_language', lang);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const langSelect = document.querySelector('.language-select');
+      const savedLang = localStorage.getItem('preferred_language') || 'en-US';
+      
+      document.documentElement.lang = savedLang;
+      langSelect.value = savedLang;
+
+      langSelect.addEventListener('change', function() {
+        changeLanguage(this.value);
+      });
+
+      // 加载交易详情
+      const urlParams = new URLSearchParams(window.location.search);
+      const txId = urlParams.get('id');
+      console.log('Loading transaction details for ID:', txId);
+      // 这里应该有实际的API调用来获取交易详情
+    });
+  </script>
+</body>
+</html> 

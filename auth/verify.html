@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">验证 - Paybree</span>
+        <span class="en">Verify - Paybree</span>
+    </title>
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Color System */
+            --color-primary: #16C784;
+            --color-primary-hover: #20E19F;
+            --color-primary-light: #EDFAF6;
+            --color-white: #FFFFFF;
+            --color-gray-50: #F5F5F5;
+            --color-gray-400: #A0A0A0;
+            --color-gray-600: #666666;
+            --color-gray-900: #333333;
+            --color-border: #E5E5E5;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--color-gray-900);
+            line-height: 1.5;
+            background-color: var(--color-gray-50);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        /* Logo */
+        .logo {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 24px;
+            color: var(--color-primary);
+        }
+
+        /* Auth Form Styles */
+        .auth-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 48px;
+            text-align: center;
+            color: var(--color-gray-900);
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--color-white);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .verify-text {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .verify-email {
+            font-weight: 500;
+            color: var(--color-gray-900);
+        }
+
+        .verify-code {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .code-input {
+            width: 48px;
+            height: 48px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 24px;
+            font-weight: 500;
+            text-align: center;
+            background: var(--color-white);
+            color: var(--color-gray-900);
+            transition: all 0.2s ease;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px var(--color-primary-light);
+        }
+
+        .code-input.active {
+            border-color: var(--color-primary);
+        }
+
+        .help-text {
+            text-align: center;
+            color: var(--color-gray-600);
+            font-size: 14px;
+            margin-top: 24px;
+        }
+
+        .help-text a {
+            color: var(--color-primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .help-text a:hover {
+            color: var(--color-primary-hover);
+        }
+
+        .back-button {
+            position: fixed;
+            left: 24px;
+            top: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-gray-600);
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.2s ease;
+        }
+
+        .back-button:hover {
+            color: var(--color-gray-900);
+        }
+
+        .back-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* 语言切换样式 */
+        .language-switcher {
+            position: fixed;
+            right: 24px;
+            top: 24px;
+            display: flex;
+            gap: 12px;
+        }
+        .language-switcher button {
+            background: none;
+            border: none;
+            color: var(--color-gray-600);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .language-switcher button:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .language-switcher button.active {
+            background: rgba(0, 0, 0, 0.1);
+            color: var(--color-primary);
+        }
+    </style>
+</head>
+<body>
+    <a href="/auth/login.html" class="back-button">
+        <svg class="back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        <span class="zh">返回</span>
+        <span class="en">Back</span>
+    </a>
+
+    <!-- Logo -->
+    <svg class="logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+
+    <h1 class="auth-title">
+        <span class="zh">验证邮箱</span>
+        <span class="en">Verify Email</span>
+    </h1>
+
+    <div class="auth-container">
+        <div class="verify-text">
+            <span class="zh">请输入发送至<br>
+            <span class="verify-email" id="userEmail"></span><br>
+            的验证码</span>
+            <span class="en">Please enter the verification code sent to<br>
+            <span class="verify-email" id="userEmail"></span></span>
+        </div>
+
+        <form class="auth-form" id="verifyForm">
+            <div class="verify-code">
+                <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+            </div>
+        </form>
+
+        <div class="help-text">
+            <span class="zh">没有收到验证码？<a href="#" id="resendCode">重新发送</a></span>
+            <span class="en">Didn't receive the code? <a href="#" id="resendCode">Resend</a></span>
+        </div>
+    </div>
+
+    <!-- 语言切换按钮 -->
+    <div class="language-switcher">
+        <button class="lang-btn" data-lang="zh-CN">中文</button>
+        <button class="lang-btn" data-lang="en-US">English</button>
+    </div>
+
+    <script>
+        // 语言切换功能
+        function changeLanguage(lang) {
+            document.querySelectorAll('.zh').forEach(el => {
+                el.style.display = (lang === 'zh-CN') ? '' : 'none';
+            });
+            document.querySelectorAll('.en').forEach(el => {
+                el.style.display = (lang === 'en-US') ? '' : 'none';
+            });
+            
+            // 更新按钮状态
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+        }
+
+        // 监听语言按钮点击
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const lang = this.dataset.lang;
+                changeLanguage(lang);
+                localStorage.setItem('preferred_language', lang);
+            });
+        });
+
+        // 初始化语言
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('preferred_language') || 'en-US';
+            changeLanguage(lang);
+        });
+
+        // 获取URL参数中的邮箱地址
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email') || 'example@Paybree.com';
+        document.getElementById('userEmail').textContent = email;
+
+        // 验证码输入框处理
+        const inputs = document.querySelectorAll('.code-input');
+        const form = document.getElementById('verifyForm');
+        let verificationCode = '';
+
+        inputs.forEach((input, index) => {
+            // 自动聚焦第一个输入框
+            if (index === 0) {
+                input.focus();
+            }
+
+            // 输入处理
+            input.addEventListener('input', (e) => {
+                const value = e.target.value;
+                
+                // 只允许输入数字
+                if (!/^\d*$/.test(value)) {
+                    input.value = '';
+                    return;
+                }
+
+                // 自动跳转到下一个输入框
+                if (value && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+
+                // 收集验证码
+                verificationCode = Array.from(inputs).map(input => input.value).join('');
+
+                // 如果验证码填写完整，自动提交
+                if (verificationCode.length === 6) {
+                    submitCode();
+                }
+            });
+
+            // 删除键处理
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !input.value && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+        });
+
+        // 提交验证码
+        function submitCode() {
+            // TODO: 验证验证码
+            console.log('验证码:', verificationCode);
+            
+            // 验证成功后跳转到 KYC 页面
+            setTimeout(() => {
+                window.location.href = '/auth/kyc.html';
+            }, 1000);
+        }
+
+        // 重新发送验证码
+        let countdown = 0;
+        const resendButton = document.getElementById('resendCode');
+
+        resendButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            if (countdown > 0) return;
+
+            // 开始倒计时
+            countdown = 60;
+            resendButton.textContent = `${countdown}秒后重试`;
+
+            const timer = setInterval(() => {
+                countdown--;
+                resendButton.textContent = `${countdown}秒后重试`;
+                
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    resendButton.textContent = '重新发送';
+                }
+            }, 1000);
+
+            // TODO: 重新发送验证码
+        });
+    </script>
+</body>
+</html> 

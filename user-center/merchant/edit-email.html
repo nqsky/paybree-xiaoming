@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">替换登录邮箱 - Paybree</span>
+        <span class="en">Change Email - Paybree</span>
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* 语言切换样式 */
+        .zh, .en {
+            display: none;
+        }
+        html[lang="zh-CN"] .zh {
+            display: inline;
+        }
+        html[lang="en-US"] .en {
+            display: inline;
+        }
+        html[lang="zh-CN"] .zh-block {
+            display: block;
+        }
+        html[lang="en-US"] .en-block {
+            display: block;
+        }
+        :root {
+            --color-white: #fff;
+            --color-gray-50: #f9fafb;
+            --color-gray-100: #f3f4f6;
+            --color-gray-200: #e5e7eb;
+            --color-gray-300: #d1d5db;
+            --color-gray-500: #6b7280;
+            --color-gray-600: #4b5563;
+            --color-gray-700: #374151;
+            --color-gray-900: #111827;
+            --color-primary: #16C36A;
+            --color-primary-dark: #12a85a;
+            --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+            background: var(--color-gray-50);
+        }
+        iframe {
+            border: none;
+            width: 100%;
+        }
+        .header-iframe {
+            height: 80px;
+        }
+        .footer-iframe {
+            height: 100px;
+        }
+        .user-center {
+            display: flex;
+            min-height: calc(100vh - 180px);
+            padding: 24px 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 24px;
+            width: 100%;
+        }
+        .sidebar {
+            width: 240px;
+            background: var(--color-white);
+            border-radius: 12px;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+            padding: 16px 0;
+        }
+        .sidebar .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--color-gray-600);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        .sidebar .nav-item:hover {
+            background: var(--color-gray-50);
+            color: var(--color-primary);
+        }
+        .sidebar .nav-item.active {
+            background: var(--color-primary);
+            color: #fff;
+        }
+        .sidebar .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            min-height: 600px;
+            width: 0;
+        }
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 32px;
+            color: var(--color-gray-500);
+            font-size: 15px;
+            width: 100%;
+            max-width: 700px;
+        }
+        .breadcrumb a {
+            color: var(--color-gray-600);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: var(--color-primary);
+        }
+        .breadcrumb i {
+            font-size: 12px;
+        }
+        .card {
+            background: var(--color-white);
+            border-radius: 12px;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+            width: 100%;
+        }
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--color-gray-100);
+        }
+        .card-body {
+            padding: 24px;
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+            margin: 0;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+        }
+        .btn-outline-primary {
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+            background: transparent;
+        }
+        .btn-outline-primary:hover {
+            background: var(--color-primary);
+            color: #fff;
+        }
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--color-gray-700);
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--color-gray-200);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--color-gray-900);
+            transition: all 0.2s;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px rgba(22, 199, 106, 0.1);
+        }
+        .form-text {
+            color: var(--color-gray-500);
+            font-size: 13px;
+            margin-top: 8px;
+        }
+        .verification-code {
+            display: flex;
+            gap: 12px;
+        }
+        .verification-code .form-control {
+            flex: 1;
+        }
+        .verification-code .btn {
+            white-space: nowrap;
+        }
+        .form-actions {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <iframe src="/components/header/logged-in.html" class="header-iframe"></iframe>
+
+    <div class="user-center">
+        <div class="container">
+            <!-- 侧边栏 -->
+            <div class="sidebar">
+                <a href="account.html" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    <span class="zh">账号管理</span>
+                    <span class="en">Account</span>
+                </a>
+                <a href="assets.html" class="nav-item">
+                    <i class="fas fa-wallet"></i>
+                    <span class="zh">资产管理</span>
+                    <span class="en">Assets</span>
+                </a>
+                <a href="quote-management.html" class="nav-item">
+                    <i class="fas fa-tags"></i>
+                    <span class="zh">报价管理</span>
+                    <span class="en">Quotes</span>
+                </a>
+                <a href="messages.html" class="nav-item">
+                    <i class="fas fa-envelope"></i>
+                    <span class="zh">系统通知</span>
+                    <span class="en">Messages</span>
+                </a>
+            </div>
+
+            <!-- 内容区 -->
+            <div class="content">
+                <div class="breadcrumb">
+                    <a href="/">
+                        <span class="zh">首页</span>
+                        <span class="en">Home</span>
+                    </a>
+                    <i class="fas fa-chevron-right"></i>
+                    <a href="/user-center/merchant">
+                        <span class="zh">承兑商中心</span>
+                        <span class="en">Merchant Center</span>
+                    </a>
+                    <i class="fas fa-chevron-right"></i>
+                    <a href="/user-center/merchant/account">
+                        <span class="zh">账号管理</span>
+                        <span class="en">Account</span>
+                    </a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>
+                        <span class="zh">替换登录邮箱</span>
+                        <span class="en">Change Email</span>
+                    </span>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <span class="zh">替换登录邮箱</span>
+                            <span class="en">Change Email</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="emailForm">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <span class="zh">当前邮箱</span>
+                                    <span class="en">Current Email</span>
+                                </label>
+                                <input type="email" class="form-control" value="merchant@Paybree.com" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <span class="zh">新邮箱地址</span>
+                                    <span class="en">New Email</span>
+                                </label>
+                                <input type="email" class="form-control" id="newEmail" placeholder="Enter new email address">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <span class="zh">验证码</span>
+                                    <span class="en">Verification Code</span>
+                                </label>
+                                <div class="verification-code">
+                                    <input type="text" class="form-control" id="verificationCode" placeholder="Enter verification code">
+                                    <button type="button" class="btn btn-outline-primary" onclick="sendVerificationCode()">
+                                        <span class="zh">获取验证码</span>
+                                        <span class="en">Get Code</span>
+                                    </button>
+                                </div>
+                                <p class="form-text">
+                                    <span class="zh">验证码将发送到您的新邮箱</span>
+                                    <span class="en">Verification code will be sent to your new email</span>
+                                </p>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-outline-primary" onclick="window.location.href='account.html'">
+                                    <span class="zh">取消</span>
+                                    <span class="en">Cancel</span>
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <span class="zh">确认替换</span>
+                                    <span class="en">Confirm</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <iframe src="/components/footer/logged-in.html" class="footer-iframe"></iframe>
+
+    <script>
+        // 语言切换
+        function changeLanguage(lang) {
+            document.documentElement.lang = lang;
+            localStorage.setItem('preferred_language', lang);
+            // 通知父页面（如果有）
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'languageChange', language: lang }, '*');
+            }
+        }
+
+        // 初始化语言
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('preferred_language') || 'en-US';
+            changeLanguage(lang);
+        });
+
+        function sendVerificationCode() {
+            const newEmail = document.getElementById('newEmail').value;
+            if (!newEmail) {
+                alert(document.documentElement.lang === 'zh-CN' ? '请输入新邮箱地址' : 'Please enter new email address');
+                return;
+            }
+            // 这里添加发送验证码的逻辑
+            alert(document.documentElement.lang === 'zh-CN' ? '验证码已发送到您的邮箱' : 'Verification code has been sent to your email');
+        }
+
+        document.getElementById('emailForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newEmail = document.getElementById('newEmail').value;
+            const verificationCode = document.getElementById('verificationCode').value;
+            
+            if (!newEmail || !verificationCode) {
+                alert(document.documentElement.lang === 'zh-CN' ? '请填写完整信息' : 'Please fill in all information');
+                return;
+            }
+            
+            // 这里添加验证和保存的逻辑
+            alert(document.documentElement.lang === 'zh-CN' ? '邮箱替换成功！' : 'Email changed successfully!');
+            window.location.href = 'account.html';
+        });
+    </script>
+</body>
+</html> 

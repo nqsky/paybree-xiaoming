@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Change Avatar - Paybree</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --color-primary: #16C36A;
+      --color-primary-dark: #12a85a;
+      --color-gray-50: #f9fafb;
+      --color-gray-100: #f3f4f6;
+      --color-gray-700: #374151;
+      --color-gray-900: #111827;
+      --color-white: #fff;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      background: var(--color-gray-50);
+    }
+    .container {
+      max-width: 400px;
+      margin: 48px auto;
+      background: var(--color-white);
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(22,195,106,0.08);
+      padding: 32px 24px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-gray-900);
+      margin-bottom: 28px;
+    }
+    .avatar-preview {
+      width: 104px;
+      height: 104px;
+      border-radius: 50%;
+      border: 3px solid var(--color-gray-100);
+      overflow: hidden;
+      background: var(--color-gray-50);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .avatar-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .upload-btn {
+      margin-bottom: 24px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .upload-btn:hover {
+      background: var(--color-primary-dark);
+    }
+    .crop-area {
+      width: 240px;
+      height: 240px;
+      background: var(--color-gray-100);
+      border-radius: 12px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-gray-700);
+      font-size: 15px;
+    }
+    .actions {
+      display: flex;
+      gap: 16px;
+      width: 100%;
+      justify-content: center;
+    }
+    .btn {
+      padding: 10px 24px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      background: var(--color-primary);
+      color: #fff;
+      transition: background 0.2s;
+    }
+    .btn:hover {
+      background: var(--color-primary-dark);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--color-primary);
+      color: var(--color-primary);
+    }
+    .btn-outline:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+    .en:lang(zh-CN), .zh:lang(en-US) {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">
+      <span class="en">Change Avatar</span>
+      <span class="zh">更换头像</span>
+    </div>
+    <div class="avatar-preview">
+      <img src="../../assets/images/avatar.png" alt="Current Avatar">
+    </div>
+    <label class="upload-btn">
+      <i class="fas fa-upload"></i> 
+      <span class="en">Upload Image</span>
+      <span class="zh">上传图片</span>
+      <input type="file" accept="image/*" style="display:none">
+    </label>
+    <div class="crop-area">
+      <span class="en">Crop Area (Cropping Library Integration)</span>
+      <span class="zh">裁剪区域（可集成裁剪库）</span>
+    </div>
+    <div class="actions">
+      <button class="btn">
+        <span class="en">Save</span>
+        <span class="zh">保存</span>
+      </button>
+      <button class="btn-outline" onclick="window.history.back()">
+        <span class="en">Cancel</span>
+        <span class="zh">取消</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // 语言切换功能
+    document.addEventListener('DOMContentLoaded', function() {
+      // 从localStorage获取语言设置
+      const savedLang = localStorage.getItem('language') || 'en-US';
+      document.documentElement.lang = savedLang;
+
+      // 监听来自父页面的语言切换消息
+      window.addEventListener('message', function(event) {
+        if (event.data.type === 'LANGUAGE_CHANGE') {
+          document.documentElement.lang = event.data.language;
+          localStorage.setItem('language', event.data.language);
+        }
+      });
+    });
+  </script>
+</body>
+</html> 

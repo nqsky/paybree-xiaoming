@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>保证金协商组件</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <style>
+        :root {
+            /* 主色调 */
+            --color-primary: #16C784;
+            --color-primary-hover: #20E19F;
+            --color-primary-light: #EDFAF6;
+            
+            /* 辅助色 */
+            --color-white: #FFFFFF;
+            --color-gray-100: #F5F5F5;
+            --color-gray-300: #E5E5E5;
+            --color-gray-500: #666666;
+            --color-gray-900: #333333;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-gray-900);
+        }
+
+        .margin-negotiation {
+            background: var(--color-white);
+            border-radius: 8px;
+            padding: 20px;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .margin-title {
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: var(--color-gray-900);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .margin-title i {
+            color: var(--color-primary);
+        }
+
+        /* 输入方式选择 */
+        .margin-type {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .margin-type-option {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--color-gray-300);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--color-white);
+            color: var(--color-gray-900);
+        }
+
+        .margin-type-option:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .margin-type-option.active {
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .margin-type-option i {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 20px;
+        }
+
+        /* 比例输入部分 */
+        .margin-percentage {
+            display: none;
+        }
+
+        .margin-percentage.show {
+            display: block;
+        }
+
+        .margin-options {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .margin-option {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid var(--color-gray-300);
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--color-white);
+            color: var(--color-gray-900);
+        }
+
+        .margin-option:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            background: var(--color-primary-light);
+        }
+
+        .margin-option.active {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border-color: var(--color-primary);
+        }
+
+        /* 自定义比例输入 */
+        .margin-custom {
+            display: none;
+            margin-bottom: 16px;
+        }
+
+        .margin-custom.show {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .margin-custom-input {
+            width: 100px;
+            padding: 8px 12px;
+            border: 1px solid var(--color-gray-300);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .margin-custom-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        /* 具体金额输入部分 */
+        .margin-amount {
+            display: none;
+        }
+
+        .margin-amount.show {
+            display: block;
+        }
+
+        .margin-amount-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--color-gray-300);
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .margin-amount-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        /* 结果显示 */
+        .margin-result {
+            padding: 16px;
+            background: var(--color-primary-light);
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+
+        .margin-result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .margin-result-row:not(:last-child) {
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(22, 199, 132, 0.1);
+        }
+
+        .margin-result-label {
+            color: var(--color-gray-500);
+            font-size: 14px;
+        }
+
+        .margin-result-amount {
+            color: var(--color-gray-900);
+            font-size: 14px;
+        }
+
+        .margin-result-amount.highlight {
+            color: var(--color-primary);
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        /* 按钮 */
+        .margin-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .margin-button {
+            padding: 8px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .margin-accept {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+        }
+
+        .margin-accept:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .margin-reject {
+            background: var(--color-white);
+            border: 1px solid var(--color-gray-300);
+            color: var(--color-gray-500);
+        }
+
+        .margin-reject:hover {
+            border-color: var(--color-error);
+            color: var(--color-error);
+        }
+
+        /* 新增特殊需求说明文本框和联系方式确认 */
+        .margin-request-form {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--color-gray-300);
+        }
+
+        .margin-form-title {
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: var(--color-gray-900);
+        }
+
+        .margin-form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--color-gray-300);
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 16px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .margin-form-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .margin-contact-confirm {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .margin-contact-confirm input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--color-primary);
+        }
+
+        .margin-contact-label {
+            font-size: 14px;
+            color: var(--color-gray-900);
+        }
+
+        .margin-contact-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--color-primary-light);
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+
+        .margin-contact-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-white);
+            font-weight: 500;
+        }
+
+        .margin-contact-details {
+            flex: 1;
+        }
+
+        .margin-contact-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .margin-contact-method {
+            font-size: 13px;
+            color: var(--color-gray-500);
+        }
+
+        /* Toast 提示 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background: rgba(0, 0, 0, 0.8);
+            color: var(--color-white);
+            border-radius: 4px;
+            font-size: 14px;
+            display: none;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast 提示 -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 保证金协商组件 -->
+    <div class="margin-negotiation" id="marginNegotiation">
+        <div class="margin-title">
+            <i class="fas fa-shield-alt"></i>
+            <span class="zh">自定义保证金需求</span>
+            <span class="en">Custom Margin Request</span>
+        </div>
+        
+        <div class="margin-type">
+            <div class="margin-type-option active" data-type="percentage">
+                <i class="fas fa-percent"></i>
+                <span class="zh">按比例</span>
+                <span class="en">By Percentage</span>
+            </div>
+            <div class="margin-type-option" data-type="amount">
+                <i class="fas fa-coins"></i>
+                <span class="zh">固定金额</span>
+                <span class="en">Fixed Amount</span>
+            </div>
+        </div>
+        
+        <div class="margin-percentage show">
+            <div class="margin-options">
+                <div class="margin-option" data-value="10">10%</div>
+                <div class="margin-option" data-value="25">25%</div>
+                <div class="margin-option active" data-value="50">50%</div>
+                <div class="margin-option" data-value="75">75%</div>
+                <div class="margin-option" data-value="100">100%</div>
+                <div class="margin-option custom" data-value="custom">
+                    <span class="zh">自定义</span>
+                    <span class="en">Custom</span>
+                </div>
+            </div>
+            
+            <div class="margin-custom">
+                <input type="number" class="margin-custom-input" min="1" max="100" value="30">
+                <span>%</span>
+            </div>
+        </div>
+        
+        <div class="margin-amount">
+            <input type="number" class="margin-amount-input" placeholder="请输入保证金金额">
+        </div>
+        
+        <div class="margin-result">
+            <div class="margin-result-row">
+                <div class="margin-result-label">
+                    <span class="zh">交易金额</span>
+                    <span class="en">Trade Amount</span>
+                </div>
+                <div class="margin-result-amount">5,000 USDT</div>
+            </div>
+            <div class="margin-result-row">
+                <div class="margin-result-label">
+                    <span class="zh">保证金比例</span>
+                    <span class="en">Margin Ratio</span>
+                </div>
+                <div class="margin-result-amount">50%</div>
+            </div>
+            <div class="margin-result-row">
+                <div class="margin-result-label">
+                    <span class="zh">保证金金额</span>
+                    <span class="en">Margin Amount</span>
+                </div>
+                <div class="margin-result-amount highlight">2,500 USDT</div>
+            </div>
+        </div>
+        
+        <!-- 新增特殊需求说明和联系方式确认 -->
+        <div class="margin-request-form">
+            <div class="margin-form-title">
+                <span class="zh">特殊需求说明(选填)</span>
+                <span class="en">Special Requirements (Optional)</span>
+            </div>
+            <textarea class="margin-form-input" placeholder="请描述您的具体需求，如时长要求、特殊交易条件等"></textarea>
+            
+            <div class="margin-form-title">
+                <span class="zh">联系方式确认</span>
+                <span class="en">Contact Information</span>
+            </div>
+            
+            <div class="margin-contact-info">
+                <div class="margin-contact-avatar">JD</div>
+                <div class="margin-contact-details">
+                    <div class="margin-contact-name">John Doe</div>
+                    <div class="margin-contact-method">
+                        <span class="zh">电报: @johndoe</span>
+                        <span class="en">Telegram: @johndoe</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="margin-contact-confirm">
+                <input type="checkbox" id="contactConfirm" checked>
+                <label for="contactConfirm" class="margin-contact-label">
+                    <span class="zh">我确认以上联系方式是准确的</span>
+                    <span class="en">I confirm the contact information is accurate</span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="margin-actions">
+            <button class="margin-button margin-reject">
+                <i class="fas fa-times"></i>
+                <span class="zh">取消</span>
+                <span class="en">Cancel</span>
+            </button>
+            <button class="margin-button margin-accept">
+                <i class="fas fa-check"></i>
+                <span class="zh">发送请求</span>
+                <span class="en">Send Request</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        class MarginNegotiation {
+            constructor(container, options = {}) {
+                this.container = container;
+                this.options = {
+                    totalAmount: options.totalAmount || 1000,
+                    onSubmit: options.onSubmit || (() => {}),
+                    onChange: options.onChange || (() => {})
+                };
+
+                this.init();
+            }
+
+            init() {
+                // 初始化元素引用
+                this.typeOptions = this.container.querySelectorAll('.margin-type-option');
+                this.percentageSection = this.container.querySelector('.margin-percentage');
+                this.amountSection = this.container.querySelector('.margin-amount');
+                this.marginOptions = this.container.querySelectorAll('.margin-option');
+                this.customSection = this.container.querySelector('.margin-custom');
+                this.customInput = this.container.querySelector('.margin-custom-input');
+                this.amountInput = this.container.querySelector('.margin-amount-input');
+                this.submitButton = this.container.querySelector('.margin-button.margin-accept');
+
+                // 绑定事件
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                // 输入方式切换
+                this.typeOptions.forEach(option => {
+                    option.addEventListener('click', () => this.handleTypeChange(option));
+                });
+
+                // 比例选择
+                this.marginOptions.forEach(option => {
+                    option.addEventListener('click', () => this.handlePercentageOptionClick(option));
+                });
+
+                // 自定义比例输入
+                this.customInput.addEventListener('input', () => this.handleCustomPercentageInput());
+
+                // 具体金额输入
+                this.amountInput.addEventListener('input', () => this.handleAmountInput());
+
+                // 提交按钮
+                this.submitButton.addEventListener('click', () => this.handleSubmit());
+            }
+
+            handleTypeChange(option) {
+                this.typeOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+
+                const type = option.dataset.type;
+                if (type === 'percentage') {
+                    this.percentageSection.classList.add('show');
+                    this.amountSection.classList.remove('show');
+                } else {
+                    this.percentageSection.classList.remove('show');
+                    this.amountSection.classList.add('show');
+                }
+            }
+
+            handlePercentageOptionClick(option) {
+                this.marginOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+
+                const value = option.dataset.value;
+                if (value === 'custom') {
+                    this.customSection.classList.add('show');
+                    this.customInput.focus();
+                    // 清空结果显示
+                    this.container.querySelector('.margin-percentage .margin-result-amount').textContent = '0 USDT';
+                } else {
+                    this.customSection.classList.remove('show');
+                    this.updatePercentageResult(parseInt(value));
+                }
+            }
+
+            handleCustomPercentageInput() {
+                const value = parseFloat(this.customInput.value);
+                if (value && value >= 0 && value <= 100) {
+                    this.updatePercentageResult(value);
+                }
+            }
+
+            handleAmountInput() {
+                const value = parseFloat(this.amountInput.value);
+                if (value && value > 0) {
+                    const percentage = ((value / this.options.totalAmount) * 100).toFixed(2);
+                    this.updateAmountResult(percentage);
+                }
+            }
+
+            handleSubmit() {
+                const type = this.container.querySelector('.margin-type-option.active').dataset.type;
+                let value;
+
+                if (type === 'percentage') {
+                    const activeOption = this.container.querySelector('.margin-option.active');
+                    if (activeOption.dataset.value === 'custom') {
+                        value = parseFloat(this.customInput.value);
+                    } else {
+                        value = parseInt(activeOption.dataset.value);
+                    }
+                } else {
+                    value = parseFloat(this.amountInput.value);
+                }
+
+                this.options.onSubmit({
+                    type,
+                    value,
+                    totalAmount: this.options.totalAmount
+                });
+            }
+
+            updatePercentageResult(percentage) {
+                const amount = (this.options.totalAmount * percentage / 100).toFixed(2);
+                this.container.querySelector('.margin-percentage .margin-result-amount')
+                    .textContent = `${amount} USDT`;
+                
+                this.options.onChange({
+                    type: 'percentage',
+                    percentage,
+                    amount
+                });
+            }
+
+            updateAmountResult(percentage) {
+                this.container.querySelector('.margin-amount .margin-result-amount')
+                    .textContent = `${percentage}%`;
+                
+                this.options.onChange({
+                    type: 'amount',
+                    amount: this.amountInput.value,
+                    percentage
+                });
+            }
+
+            showToast(message, duration = 3000) {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.style.display = 'block';
+                
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, duration);
+            }
+        }
+
+        // 使用示例
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('marginNegotiation');
+            const marginNegotiation = new MarginNegotiation(container, {
+                totalAmount: 1000,
+                onSubmit: (data) => {
+                    console.log('提交数据:', data);
+                    marginNegotiation.showToast('保证金协商请求已发送');
+                },
+                onChange: (data) => {
+                    console.log('数据变化:', data);
+                }
+            });
+        });
+
+        // 更新显示金额的函数
+        function updateMarginAmount(percentage) {
+            const amount = (totalAmount * percentage / 100).toFixed(2);
+            document.querySelector('.margin-deposit-amount').textContent = `${amount} USDT`;
+        }
+
+        // 语言切换功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化默认语言
+            const lang = localStorage.getItem('language') || 'zh-CN';
+            document.documentElement.lang = lang;
+            
+            // 切换按钮监听（如果在父页面中存在）
+            const langSwitcher = document.querySelector('.language-select');
+            if (langSwitcher) {
+                langSwitcher.value = lang;
+                langSwitcher.addEventListener('change', function() {
+                    document.documentElement.lang = this.value;
+                    localStorage.setItem('language', this.value);
+                });
+            }
+            
+            // 选项类型切换
+            const typeOptions = document.querySelectorAll('.margin-type-option');
+            typeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // 移除所有active类
+                    typeOptions.forEach(opt => opt.classList.remove('active'));
+                    // 为当前点击项添加active类
+                    this.classList.add('active');
+                    
+                    const type = this.getAttribute('data-type');
+                    // 隐藏所有内容区域
+                    document.querySelector('.margin-percentage').classList.remove('show');
+                    document.querySelector('.margin-amount').classList.remove('show');
+                    // 显示选中的内容区域
+                    document.querySelector(`.margin-${type}`).classList.add('show');
+                    
+                    updateResult();
+                });
+            });
+            
+            // 百分比选项选择
+            const percentOptions = document.querySelectorAll('.margin-option:not(.custom)');
+            percentOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // 移除所有active类
+                    document.querySelectorAll('.margin-option').forEach(opt => opt.classList.remove('active'));
+                    // 为当前点击项添加active类
+                    this.classList.add('active');
+                    
+                    // 如果不是自定义选项，隐藏自定义输入
+                    document.querySelector('.margin-custom').classList.remove('show');
+                    
+                    updateResult();
+                });
+            });
+            
+            // 自定义按钮点击
+            const customOption = document.querySelector('.margin-option.custom');
+            if (customOption) {
+                customOption.addEventListener('click', function() {
+                    // 移除所有active类
+                    document.querySelectorAll('.margin-option').forEach(opt => opt.classList.remove('active'));
+                    // 为当前点击项添加active类
+                    this.classList.add('active');
+                    
+                    // 显示自定义输入区域
+                    document.querySelector('.margin-custom').classList.add('show');
+                    
+                    updateResult();
+                });
+            }
+            
+            // 自定义输入变化
+            const customInput = document.querySelector('.margin-custom-input');
+            if (customInput) {
+                customInput.addEventListener('input', function() {
+                    // 限制输入范围
+                    if (this.value < 1) this.value = 1;
+                    if (this.value > 100) this.value = 100;
+                    
+                    updateResult();
+                });
+            }
+            
+            // 固定金额输入变化
+            const amountInput = document.querySelector('.margin-amount-input');
+            if (amountInput) {
+                amountInput.addEventListener('input', function() {
+                    updateResult();
+                });
+            }
+            
+            // 更新结果显示
+            function updateResult() {
+                const tradeAmount = 5000; // 假设交易金额是5000 USDT
+                let marginRatio, marginAmount;
+                
+                const activeType = document.querySelector('.margin-type-option.active').getAttribute('data-type');
+                
+                if (activeType === 'percentage') {
+                    const customActive = document.querySelector('.margin-option.custom.active');
+                    if (customActive && document.querySelector('.margin-custom').classList.contains('show')) {
+                        marginRatio = parseFloat(document.querySelector('.margin-custom-input').value) / 100;
+                    } else {
+                        const activeOption = document.querySelector('.margin-option.active:not(.custom)');
+                        marginRatio = activeOption ? parseFloat(activeOption.getAttribute('data-value')) / 100 : 0.5;
+                    }
+                    marginAmount = tradeAmount * marginRatio;
+                } else {
+                    marginAmount = parseFloat(document.querySelector('.margin-amount-input').value) || 0;
+                    marginRatio = marginAmount / tradeAmount;
+                }
+                
+                // 更新显示
+                document.querySelector('.margin-result-row:nth-child(2) .margin-result-amount').textContent = `${(marginRatio * 100).toFixed(0)}%`;
+                document.querySelector('.margin-result-row:nth-child(3) .margin-result-amount').textContent = `${marginAmount.toLocaleString()} USDT`;
+            }
+            
+            // 初始化更新一次结果
+            updateResult();
+        });
+    </script>
+</body>
+</html> 

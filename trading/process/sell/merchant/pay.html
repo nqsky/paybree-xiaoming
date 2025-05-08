@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">支付货款 - 买方</span>
+        <span class="en">Payment - Buyer</span>
+    </title>
+    <link rel="stylesheet" href="../../../../css/common.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <style>
+        /* 语言切换样式 */
+        .zh, .en {
+            display: none;
+        }
+
+        html[lang="zh-CN"] .zh {
+            display: inline;
+        }
+
+        html[lang="en-US"] .en {
+            display: inline;
+        }
+
+        html[lang="zh-CN"] .zh-block {
+            display: block;
+        }
+
+        html[lang="en-US"] .en-block {
+            display: block;
+        }
+
+        /* 语言选择器样式 */
+        .language-switch {
+            position: relative;
+            margin-left: 16px;
+        }
+
+        .language-select {
+            appearance: none;
+            background: transparent;
+            border: none;
+            color: var(--color-gray-600);
+            font-size: 14px;
+            padding-right: 20px;
+            cursor: pointer;
+        }
+
+        .language-select:focus {
+            outline: none;
+        }
+
+        .language-switch::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid var(--color-gray-600);
+        }
+
+        .language-select option {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+        }
+
+        .sell-progress {
+            padding: 32px 0;
+            margin-bottom: 40px;
+            background: var(--color-white);
+        }
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 24px;
+            right: 24px;
+            height: 1px;
+            background: var(--color-border);
+            z-index: 1;
+        }
+        .step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-white);
+            border: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            transition: all 0.3s ease;
+        }
+        .step-number {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-gray-600);
+        }
+        .step-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-gray-600);
+        }
+        .step.active .step-circle {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+        .step.active .step-number {
+            color: var(--color-white);
+        }
+        .step.active .step-label {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+        .step.completed .step-circle {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+        .step.completed .step-number {
+            color: var(--color-white);
+        }
+        
+        /* 页面内容样式 */
+        .payment-content {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .payment-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .payment-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+            margin-bottom: 8px;
+        }
+        
+        .payment-subtitle {
+            font-size: 14px;
+            color: var(--color-gray-600);
+        }
+
+        /* 收款信息卡片 */
+        .payment-info {
+            margin-bottom: 32px;
+        }
+
+        .info-card {
+            background: var(--color-gray-50);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .info-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--color-gray-900);
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .info-label {
+            width: 140px;
+            color: var(--color-gray-600);
+        }
+
+        .info-value {
+            flex: 1;
+            color: var(--color-gray-900);
+            font-weight: 500;
+        }
+
+        .info-value.highlight {
+            color: var(--color-primary);
+        }
+
+        /* 上传区域样式 */
+        .upload-section {
+            margin-bottom: 32px;
+        }
+
+        .upload-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--color-gray-900);
+        }
+
+        .upload-description {
+            font-size: 14px;
+            color: var(--color-gray-600);
+            margin-bottom: 16px;
+        }
+
+        .upload-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .upload-item {
+            position: relative;
+            aspect-ratio: 16/9;
+            background: var(--color-gray-50);
+            border: 2px dashed var(--color-border);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .upload-item:hover {
+            border-color: var(--color-primary);
+            background: rgba(22, 199, 132, 0.05);
+        }
+
+        .upload-item i {
+            font-size: 24px;
+            color: var(--color-gray-600);
+            margin-bottom: 8px;
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: var(--color-gray-600);
+        }
+
+        .upload-preview {
+            position: relative;
+            aspect-ratio: 16/9;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--color-border);
+        }
+
+        .upload-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #fff;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .delete-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        /* 备注输入框 */
+        .remark-section {
+            margin-bottom: 32px;
+        }
+
+        .remark-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--color-gray-900);
+        }
+
+        .remark-description {
+            font-size: 14px;
+            color: var(--color-gray-600);
+            margin-bottom: 16px;
+        }
+
+        .remark-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+            box-sizing: border-box;
+        }
+
+        .remark-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        /* 操作按钮 */
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 120px;
+        }
+
+        .action-btn-primary {
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+        }
+
+        .action-btn-primary:hover {
+            background: #20E19F;
+        }
+
+        .action-btn-default {
+            background: #fff;
+            color: var(--color-gray-900);
+            border: 1px solid var(--color-border);
+        }
+
+        .action-btn-default:hover {
+            background: var(--color-gray-50);
+        }
+
+        /* 图片预览弹窗样式 */
+        .preview-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .preview-modal.active {
+            display: flex;
+        }
+        
+        .preview-image {
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 8px;
+        }
+        
+        .preview-close {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #fff;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        /* 警告提示样式 */
+        .warning-card {
+            background: #FFF7E6;
+            border: 1px solid #FFD591;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            color: #D46B08;
+        }
+        
+        .warning-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .warning-content {
+            font-size: 14px;
+            line-height: 1.5;
+            padding-left: 24px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container">
+            <a href="/index.html" class="logo">Paybree</a>
+            <nav class="nav">
+                <a href="/trading/quotes.html" class="nav-link">
+                    <span class="zh">交易大厅</span>
+                    <span class="en">Trading Hall</span>
+                </a>
+                <a href="/trading/process/sell/client/margin.html" class="nav-link">
+                    <span class="zh">卖出（用户）</span>
+                    <span class="en">Sell (User)</span>
+                </a>
+                <a href="/trading/process/sell/merchant/margin.html" class="nav-link active">
+                    <span class="zh">卖出（承兑商）</span>
+                    <span class="en">Sell (Merchant)</span>
+                </a>
+                <div class="language-switch">
+                    <select class="language-select">
+                        <option value="en-US">English</option>
+                        <option value="zh-CN">简体中文</option>
+                    </select>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <div class="page-container">
+        <!-- 面包屑导航 -->
+        <nav class="breadcrumb">
+            <a href="/">
+                <span class="zh">首页</span>
+                <span class="en">Home</span>
+            </a>
+            <span class="separator">/</span>
+            <a href="/merchant/index.html">
+                <span class="zh">商家中心</span>
+                <span class="en">Merchant Center</span>
+            </a>
+            <span class="separator">/</span>
+            <span class="current">
+                <span class="zh">支付法币</span>
+                <span class="en">Payment</span>
+            </span>
+        </nav>
+        <!-- 进度条组件 -->
+        <div class="sell-progress">
+            <div class="progress-steps">
+                <div class="step completed">
+                    <div class="step-circle">
+                        <span class="step-number">1</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">保证金确认</span>
+                        <span class="en">Margin Confirmation</span>
+                    </div>
+                </div>
+                <div class="step completed">
+                    <div class="step-circle">
+                        <span class="step-number">2</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">等待释放</span>
+                        <span class="en">Waiting for Release</span>
+                    </div>
+                </div>
+                <div class="step active">
+                    <div class="step-circle">
+                        <span class="step-number">3</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">支付货款</span>
+                        <span class="en">Payment</span>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">
+                        <span class="step-number">4</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="zh">完成交易</span>
+                        <span class="en">Transaction Complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 主体内容 -->
+        <div class="payment-content">
+            <div class="payment-header">
+                <h1 class="payment-title">
+                    <span class="zh">支付法币给卖家</span>
+                    <span class="en">Pay Fiat Currency to Seller</span>
+                </h1>
+                <p class="payment-subtitle">
+                    <span class="zh">卖家已经释放加密货币，请按以下信息付款给卖家</span>
+                    <span class="en">Seller has released cryptocurrency, please make payment to seller</span>
+                </p>
+            </div>
+            
+            <!-- 警告提示 -->
+            <div class="warning-card">
+                <div class="warning-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span class="zh">重要提示</span>
+                    <span class="en">Important Notice</span>
+                </div>
+                <div class="warning-content">
+                    <span class="zh">
+                        请确保您使用与注册时相同的姓名进行转账支付，以避免交易延迟或失败。<br>
+                        仅使用下方显示的收款账户信息，请勿通过其他渠道支付。
+                    </span>
+                    <span class="en">
+                        Please ensure that you use the same name as your registration when making the transfer payment to avoid transaction delays or failures.<br>
+                        Only use the payment information shown below, do not pay through other channels.
+                    </span>
+                </div>
+            </div>
+            
+            <!-- 收款信息 -->
+            <div class="payment-info">
+                <h2 class="info-title">
+                    <span class="zh">收款信息</span>
+                    <span class="en">Payment Information</span>
+                </h2>
+                <div class="info-card">
+                    <div class="info-item">
+                        <div class="info-label">
+                            <span class="zh">收款人姓名</span>
+                            <span class="en">Recipient Name</span>
+                        </div>
+                        <div class="info-value">张三</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">
+                            <span class="zh">收款银行</span>
+                            <span class="en">Bank</span>
+                        </div>
+                        <div class="info-value">中国建设银行</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">
+                            <span class="zh">收款账号</span>
+                            <span class="en">Account Number</span>
+                        </div>
+                        <div class="info-value">6217 0032 1239 5678</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">
+                            <span class="zh">支付金额</span>
+                            <span class="en">Payment Amount</span>
+                        </div>
+                        <div class="info-value highlight">¥ 48,500.00</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">
+                            <span class="zh">参考号</span>
+                            <span class="en">Reference No.</span>
+                        </div>
+                        <div class="info-value">OTC24042810153045</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 上传转账凭证 -->
+            <div class="upload-section">
+                <h2 class="upload-title">
+                    <span class="zh">上传转账凭证</span>
+                    <span class="en">Upload Payment Proof</span>
+                </h2>
+                <p class="upload-description">
+                    <span class="zh">请上传您的转账凭证（银行转账截图、支付宝/微信支付记录等）</span>
+                    <span class="en">Please upload your payment proof (bank transfer screenshot, Alipay/WeChat payment record, etc.)</span>
+                </p>
+                <div class="upload-area">
+                    <div class="upload-item" id="uploadButton">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <div class="upload-text">
+                            <span class="zh">点击上传图片</span>
+                            <span class="en">Click to upload</span>
+                        </div>
+                        <input type="file" id="fileInput" style="display: none" accept="image/*" multiple>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 备注信息 -->
+            <div class="remark-section">
+                <h2 class="remark-title">
+                    <span class="zh">付款备注</span>
+                    <span class="en">Payment Remarks</span>
+                </h2>
+                <p class="remark-description">
+                    <span class="zh">如有需要，请添加付款备注信息（选填）</span>
+                    <span class="en">Add payment remarks if needed (optional)</span>
+                </p>
+                <textarea class="remark-input" id="remarkInput" placeholder="付款备注 / Payment remarks"></textarea>
+            </div>
+            
+            <!-- 操作按钮 -->
+            <div class="action-buttons">
+                <button class="action-btn action-btn-default" id="contactButton">
+                    <span class="zh">联系卖家</span>
+                    <span class="en">Contact Seller</span>
+                </button>
+                <button class="action-btn action-btn-primary" id="confirmButton" disabled>
+                    <span class="zh">确认已付款</span>
+                    <span class="en">Confirm Payment</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 图片预览弹窗 -->
+    <div class="preview-modal" id="previewModal">
+        <button class="preview-close" id="previewClose">
+            <i class="fas fa-times"></i>
+        </button>
+        <img id="previewImage" src="" alt="Preview" class="preview-image">
+    </div>
+    
+    <script>
+        // 全局变量
+        let uploadedFiles = [];
+        
+        // DOM 元素
+        const uploadButton = document.getElementById('uploadButton');
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.querySelector('.upload-area');
+        const confirmButton = document.getElementById('confirmButton');
+        const contactButton = document.getElementById('contactButton');
+        const previewModal = document.getElementById('previewModal');
+        const previewImage = document.getElementById('previewImage');
+        const previewClose = document.getElementById('previewClose');
+        
+        // 绑定上传按钮点击事件
+        uploadButton.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        // 处理文件选择
+        fileInput.addEventListener('change', handleFileSelect);
+        
+        function handleFileSelect(event) {
+            const files = event.target.files;
+            if (!files.length) return;
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (!file.type.startsWith('image/')) continue;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const fileId = Date.now() + '-' + i;
+                    uploadedFiles.push({
+                        id: fileId,
+                        file: file,
+                        dataUrl: e.target.result
+                    });
+                    
+                    renderUploadedFiles();
+                    updateConfirmButton();
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            // 清空文件输入，允许再次选择相同文件
+            fileInput.value = '';
+        }
+        
+        // 渲染已上传文件
+        function renderUploadedFiles() {
+            // 清除现有预览
+            const existingPreviews = document.querySelectorAll('.upload-preview');
+            existingPreviews.forEach(preview => preview.remove());
+            
+            // 添加新预览
+            uploadedFiles.forEach(fileData => {
+                const previewEl = document.createElement('div');
+                previewEl.className = 'upload-preview';
+                previewEl.dataset.id = fileData.id;
+                previewEl.innerHTML = `
+                    <img src="${fileData.dataUrl}" alt="Preview">
+                    <button class="delete-btn" data-id="${fileData.id}">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                // 添加到上传区域
+                uploadArea.insertBefore(previewEl, uploadButton);
+                
+                // 图片点击预览
+                previewEl.querySelector('img').addEventListener('click', () => {
+                    showPreview(fileData.dataUrl);
+                });
+                
+                // 删除按钮
+                previewEl.querySelector('.delete-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const fileId = e.currentTarget.dataset.id;
+                    removeFile(fileId);
+                });
+            });
+        }
+        
+        // 移除文件
+        function removeFile(fileId) {
+            uploadedFiles = uploadedFiles.filter(file => file.id !== fileId);
+            const previewEl = document.querySelector(`.upload-preview[data-id="${fileId}"]`);
+            if (previewEl) previewEl.remove();
+            updateConfirmButton();
+        }
+        
+        // 更新确认按钮状态
+        function updateConfirmButton() {
+            confirmButton.disabled = uploadedFiles.length === 0;
+        }
+        
+        // 显示图片预览
+        function showPreview(src) {
+            previewImage.src = src;
+            previewModal.classList.add('active');
+        }
+        
+        // 关闭图片预览
+        previewClose.addEventListener('click', () => {
+            previewModal.classList.remove('active');
+        });
+        
+        // 点击预览弹窗背景关闭
+        previewModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                previewModal.classList.remove('active');
+            }
+        });
+        
+        // ESC键关闭弹窗
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                previewModal.classList.remove('active');
+            }
+        });
+        
+        // 联系卖家
+        contactButton.addEventListener('click', () => {
+            alert(document.documentElement.lang === 'zh-CN' ? '正在打开聊天窗口...' : 'Opening chat window...');
+        });
+        
+        // 确认付款
+        confirmButton.addEventListener('click', () => {
+            if (uploadedFiles.length === 0) {
+                return alert(document.documentElement.lang === 'zh-CN' ? '请上传付款凭证' : 'Please upload payment proof');
+            }
+            
+            // TODO: 提交付款凭证和备注
+            const remark = document.getElementById('remarkInput').value;
+            
+            // 模拟提交
+            const msg = document.documentElement.lang === 'zh-CN' 
+                ? '付款信息已提交，等待卖家确认' 
+                : 'Payment information submitted, waiting for seller confirmation';
+            alert(msg);
+            
+            // 跳转到下一步
+            window.location.href = 'complete.html';
+        });
+        
+        // 语言切换功能
+        function changeLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.querySelectorAll('.zh').forEach(el => {
+                el.style.display = (lang === 'zh-CN') ? 'inline' : 'none';
+            });
+            document.querySelectorAll('.en').forEach(el => {
+                el.style.display = (lang === 'en-US') ? 'inline' : 'none';
+            });
+            document.querySelectorAll('.zh-block').forEach(el => {
+                el.style.display = (lang === 'zh-CN') ? 'block' : 'none';
+            });
+            document.querySelectorAll('.en-block').forEach(el => {
+                el.style.display = (lang === 'en-US') ? 'block' : 'none';
+            });
+            document.querySelector('.language-select').value = lang;
+            localStorage.setItem('preferred_language', lang);
+        }
+
+        // 监听来自父页面的消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'languageChange') {
+                changeLanguage(event.data.language);
+            }
+        });
+
+        // 监听语言选择器的变化
+        document.querySelector('.language-select').addEventListener('change', function() {
+            const lang = this.value;
+            changeLanguage(lang);
+            // 通知父页面语言变化
+            window.parent.postMessage({
+                type: 'languageChange',
+                language: lang
+            }, '*');
+        });
+
+        // 初始化语言
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('preferred_language') || 'en-US';
+            changeLanguage(lang);
+        });
+    </script>
+</body>
+</html> 

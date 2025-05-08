@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录后顶部导航</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --color-white: #fff;
+            --color-gray-50: #f9fafb;
+            --color-gray-100: #f3f4f6;
+            --color-gray-200: #e5e7eb;
+            --color-gray-300: #d1d5db;
+            --color-gray-500: #6b7280;
+            --color-gray-600: #4b5563;
+            --color-gray-700: #374151;
+            --color-gray-900: #111827;
+            --color-primary: #16C36A;
+            --color-primary-dark: #12a85a;
+            --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+        }
+        .header {
+            background: var(--color-white);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 80px;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--color-primary);
+            text-decoration: none;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+        .main-nav {
+            display: flex;
+            gap: 40px;
+        }
+        .nav-item {
+            color: var(--color-gray-700);
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+            position: relative;
+            padding: 4px 0;
+            transition: color 0.2s;
+        }
+        .nav-item:hover {
+            color: var(--color-primary);
+        }
+        .nav-item.active {
+            color: var(--color-primary);
+        }
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -2px;
+            height: 2px;
+            background: var(--color-primary);
+            border-radius: 1px;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .user-menu {
+            position: relative;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .username {
+            color: var(--color-gray-700);
+            font-weight: 500;
+            font-size: 15px;
+        }
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background: var(--color-white);
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            padding: 8px 0;
+            min-width: 180px;
+            display: none;
+        }
+        .user-menu:hover .dropdown-menu {
+            display: block;
+        }
+        .dropdown-menu a, .dropdown-menu .dropdown-lang {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            color: var(--color-gray-700);
+            text-decoration: none;
+            font-size: 15px;
+            border-radius: 4px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .dropdown-menu a:hover, .dropdown-menu .dropdown-lang:hover {
+            background: var(--color-gray-50);
+            color: var(--color-primary);
+        }
+        .dropdown-menu i {
+            width: 16px;
+            text-align: center;
+        }
+        .dropdown-divider {
+            height: 1px;
+            background: var(--color-gray-100);
+            margin: 4px 0;
+        }
+
+        /* 语言切换样式 */
+        .language-select {
+            appearance: none;
+            background: transparent;
+            border: none;
+            color: var(--color-gray-700);
+            font-size: 15px;
+            padding-right: 20px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+        }
+        .language-select:focus {
+            outline: none;
+        }
+        .language-select option {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                height: auto;
+                gap: 12px;
+                padding: 12px 0;
+            }
+            .main-nav {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">Paybree</a>
+                <nav class="main-nav">
+                    <a href="/trading/quotes.html" class="nav-item">
+                        <span class="zh">交易大厅</span>
+                        <span class="en">Trading Hall</span>
+                    </a>
+                    <a href="/merchant/orders.html" class="nav-item">
+                        <span class="zh">交易记录</span>
+                        <span class="en">Orders</span>
+                    </a>
+                    <a href="/help/index.html" class="nav-item">
+                        <span class="zh">帮助中心</span>
+                        <span class="en">Help Center</span>
+                    </a>
+                </nav>
+                <div class="header-right">
+                    <div class="user-menu">
+                        <div class="user-info">
+                            <span class="username">张三</span>
+                            <div class="avatar">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 5C13.66 5 15 6.34 15 8C15 9.66 13.66 11 12 11C10.34 11 9 9.66 9 8C9 6.34 10.34 5 12 5ZM12 19.2C9.5 19.2 7.29 17.92 6 15.98C6.03 13.99 10 12.9 12 12.9C13.99 12.9 17.97 13.99 18 15.98C16.71 17.92 14.5 19.2 12 19.2Z" fill="currentColor"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="dropdown-menu">
+                            <a href="/user-center/client/account.html">
+                                <i class="fas fa-user"></i>
+                                <span class="zh">个人资料</span>
+                                <span class="en">Profile</span>
+                            </a>
+                            <a href="/user-center/client/account.html">
+                                <i class="fas fa-cog"></i>
+                                <span class="zh">账号设置</span>
+                                <span class="en">Settings</span>
+                            </a>
+                            <a href="/user-center/merchant/dashboard.html">
+                                <i class="fas fa-store"></i>
+                                <span class="zh">切换到商家版</span>
+                                <span class="en">Switch to Merchant</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-lang">
+                                <i class="fas fa-globe"></i>
+                                <select class="language-select">
+                                    <option value="zh-CN">简体中文</option>
+                                    <option value="en-US">English</option>
+                                </select>
+                            </div>
+                            <a href="/auth/login.html">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span class="zh">退出登录</span>
+                                <span class="en">Logout</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <script>
+        // 语言切换功能
+        function changeLanguage(lang) {
+            document.querySelectorAll('.zh').forEach(el => {
+                el.style.display = (lang === 'zh-CN') ? '' : 'none';
+            });
+            document.querySelectorAll('.en').forEach(el => {
+                el.style.display = (lang === 'en-US') ? '' : 'none';
+            });
+            document.querySelector('.language-select').value = lang;
+        }
+
+        // 监听来自父页面的消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'changeLanguage') {
+                changeLanguage(event.data.lang);
+            }
+        });
+
+        // 监听语言选择器的变化
+        document.querySelector('.language-select').addEventListener('change', function() {
+            const lang = this.value;
+            changeLanguage(lang);
+            // 通知父页面语言变化
+            window.parent.postMessage({
+                type: 'changeLanguage',
+                lang: lang
+            }, '*');
+        });
+
+        // 初始化语言
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('preferred_language') || 'en-US';
+            changeLanguage(lang);
+        });
+    </script>
+</body>
+</html> 

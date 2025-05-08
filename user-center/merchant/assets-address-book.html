@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <span class="zh">地址簿 - Paybree</span>
+    <span class="en">Address Book - Paybree</span>
+  </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --color-white: #fff;
+      --color-gray-50: #f9fafb;
+      --color-gray-100: #f3f4f6;
+      --color-gray-200: #e5e7eb;
+      --color-gray-300: #d1d5db;
+      --color-gray-500: #6b7280;
+      --color-gray-600: #4b5563;
+      --color-gray-700: #374151;
+      --color-gray-900: #111827;
+      --color-primary: #16C36A;
+      --color-primary-dark: #12a85a;
+      --color-primary-light: rgba(22, 195, 106, 0.1);
+      --color-danger: #ef4444;
+      --color-danger-light: rgba(239, 68, 68, 0.1);
+      --color-info: #3b82f6;
+      --color-info-light: rgba(59, 130, 246, 0.1);
+      --color-warning: #f59e0b;
+      --color-warning-light: rgba(245, 158, 11, 0.1);
+      --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      background: var(--color-gray-50);
+    }
+    .zh, .en {
+      display: none;
+    }
+    html[lang="zh-CN"] .zh {
+      display: inline;
+    }
+    html[lang="en-US"] .en {
+      display: inline;
+    }
+    iframe {
+      border: none;
+      width: 100%;
+    }
+    .header-iframe {
+      height: 80px;
+    }
+    .footer-iframe {
+      height: 100px;
+    }
+    .user-center {
+      display: flex;
+      min-height: calc(100vh - 180px);
+      padding: 24px 0;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 24px;
+      width: 100%;
+    }
+    .sidebar {
+      width: 240px;
+      background: var(--color-white);
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+      padding: 16px 0;
+    }
+    .sidebar .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: var(--color-gray-600);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 16px;
+      border-radius: 4px;
+    }
+    .sidebar .nav-item:hover {
+      background: var(--color-gray-50);
+      color: var(--color-primary);
+    }
+    .sidebar .nav-item.active {
+      background: var(--color-primary);
+      color: #fff;
+    }
+    .sidebar .nav-item i {
+      width: 20px;
+      text-align: center;
+    }
+    .content {
+      flex: 1;
+      background: var(--color-white);
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+      padding: 24px;
+      overflow: hidden;
+    }
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .page-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--color-gray-900);
+      margin: 0;
+    }
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      color: var(--color-gray-500);
+      font-size: 15px;
+    }
+    .breadcrumb a {
+      color: var(--color-gray-600);
+      text-decoration: none;
+    }
+    .breadcrumb a:hover {
+      color: var(--color-primary);
+    }
+    .breadcrumb i {
+      font-size: 12px;
+    }
+    .address-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      gap: 12px;
+    }
+    
+    .address-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .address-table th {
+      text-align: left;
+      padding: 12px 16px;
+      font-weight: 500;
+      color: var(--color-gray-600);
+      background: var(--color-gray-50);
+      border-bottom: 1px solid var(--color-gray-200);
+    }
+    
+    .address-table td {
+      padding: 16px;
+      border-bottom: 1px solid var(--color-gray-200);
+      color: var(--color-gray-700);
+    }
+    
+    .address-table tr:hover {
+      background: var(--color-gray-50);
+    }
+    
+    .address-name {
+      font-weight: 500;
+      color: var(--color-gray-900);
+    }
+    
+    .address-value {
+      font-family: monospace;
+      word-break: break-all;
+      font-size: 14px;
+    }
+    
+    .action-btn {
+      background: none;
+      border: none;
+      color: var(--color-gray-600);
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    
+    .action-btn:hover {
+      background: var(--color-gray-100);
+      color: var(--color-gray-900);
+    }
+    
+    .action-btn.edit:hover {
+      color: var(--color-primary);
+    }
+    
+    .action-btn.delete:hover {
+      color: var(--color-danger);
+    }
+    
+    .network-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .network-badge.btc {
+      background: rgba(247, 147, 26, 0.1);
+      color: #F7931A;
+    }
+    
+    .network-badge.eth {
+      background: rgba(98, 126, 234, 0.1);
+      color: #627EEA;
+    }
+    
+    .network-badge.tron {
+      background: rgba(255, 0, 122, 0.1);
+      color: #FF007A;
+    }
+    
+    .address-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content {
+      background: var(--color-white);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 500px;
+      padding: 24px;
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    
+    .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--color-gray-900);
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--color-gray-500);
+      cursor: pointer;
+    }
+    
+    .modal-body {
+      margin-bottom: 24px;
+    }
+    
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--color-gray-700);
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--color-gray-300);
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px var(--color-primary-light);
+    }
+    
+    .form-select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--color-gray-300);
+      border-radius: 8px;
+      font-size: 16px;
+      background-color: var(--color-white);
+    }
+    
+    .form-helper {
+      margin-top: 4px;
+      font-size: 14px;
+      color: var(--color-gray-500);
+    }
+    
+    .favorite-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: var(--color-gray-100);
+      border-radius: 50%;
+      color: var(--color-gray-500);
+      cursor: pointer;
+    }
+    
+    .favorite-badge.active {
+      background: rgba(245, 158, 11, 0.1);
+      color: #F59E0B;
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 24px;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 48px 0;
+      color: var(--color-gray-500);
+    }
+    
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+    
+    .empty-state-text {
+      font-size: 16px;
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    
+    .btn-primary {
+      background: var(--color-primary);
+      color: var(--color-white);
+    }
+    
+    .btn-primary:hover {
+      background: var(--color-primary-dark);
+    }
+    
+    .btn-outline {
+      background: transparent;
+      color: var(--color-gray-700);
+      border: 1px solid var(--color-gray-300);
+    }
+    
+    .btn-outline:hover {
+      background: var(--color-gray-50);
+      border-color: var(--color-gray-400);
+    }
+    
+    .btn-danger {
+      background: var(--color-danger);
+      color: var(--color-white);
+    }
+    
+    .btn-danger:hover {
+      background: rgba(220, 38, 38, 1);
+    }
+  </style>
+</head>
+<body>
+  <iframe src="../../components/header/header.html" class="header-iframe"></iframe>
+
+  <div class="user-center">
+    <div class="container">
+      <aside class="sidebar">
+        <a href="account.html" class="nav-item">
+          <i class="fas fa-user"></i>
+          <span class="zh">账号管理</span>
+          <span class="en">Account</span>
+        </a>
+        <a href="assets.html" class="nav-item active">
+          <i class="fas fa-wallet"></i>
+          <span class="zh">资产管理</span>
+          <span class="en">Assets</span>
+        </a>
+        <a href="kyc-info.html" class="nav-item">
+          <i class="fas fa-id-card"></i>
+          <span class="zh">认证信息</span>
+          <span class="en">Verification</span>
+        </a>
+        <a href="quote-management.html" class="nav-item">
+          <i class="fas fa-chart-line"></i>
+          <span class="zh">报价管理</span>
+          <span class="en">Quotes</span>
+        </a>
+        <a href="messages.html" class="nav-item">
+          <i class="fas fa-envelope"></i>
+          <span class="zh">消息通知</span>
+          <span class="en">Messages</span>
+        </a>
+      </aside>
+
+      <div class="content">
+        <div class="breadcrumb">
+          <a href="/"><span class="zh">首页</span><span class="en">Home</span></a>
+          <i class="fas fa-chevron-right"></i>
+          <a href="account.html"><span class="zh">商家中心</span><span class="en">Merchant Center</span></a>
+          <i class="fas fa-chevron-right"></i>
+          <a href="assets.html"><span class="zh">资产管理</span><span class="en">Assets</span></a>
+          <i class="fas fa-chevron-right"></i>
+          <span><span class="zh">地址簿</span><span class="en">Address Book</span></span>
+        </div>
+
+        <div class="content-header">
+          <h1 class="page-title">
+            <span class="zh">地址簿</span>
+            <span class="en">Address Book</span>
+          </h1>
+          <a href="assets.html" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i>
+            <span class="zh" style="margin-left:8px">返回资产页面</span>
+            <span class="en" style="margin-left:8px">Back to Assets</span>
+          </a>
+        </div>
+
+        <div class="address-actions">
+          <div>
+            <button class="btn btn-primary" onclick="openAddModal()">
+              <i class="fas fa-plus"></i>
+              <span class="zh" style="margin-left:8px">添加新地址</span>
+              <span class="en" style="margin-left:8px">Add New Address</span>
+            </button>
+          </div>
+          <div>
+            <select class="form-select" style="width:auto">
+              <option value="all">
+                <span class="zh">全部网络</span>
+                <span class="en">All Networks</span>
+              </option>
+              <option value="btc">Bitcoin (BTC)</option>
+              <option value="eth">Ethereum (ETH)</option>
+              <option value="tron">TRON</option>
+            </select>
+          </div>
+        </div>
+
+        <table class="address-table">
+          <thead>
+            <tr>
+              <th style="width:30px"></th>
+              <th>
+                <span class="zh">标签</span>
+                <span class="en">Label</span>
+              </th>
+              <th>
+                <span class="zh">地址</span>
+                <span class="en">Address</span>
+              </th>
+              <th>
+                <span class="zh">网络</span>
+                <span class="en">Network</span>
+              </th>
+              <th style="width:80px">
+                <span class="zh">操作</span>
+                <span class="en">Action</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="favorite-badge active">
+                  <i class="fas fa-star"></i>
+                </div>
+              </td>
+              <td class="address-name">Settlement Address</td>
+              <td class="address-value">TAbCdEfGhIjKlMnOpQrStUvWxYz1234567890</td>
+              <td>
+                <span class="network-badge tron">TRON</span>
+              </td>
+              <td>
+                <div style="display:flex;gap:8px">
+                  <button class="action-btn edit" onclick="openEditModal(1)">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="action-btn delete" onclick="confirmDelete(1)">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="favorite-badge">
+                  <i class="far fa-star"></i>
+                </div>
+              </td>
+              <td class="address-name">Business Account</td>
+              <td class="address-value">0x1234567890abcdef1234567890abcdef12345678</td>
+              <td>
+                <span class="network-badge eth">ETH</span>
+              </td>
+              <td>
+                <div style="display:flex;gap:8px">
+                  <button class="action-btn edit" onclick="openEditModal(2)">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="action-btn delete" onclick="confirmDelete(2)">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="favorite-badge">
+                  <i class="far fa-star"></i>
+                </div>
+              </td>
+              <td class="address-name">Reserve Account</td>
+              <td class="address-value">bc1q9h6yzn0fsmzuyxkj9fpgkjgxmeh48qy0hgd3qr</td>
+              <td>
+                <span class="network-badge btc">BTC</span>
+              </td>
+              <td>
+                <div style="display:flex;gap:8px">
+                  <button class="action-btn edit" onclick="openEditModal(3)">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="action-btn delete" onclick="confirmDelete(3)">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="pagination">
+          <!-- Pagination components will go here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Address Modal -->
+  <div class="address-modal" id="addAddressModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <span class="zh">添加新地址</span>
+          <span class="en">Add New Address</span>
+        </h3>
+        <button class="modal-close" onclick="closeModal('addAddressModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">
+            <span class="zh">地址标签</span>
+            <span class="en">Address Label</span>
+          </label>
+          <input type="text" class="form-input" placeholder="My Wallet">
+          <div class="form-helper">
+            <span class="zh">为此地址添加一个易记的名称</span>
+            <span class="en">Add a memorable name for this address</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <span class="zh">地址</span>
+            <span class="en">Address</span>
+          </label>
+          <input type="text" class="form-input" placeholder="输入有效的钱包地址 | Enter a valid wallet address">
+          <div class="form-helper">
+            <span class="zh">请确保输入的地址格式正确</span>
+            <span class="en">Please ensure the address format is correct</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <span class="zh">网络</span>
+            <span class="en">Network</span>
+          </label>
+          <select class="form-select">
+            <option value="">
+              <span class="zh">选择网络</span>
+              <span class="en">Select Network</span>
+            </option>
+            <option value="btc">Bitcoin (BTC)</option>
+            <option value="eth">Ethereum (ETH)</option>
+            <option value="tron">TRON</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="display:flex;align-items:center">
+          <input type="checkbox" id="setAsFavorite" style="margin-right:8px">
+          <label for="setAsFavorite">
+            <span class="zh">设为常用地址</span>
+            <span class="en">Set as favorite</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('addAddressModal')">
+          <span class="zh">取消</span>
+          <span class="en">Cancel</span>
+        </button>
+        <button class="btn btn-primary" onclick="addAddress()">
+          <span class="zh">添加</span>
+          <span class="en">Add</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Address Modal -->
+  <div class="address-modal" id="editAddressModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <span class="zh">编辑地址</span>
+          <span class="en">Edit Address</span>
+        </h3>
+        <button class="modal-close" onclick="closeModal('editAddressModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Same form fields as Add Modal, but pre-filled -->
+        <div class="form-group">
+          <label class="form-label">
+            <span class="zh">地址标签</span>
+            <span class="en">Address Label</span>
+          </label>
+          <input type="text" class="form-input" value="Settlement Address" id="edit-label">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <span class="zh">地址</span>
+            <span class="en">Address</span>
+          </label>
+          <input type="text" class="form-input" value="TAbCdEfGhIjKlMnOpQrStUvWxYz1234567890" id="edit-address">
+          <div class="form-helper">
+            <span class="zh">请确保输入的地址格式正确</span>
+            <span class="en">Please ensure the address format is correct</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <span class="zh">网络</span>
+            <span class="en">Network</span>
+          </label>
+          <select class="form-select" id="edit-network">
+            <option value="btc">Bitcoin (BTC)</option>
+            <option value="eth">Ethereum (ETH)</option>
+            <option value="tron" selected>TRON</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="display:flex;align-items:center">
+          <input type="checkbox" id="editSetAsFavorite" style="margin-right:8px" checked>
+          <label for="editSetAsFavorite">
+            <span class="zh">设为常用地址</span>
+            <span class="en">Set as favorite</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('editAddressModal')">
+          <span class="zh">取消</span>
+          <span class="en">Cancel</span>
+        </button>
+        <button class="btn btn-primary" onclick="updateAddress()">
+          <span class="zh">更新</span>
+          <span class="en">Update</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="address-modal" id="deleteAddressModal">
+    <div class="modal-content" style="max-width:400px">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <span class="zh">确认删除</span>
+          <span class="en">Confirm Deletion</span>
+        </h3>
+        <button class="modal-close" onclick="closeModal('deleteAddressModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>
+          <span class="zh">您确定要删除此地址吗？此操作无法撤销。</span>
+          <span class="en">Are you sure you want to delete this address? This action cannot be undone.</span>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('deleteAddressModal')">
+          <span class="zh">取消</span>
+          <span class="en">Cancel</span>
+        </button>
+        <button class="btn btn-danger" onclick="deleteAddress()">
+          <span class="zh">删除</span>
+          <span class="en">Delete</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <iframe src="../../components/footer/footer.html" class="footer-iframe"></iframe>
+
+  <script>
+    // 监听语言切换消息
+    window.addEventListener('message', function(event) {
+      if (event.data.type === 'languageChange') {
+        document.documentElement.lang = event.data.language;
+        localStorage.setItem('preferred_language', event.data.language);
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedLang = localStorage.getItem('preferred_language') || 'en-US';
+      document.documentElement.lang = savedLang;
+      
+      // 收藏切换
+      document.querySelectorAll('.favorite-badge').forEach(badge => {
+        badge.addEventListener('click', function() {
+          this.classList.toggle('active');
+          if (this.classList.contains('active')) {
+            this.innerHTML = '<i class="fas fa-star"></i>';
+          } else {
+            this.innerHTML = '<i class="far fa-star"></i>';
+          }
+        });
+      });
+    });
+    
+    // 模态框操作
+    function openAddModal() {
+      document.getElementById('addAddressModal').style.display = 'flex';
+    }
+    
+    function openEditModal(id) {
+      document.getElementById('editAddressModal').style.display = 'flex';
+      console.log('Edit address ID:', id);
+      // 在实际应用中，这里应该通过API获取地址详情并填充表单
+    }
+    
+    function confirmDelete(id) {
+      document.getElementById('deleteAddressModal').style.display = 'flex';
+      window.currentDeleteId = id;
+    }
+    
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+    
+    function addAddress() {
+      alert('地址添加功能将在后端实现 | Add address function will be implemented in the backend');
+      closeModal('addAddressModal');
+    }
+    
+    function updateAddress() {
+      alert('地址更新功能将在后端实现 | Update address function will be implemented in the backend');
+      closeModal('editAddressModal');
+    }
+    
+    function deleteAddress() {
+      alert('地址删除功能将在后端实现 | Delete address function will be implemented in the backend');
+      closeModal('deleteAddressModal');
+    }
+  </script>
+</body>
+</html> 

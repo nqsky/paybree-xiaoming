@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <span class="zh">争议详情 - Paybree</span>
+        <span class="en">Dispute Details - Paybree</span>
+    </title>
+    <link rel="stylesheet" href="../../../css/common.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <style>
+        /* 语言切换样式 */
+        .zh, .en {
+            display: none;
+        }
+
+        html[lang="zh-CN"] .zh {
+            display: inline;
+        }
+
+        html[lang="en-US"] .en {
+            display: inline;
+        }
+
+        html[lang="zh-CN"] .zh-block {
+            display: block;
+        }
+
+        html[lang="en-US"] .en-block {
+            display: block;
+        }
+
+        /* 语言选择器样式 */
+        .language-switch {
+            position: relative;
+            margin-left: 16px;
+        }
+
+        .language-select {
+            appearance: none;
+            background: transparent;
+            border: none;
+            color: var(--color-gray-600);
+            font-size: 14px;
+            padding-right: 20px;
+            cursor: pointer;
+        }
+
+        .language-select:focus {
+            outline: none;
+        }
+
+        .language-switch::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid var(--color-gray-600);
+        }
+
+        .language-select option {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+        }
+
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 104px 24px 24px;
+        }
+
+        .dispute-detail {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 订单信息样式 */
+        .order-info {
+            margin-bottom: 24px;
+        }
+
+        .order-info-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--color-gray-50);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .order-info-content {
+            display: none;
+            padding: 16px;
+            background: var(--color-gray-50);
+            border-radius: 0 0 8px 8px;
+            margin-top: 1px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .info-label {
+            font-size: 13px;
+            color: var(--color-gray-500);
+        }
+
+        .info-value {
+            font-size: 14px;
+            color: var(--color-gray-900);
+        }
+
+        /* 状态标签样式 */
+        .status-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 500;
+            gap: 4px;
+        }
+
+        .status-tag-processing {
+            background: rgba(37, 99, 235, 0.1);
+            color: #2563eb;
+        }
+
+        .status-tag-completed {
+            background: rgba(22, 163, 74, 0.1);
+            color: #16a34a;
+        }
+
+        .status-tag-cancelled {
+            background: rgba(107, 114, 128, 0.1);
+            color: #4b5563;
+        }
+
+        .status-tag i {
+            font-size: 14px;
+        }
+
+        /* 信息卡片统一样式 */
+        .info-card {
+            background: var(--color-gray-50);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .info-card-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-gray-900);
+            margin-bottom: 12px;
+        }
+
+        /* 记录项统一样式 */
+        .record-item {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-bottom: 24px;
+        }
+
+        .record-item:not(:last-child) {
+            border-bottom: 1px solid var(--color-gray-100);
+            margin-bottom: 24px;
+        }
+
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .record-time {
+            font-size: 14px;
+            color: var(--color-gray-500);
+        }
+
+        .record-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-gray-900);
+        }
+
+        .record-content {
+            background: var(--color-gray-50);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .record-text {
+            font-size: 14px;
+            color: var(--color-gray-700);
+            line-height: 1.6;
+        }
+
+        /* 争议内容样式 */
+        .dispute-content {
+            margin-bottom: 32px;
+        }
+
+        .dispute-header {
+            margin-bottom: 24px;
+        }
+
+        .dispute-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .dispute-tag {
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            background: var(--color-gray-50);
+            color: var(--color-gray-700);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dispute-tag i {
+            font-size: 12px;
+            color: var(--color-gray-500);
+        }
+
+        .dispute-desc {
+            padding: 16px;
+            background: var(--color-gray-50);
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .dispute-desc-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-gray-900);
+            margin-bottom: 8px;
+        }
+
+        .dispute-desc-content {
+            font-size: 14px;
+            color: var(--color-gray-700);
+            line-height: 1.6;
+        }
+
+        .details-toggle {
+            width: 100%;
+            padding: 12px 16px;
+            background: #fff;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .details-toggle:hover {
+            background: var(--color-gray-50);
+        }
+
+        .details-content {
+            display: none;
+            padding: 16px;
+            border: 1px solid var(--color-border);
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            margin-bottom: 24px;
+        }
+
+        .details-content.expanded {
+            display: block;
+        }
+
+        /* 分隔线样式 */
+        .section-divider {
+            margin: 32px -32px;
+            height: 8px;
+            background: var(--color-gray-50);
+            border: none;
+        }
+
+        /* 证据材料样式 */
+        .evidence-list {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .evidence-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .evidence-group-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .evidence-type {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-gray-900);
+            position: relative;
+            padding-right: 16px;
+        }
+
+        .evidence-type::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 14px;
+            background: var(--color-border);
+        }
+
+        .evidence-time {
+            font-size: 14px;
+            color: var(--color-gray-500);
+        }
+
+        .evidence-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin: 16px 0;
+        }
+
+        .evidence-item {
+            width: 120px;
+        }
+
+        .evidence-img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--color-border);
+        }
+
+        .evidence-info {
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .evidence-name {
+            font-size: 13px;
+            color: var(--color-gray-600);
+        }
+
+        .evidence-desc {
+            font-size: 14px;
+            color: var(--color-gray-600);
+            line-height: 1.6;
+            margin-top: 4px;
+        }
+
+        /* 处理结果样式 */
+        .result-box {
+            background: var(--color-gray-50);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 32px;
+        }
+
+        .result-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-gray-900);
+            margin-bottom: 12px;
+        }
+
+        .result-content {
+            font-size: 14px;
+            color: var(--color-gray-700);
+            line-height: 1.6;
+        }
+
+        /* 操作按钮样式 */
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 120px;
+        }
+
+        .action-btn-primary {
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+        }
+
+        .action-btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .action-btn-danger {
+            background: #fff;
+            color: var(--color-danger);
+            border: 1px solid var(--color-danger);
+        }
+
+        .action-btn-danger:hover {
+            background: rgba(220, 38, 38, 0.05);
+            color: var(--color-danger);
+            border-color: var(--color-danger);
+        }
+
+        .action-btn-default {
+            background: #fff;
+            color: var(--color-gray-900);
+            border: 1px solid var(--color-border);
+        }
+
+        .action-btn-default:hover {
+            background: var(--color-gray-50);
+        }
+
+        /* 处理记录样式 */
+        .process-records {
+            margin: 0 0 32px;
+        }
+
+        .process-item {
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .process-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .process-time {
+            font-size: 14px;
+            color: var(--color-gray-500);
+        }
+
+        .process-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-gray-900);
+        }
+
+        .process-content {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .process-text {
+            font-size: 14px;
+            color: var(--color-gray-700);
+            line-height: 1.6;
+        }
+
+        .process-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .process-image {
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .process-image img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .image-name {
+            font-size: 12px;
+            color: var(--color-gray-600);
+            padding: 8px;
+            text-align: center;
+        }
+
+        /* 对话框样式 */
+        .dialog-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .dialog {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .dialog-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+            margin-bottom: 16px;
+        }
+
+        .dialog-content {
+            margin: 20px 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-gray-900);
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px rgba(22, 199, 132, 0.1);
+        }
+
+        .dialog-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .upload-section {
+            border: 2px dashed var(--color-border);
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            font-size: 32px;
+            color: var(--color-gray-400);
+            margin-bottom: 12px;
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: var(--color-gray-600);
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            font-size: 12px;
+            color: var(--color-gray-400);
+        }
+
+        /* 更新确认对话框样式 */
+        #confirmDialog .dialog-content {
+            margin: 24px 0 32px;
+            text-align: center;
+            color: var(--color-gray-700);
+            line-height: 1.5;
+        }
+
+        /* 页面标题样式 */
+        .page-title-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 16px;
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-gray-700);
+        }
+
+        .page-title-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 15px;
+            color: var(--color-gray-500);
+            margin-left: 4px;
+            font-weight: normal;
+        }
+
+        /* 基本信息样式 */
+        .basic-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .basic-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .basic-info-label {
+            font-size: 13px;
+            color: var(--color-gray-500);
+        }
+
+        .basic-info-value {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--color-gray-900);
+        }
+
+        .basic-info-value.highlight {
+            color: var(--color-primary);
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* 时间线样式 */
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: var(--color-gray-100);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 32px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -29px;
+            top: 8px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 2px var(--color-primary-50);
+        }
+
+        .timeline-header {
+            margin-bottom: 12px;
+        }
+
+        .timeline-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--color-gray-900);
+            margin-bottom: 4px;
+        }
+
+        .timeline-time {
+            font-size: 13px;
+            color: var(--color-gray-500);
+        }
+
+        /* 订单信息收起展开样式 */
+        .order-info-wrapper {
+            margin-bottom: 16px;
+        }
+
+        .order-info-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-gray-900);
+        }
+
+        .order-info-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .order-info-content.show {
+            display: block;
+        }
+
+        .order-info-header.active .order-info-icon {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container">
+            <a href="/index.html" class="logo">Paybree</a>
+            <nav class="nav">
+                <a href="/trading/process/dispute/list.html" class="nav-link">
+                    <span class="zh">争议记录</span>
+                    <span class="en">Dispute Records</span>
+                </a>
+                <a href="/trading/process/dispute/create.html" class="nav-link">
+                    <span class="zh">提交争议</span>
+                    <span class="en">Submit Dispute</span>
+                </a>
+                <div class="language-switch">
+                    <select class="language-select">
+                        <option value="en-US">English</option>
+                        <option value="zh-CN">简体中文</option>
+                    </select>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-container">
+        <!-- 面包屑导航 -->
+        <nav class="breadcrumb">
+            <a href="/">
+                <span class="zh">首页</span>
+                <span class="en">Home</span>
+            </a>
+            <span class="separator">/</span>
+            <a href="/merchant/index.html">
+                <span class="zh">商家中心</span>
+                <span class="en">Merchant Center</span>
+            </a>
+            <span class="separator">/</span>
+            <a href="/trading/process/dispute/list.html">
+                <span class="zh">争议列表</span>
+                <span class="en">Dispute List</span>
+            </a>
+            <span class="separator">/</span>
+            <span class="current">
+                <span class="zh">争议详情</span>
+                <span class="en">Dispute Details</span>
+            </span>
+        </nav>
+
+        <!-- 争议详情内容 -->
+        <div class="dispute-detail">
+            <!-- 页面标题 -->
+            <div class="page-title-wrapper">
+                <div class="page-title">
+                    <div class="page-title-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="page-title-text">
+                        争议详情
+                        <span class="page-subtitle">TX24032115304789</span>
+                    </div>
+                </div>
+                <span class="status-tag status-tag-processing">
+                    <i class="fas fa-clock"></i>
+                    <span class="zh">处理中</span>
+                    <span class="en">Processing</span>
+                </span>
+            </div>
+
+            <div class="dispute-content">
+                <!-- 基本信息 -->
+                <div class="basic-info">
+                    <div class="basic-info-item">
+                        <span class="basic-info-label">
+                            <span class="zh">争议类型</span>
+                            <span class="en">Dispute Type</span>
+                        </span>
+                        <span class="basic-info-value">未收到付款</span>
+                    </div>
+                    <div class="basic-info-item">
+                        <span class="basic-info-label">
+                            <span class="zh">交易金额</span>
+                            <span class="en">Transaction Amount</span>
+                        </span>
+                        <span class="basic-info-value highlight">5,000 USDT</span>
+                    </div>
+                    <div class="basic-info-item">
+                        <span class="basic-info-label">
+                            <span class="zh">提交时间</span>
+                            <span class="en">Submission Time</span>
+                        </span>
+                        <span class="basic-info-value">2024-03-20 17:45:32</span>
+                    </div>
+                </div>
+                
+                <!-- 问题描述 -->
+                <div class="info-card">
+                    <div class="info-card-title">
+                        <span class="zh">问题描述</span>
+                        <span class="en">Problem Description</span>
+                    </div>
+                    <div class="record-text">
+                        <span class="zh">买家声称已经完成付款，但经过仔细核对，我的账户中并未收到相应的转账记录。我已经等待了超过2小时，但仍然没有收到款项。</span>
+                        <span class="en">Buyer claims to have made payment, but we have not received the corresponding amount. I have waited for more than 2 hours, but still have not received the payment.</span>
+                    </div>
+                </div>
+
+                <!-- 订单信息 -->
+                <div class="order-info">
+                    <div class="order-info-header" onclick="toggleOrderInfo()">
+                        <div class="section-title">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="zh">订单信息</span>
+                            <span class="en">Order Information</span>
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div id="orderInfoContent" class="order-info-content">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">交易编号</span>
+                                    <span class="en">Transaction ID</span>
+                                </span>
+                                <span class="info-value">TX24032115304789</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">交易对手</span>
+                                    <span class="en">Counterparty</span>
+                                </span>
+                                <span class="info-value">Alice（承兑商）</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">
+                                    <span class="zh">交易时间</span>
+                                    <span class="en">Transaction Time</span>
+                                </span>
+                                <span class="info-value">2024-03-20 15:30:45</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="section-divider">
+
+                <!-- 时间线 -->
+                <div class="timeline">
+                    <!-- 初始提交 -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-header">
+                            <div class="timeline-title">
+                                <span class="zh">初始提交</span>
+                                <span class="en">Initial Submission</span>
+                            </div>
+                            <div class="timeline-time">2024-03-20 17:45:32</div>
+                        </div>
+                        <div class="evidence-items">
+                            <div class="evidence-item">
+                                <img src="/images/payment-proof-1.jpg" alt="账户交易记录" class="evidence-img">
+                                <div class="evidence-info">
+                                    <div class="evidence-name">账户交易记录截图</div>
+                                </div>
+                            </div>
+                            <div class="evidence-item">
+                                <img src="/images/payment-proof-2.jpg" alt="聊天记录" class="evidence-img">
+                                <div class="evidence-info">
+                                    <div class="evidence-name">与买家的聊天记录</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 补充证据 -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-header">
+                            <div class="timeline-title">
+                                <span class="zh">补充证据</span>
+                                <span class="en">Additional Evidence</span>
+                            </div>
+                            <div class="timeline-time">2024-03-21 09:15:20</div>
+                        </div>
+                        <div class="evidence-items">
+                            <div class="evidence-item">
+                                <img src="/images/payment-proof-3.jpg" alt="银行流水明细" class="evidence-img">
+                                <div class="evidence-info">
+                                    <div class="evidence-name">银行流水明细</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="record-text">
+                            <span class="zh">补充说明：这是最新的银行流水明细，可以清楚看到没有相关转账记录。</span>
+                            <span class="en">Additional note: This is the latest bank statement, which clearly shows no relevant transaction records.</span>
+                        </div>
+                    </div>
+
+                    <!-- 平台初步处理 -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-header">
+                            <div class="timeline-title">
+                                <span class="zh">平台初步处理意见</span>
+                                <span class="en">Platform Initial Processing Opinion</span>
+                            </div>
+                            <div class="timeline-time">2024-03-21 10:30:15</div>
+                        </div>
+                        <div class="record-content">
+                            <div class="record-text">
+                                <span class="zh">经核实，买家已提供转账凭证，但由于银行系统处理延迟，资金尚未到账。建议双方耐心等待24小时，如仍未收到款项，平台将进一步介入处理。</span>
+                                <span class="en">After verification, the buyer has provided payment proof, but due to bank system processing delay, the funds have not yet arrived. We recommend both parties to be patient and wait for 24 hours. If the payment is still not received, the platform will further intervene to handle the dispute.</span>
+                            </div>
+                            <div class="evidence-items" style="margin-top: 16px;">
+                                <div class="evidence-item">
+                                    <img src="/images/evidence3.jpg" alt="买家转账凭证" class="evidence-img">
+                                    <div class="evidence-info">
+                                        <div class="evidence-name">买家转账凭证</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 平台最终处理 -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-header">
+                            <div class="timeline-title">
+                                <span class="zh">平台最终处理方案</span>
+                                <span class="en">Platform Final Processing Solution</span>
+                            </div>
+                            <div class="timeline-time">2024-03-22 14:20:45</div>
+                        </div>
+                        <div class="record-content">
+                            <div class="record-text">
+                                <span class="zh">经过48小时的核实与跟进，买家转账已成功到账。本次争议建议就此结束，如有异议可在24小时内提出申诉。</span>
+                                <span class="en">After 48 hours of verification and follow-up, the buyer's payment has arrived successfully. We recommend ending this dispute. If there are any objections, they can be raised within 24 hours.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="action-buttons">
+                    <button class="action-btn action-btn-primary" onclick="showConfirmDialog('accept')">
+                        <span class="zh">接受处理结果</span>
+                        <span class="en">Accept Processing Result</span>
+                    </button>
+                    <button class="action-btn action-btn-default" onclick="showEvidenceDialog()">
+                        <span class="zh">补充证据</span>
+                        <span class="en">Add Additional Evidence</span>
+                    </button>
+                    <button class="action-btn action-btn-danger" onclick="showConfirmDialog('cancel')">
+                        <span class="zh">撤销争议</span>
+                        <span class="en">Cancel Dispute</span>
+                    </button>
+                    <button class="action-btn action-btn-default" onclick="history.back()">
+                        <span class="zh">返回</span>
+                        <span class="en">Return</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 确认对话框 -->
+    <div class="dialog-overlay" id="confirmDialog" style="display: none;">
+        <div class="dialog">
+            <div class="dialog-title">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="confirmTitle">
+                    <span class="zh">确认操作</span>
+                    <span class="en">Confirm Operation</span>
+                </span>
+            </div>
+            <div class="dialog-content" id="confirmContent">
+                <!-- 动态内容 -->
+            </div>
+            <div class="dialog-buttons">
+                <button class="action-btn action-btn-primary" id="confirmButton">
+                    <span class="zh">确认</span>
+                    <span class="en">Confirm</span>
+                </button>
+                <button class="action-btn action-btn-default" onclick="closeDialog('confirmDialog')">
+                    <span class="zh">取消</span>
+                    <span class="en">Cancel</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 补充证据对话框 -->
+    <div class="dialog-overlay" id="evidenceDialog" style="display: none;">
+        <div class="dialog">
+            <div class="dialog-title">
+                <i class="fas fa-plus-circle"></i>
+                <span class="zh">补充证据</span>
+                <span class="en">Add Additional Evidence</span>
+            </div>
+            <div class="dialog-content">
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="zh">补充说明</span>
+                        <span class="en">Additional Note</span>
+                    </label>
+                    <textarea class="form-textarea" placeholder="请详细描述需要补充的内容..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="zh">上传附件</span>
+                        <span class="en">Upload Attachment</span>
+                    </label>
+                    <div class="upload-section">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <p class="upload-text">点击或拖拽文件到此处上传</p>
+                        <p class="upload-hint">支持 jpg、png、pdf 格式，单个文件不超过 10MB</p>
+                    </div>
+                </div>
+            </div>
+            <div class="dialog-buttons">
+                <button class="action-btn action-btn-primary">
+                    <span class="zh">提交</span>
+                    <span class="en">Submit</span>
+                </button>
+                <button class="action-btn action-btn-default" onclick="closeDialog('evidenceDialog')">
+                    <span class="zh">取消</span>
+                    <span class="en">Cancel</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 显示确认对话框
+        function showConfirmDialog(type) {
+            const dialog = document.getElementById('confirmDialog');
+            const title = document.getElementById('confirmTitle');
+            const content = document.getElementById('confirmContent');
+            const confirmBtn = document.getElementById('confirmButton');
+
+            if (type === 'accept') {
+                title.textContent = '确认接受处理结果';
+                content.textContent = '接受处理结果后，本次争议将完结。是否确认接受？';
+                confirmBtn.onclick = acceptResult;
+            } else if (type === 'cancel') {
+                title.textContent = '确认撤销争议';
+                content.textContent = '撤销争议后将无法恢复，是否确认撤销？';
+                confirmBtn.onclick = cancelDispute;
+            }
+
+            dialog.style.display = 'flex';
+        }
+
+        // 显示补充证据对话框
+        function showEvidenceDialog() {
+            document.getElementById('evidenceDialog').style.display = 'flex';
+        }
+
+        // 关闭对话框
+        function closeDialog(dialogId) {
+            document.getElementById(dialogId).style.display = 'none';
+        }
+
+        // 接受处理结果
+        function acceptResult() {
+            // TODO: 处理接受结果的逻辑
+            closeDialog('confirmDialog');
+            // 更新状态为完结
+            updateProgress(2);
+        }
+
+        // 撤销争议
+        function cancelDispute() {
+            // TODO: 处理撤销争议的逻辑
+            closeDialog('confirmDialog');
+        }
+
+        // 更新进度条
+        function updateProgress(currentStep) {
+            const steps = document.querySelectorAll('.step');
+            const progressLine = document.querySelector('.progress-line-active');
+            
+            steps.forEach((step, index) => {
+                if (index < currentStep) {
+                    step.classList.add('completed');
+                    step.classList.remove('active');
+                } else if (index === currentStep) {
+                    step.classList.add('active');
+                    step.classList.remove('completed');
+                } else {
+                    step.classList.remove('completed', 'active');
+                }
+            });
+
+            // 更新进度线宽度
+            const progressWidth = (currentStep / (steps.length - 1)) * 100;
+            progressLine.style.width = `${progressWidth}%`;
+        }
+
+        // 点击空白处关闭对话框
+        document.querySelectorAll('.dialog-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.style.display = 'none';
+                }
+            });
+        });
+
+        // ESC键关闭对话框
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.dialog-overlay').forEach(dialog => {
+                    dialog.style.display = 'none';
+                });
+            }
+        });
+
+        // 详细信息展开/收起
+        document.querySelector('.details-toggle').addEventListener('click', function() {
+            this.classList.toggle('expanded');
+            document.querySelector('.details-content').classList.toggle('expanded');
+            const icon = this.querySelector('i');
+            icon.style.transform = this.classList.contains('expanded') ? 'rotate(180deg)' : 'rotate(0)';
+        });
+
+        // 切换订单信息显示
+        function toggleOrderInfo() {
+            const content = document.querySelector('.order-info-content');
+            const icon = document.querySelector('.order-info-header i.fa-chevron-down');
+            content.style.display = content.style.display === 'none' ? 'block' : 'none';
+            icon.style.transform = content.style.display === 'none' ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+
+        // 语言切换功能
+        function changeLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.querySelectorAll('.zh').forEach(el => {
+                el.style.display = (lang === 'zh-CN') ? 'inline' : 'none';
+            });
+            document.querySelectorAll('.en').forEach(el => {
+                el.style.display = (lang === 'en-US') ? 'inline' : 'none';
+            });
+            document.querySelector('.language-select').value = lang;
+            localStorage.setItem('preferred_language', lang);
+        }
+
+        // 监听来自父页面的消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'languageChange') {
+                changeLanguage(event.data.language);
+            }
+        });
+
+        // 监听语言选择器的变化
+        document.querySelector('.language-select').addEventListener('change', function() {
+            const lang = this.value;
+            changeLanguage(lang);
+            // 通知父页面语言变化
+            window.parent.postMessage({
+                type: 'languageChange',
+                language: lang
+            }, '*');
+        });
+
+        // 初始化语言
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('preferred_language') || 'en-US';
+            changeLanguage(lang);
+        });
+    </script>
+</body>
+</html> 

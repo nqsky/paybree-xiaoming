@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景圆形 -->
+    <circle cx="24" cy="24" r="20" fill="#EDFAF6"/>
+    
+    <!-- 客服图标 -->
+    <path d="M24 16C20.7 16 18 18.7 18 22C18 25.3 20.7 28 24 28C27.3 28 30 25.3 30 22C30 18.7 27.3 16 24 16Z" fill="#16C784"/>
+    <path d="M32 32C32 28.7 29.3 26 26 26H22C18.7 26 16 28.7 16 32V36H32V32Z" fill="#16C784"/>
+    <path d="M24 28V32" stroke="white" stroke-width="2" stroke-linecap="round"/>
+</svg> 
